@@ -1,25 +1,37 @@
-SRC	=	src/Utils.cpp						\
-		src/IO_Tester.cpp					\
-		src/ErrorHandling.cpp				\
+MAKEFLAGS	=	--no-print-directory
 
-OBJ = 	$(SRC:.cpp=.o)
+CXX 		?=	g++
 
-NAME = 	IO_Tester
+RM			?=	rm -f
 
-CXXFLAGS = -std=c++14 -Wall -Wextra
+CXXFLAGS	=	-std=c++14 -Wall -Wextra
 
-CPPFLAGS = -iquote include
+CPPFLAGS	=	-iquote include
 
-CXX = g++
+SRC			+=	src/Utils.cpp
+SRC			+=	src/IO_Tester.cpp
+SRC			+=	src/ErrorHandling.cpp
 
-all :	$(OBJ)
+OBJ			=	$(SRC:.cpp=.o)
+
+NAME		=	IO_Tester
+
+ifdef DEBUG
+	CXXFLAGS += -ggdb3
+endif
+
+all:	$(NAME)
+
+$(NAME):	$(OBJ)
 	$(CXX) -o $(NAME) $(OBJ)
-	rm src/*.o
+	$(RM) $(OBJ)
 
 clean:
-	rm -f $(OBJ)
+	$(RM) $(OBJ)
 
 fclean:	clean
-	rm -f $(NAME)
+	$(RM) $(NAME)
 
 re: fclean all
+
+.PHONY: all clean fclean re
