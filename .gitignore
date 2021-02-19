@@ -1,0 +1,11 @@
+# Editor files and folders
+
+.idea/
+.vscode/
+*~
+\#*#
+
+# Binary files
+
+*.o
+IO_Tester
