@@ -1,16 +1,28 @@
 #include "ErrorHandling.hpp"
 #include "Utils.hpp"
 
+void ErrorHandling::Help(const char *bin)
+{
+    std::cout << "Usage: \t\t" << bin << " [file]" << std::endl;
+    std::cout << "Help menu : \t" << bin << " [file] [-h || --help]" << std::endl;
+    std::cout << "Show details : \t" << bin << " [file] [-d || --details]" << std::endl;
+    exit(84);
+}
+
 ErrorHandling::ErrorHandling(int ac, char **av) : m_details(false)
 {
     if (ac != 2 && ac != 3)
-        exit(84);
+        Help(av[0]);
+    if (strcmp(av[1], "-h") == 0 || strcmp(av[1], "--help") == 0)
+        Help(av[0]);
     if (ac == 3) {
-        if (strcmp(av[2], "-details") == 0)
+        if (strcmp(av[2], "-d") == 0 || strcmp(av[2], "--details") == 0)
             m_details = true;
+        else
+            Help(av[0]);
     }
     m_file = Utils::string_to_vector(Utils::get_file_content(av[1]), '\n');
-    this->CheckLoop();
+    CheckLoop();
 }
 
 enum CheckStatus {Input, Output};

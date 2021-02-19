@@ -14,6 +14,7 @@ public:
     ~ErrorHandling() = default;
     void CheckLoop();
     static void isInput(const std::string &line);
+    static void Help(const char *av);
 };
 
 #endif

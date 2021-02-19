@@ -45,5 +45,5 @@ are
 bad
 [END]
 ```
-Then execute `IO_Tester` with the file containing the tests as first argument. You can add `-details` as second argument to display the real and the expected output when a test fails.
+Then execute `IO_Tester` with the file containing the tests as first argument. You can add `-d` or `--details` as second argument to display the real and the expected output when a test fails.
 ![Details](exemples/exemple.png)
