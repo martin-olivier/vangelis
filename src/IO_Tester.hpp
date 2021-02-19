@@ -18,19 +18,23 @@ public:
     ~Test() = default;
 };
 
-class IOTester : protected ErrorHandling
+class IOTester
 {
 private:
     int m_passed;
     int m_failed;
     int m_crashed;
     size_t m_position;
+    bool m_details;
+    std::vector<std::string> m_file;
 public:
     IOTester(int ac, char **av);
     ~IOTester() = default;
     Test getTestData();
     void comparator(Test t);
     void printFinalResults() const;
+    void apply();
+    void resetValues();
 };
 
 #endif

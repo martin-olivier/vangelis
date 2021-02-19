@@ -2,6 +2,8 @@
 #include "ErrorHandling.hpp"
 #include "Utils.hpp"
 
+enum CheckStatus {Input, Output};
+
 void ErrorHandling::Help(const char *bin)
 {
     std::cout << "Usage: \t\t" << bin << " [file]" << std::endl;
@@ -9,24 +11,6 @@ void ErrorHandling::Help(const char *bin)
     std::cout << "Show details : \t" << bin << " [file] [-d || --details]" << std::endl;
     exit(84);
 }
-
-ErrorHandling::ErrorHandling(int ac, char **av) : m_details(false)
-{
-    if (ac != 2 && ac != 3)
-        Help(av[0]);
-    if (strcmp(av[1], "-h") == 0 || strcmp(av[1], "--help") == 0)
-        Help(av[0]);
-    if (ac == 3) {
-        if (strcmp(av[2], "-d") == 0 || strcmp(av[2], "--details") == 0)
-            m_details = true;
-        else
-            Help(av[0]);
-    }
-    m_file = Utils::string_to_vector(Utils::get_file_content(av[1]), '\n');
-    CheckLoop();
-}
-
-enum CheckStatus {Input, Output};
 
 void ErrorHandling::isInput(const std::string &line)
 {
@@ -38,13 +22,14 @@ void ErrorHandling::isInput(const std::string &line)
         Utils::my_exit(84, "Parsing Error at line :\n" + line);
 }
 
-void ErrorHandling::CheckLoop()
+std::vector<std::string> ErrorHandling::CheckFile(char *path)
 {
+    std::vector<std::string> file = Utils::string_to_vector(Utils::get_file_content(path), '\n');
     CheckStatus status = Input;
 
-    if (m_file.empty())
+    if (file.empty())
         Utils::my_exit(84, "Error : File is Empty");
-    for (const auto& line : m_file) {
+    for (const auto& line : file) {
         if (line.empty())
             continue;
         else if (status == Input) {
@@ -58,4 +43,5 @@ void ErrorHandling::CheckLoop()
     }
     if (status == Output)
         Utils::my_exit(84, "Parsing Error at the last line");
+    return file;
 }

@@ -49,7 +49,7 @@ std::string Utils::get_file_content(const std::string &in)
         return data;
     }
     file.close();
-    my_exit(84, "Cannot access file [" + in + "], exiting...");
+    my_exit(84, "Cannot open file [" + in + "], exiting...");
     return "";
 }
 

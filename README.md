@@ -1,5 +1,5 @@
 # IO-Tester
-The goal of this software is to take a file as parameter that contains lists of inputs and expected ouputs and to tell the user if the test succeed, failed or crashed.
+The goal of this software is to take files as parameter that contains lists of inputs and expected ouputs and to tell the user if the tests succeed, failed or crashed.
 
 # Installation
 After cloning the repository :
@@ -45,5 +45,9 @@ are
 bad
 [END]
 ```
-Then execute `IO_Tester` with the file containing the tests as first argument. You can add `-d` or `--details` as second argument to display the real and the expected output when a test fails.
+Then execute `IO_Tester` with the file containing the tests as argument. You can add `-d` or `--details` as final argument to display the real and the expected output when a test fails.
 ![Details](exemples/exemple.png)
+You can also run multiple test files at once :
+```sh
+./IO_Tester test1 test2 test3 --details
+```

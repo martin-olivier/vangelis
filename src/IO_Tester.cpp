@@ -1,8 +1,37 @@
 #include "IO_Tester.hpp"
 #include "Utils.hpp"
 
-IOTester::IOTester(int ac, char **av) : ErrorHandling(ac, av),
-    m_passed(0), m_failed(0), m_crashed(0), m_position(0)
+IOTester::IOTester(int ac, char **av) :
+    m_passed(0), m_failed(0), m_crashed(0), m_position(0), m_details(false)
+{
+    if (ac < 2)
+        ErrorHandling::Help(av[0]);
+    if (strcmp(av[ac - 1], "-h") == 0 || strcmp(av[ac - 1], "--help") == 0)
+        ErrorHandling::Help(av[0]);
+    if (ac > 2 && (strcmp(av[ac - 1], "-d") == 0 || strcmp(av[ac - 1], "--details") == 0)) {
+        m_details = true;
+        ac--;
+    }
+    for (int i = 1; i < ac; i++) {
+        if (i != 1)
+            std::cout << std::endl;
+        if (ac > 2)
+            std::cout << CYN << av[i] << ":" << std::endl << std::endl << RESET;
+        m_file = ErrorHandling::CheckFile(av[i]);
+        apply();
+        resetValues();
+    }
+}
+
+void IOTester::resetValues()
+{
+    m_position = 0;
+    m_passed = 0;
+    m_failed = 0;
+    m_crashed = 0;
+}
+
+void IOTester::apply()
 {
     while (true) {
         comparator(getTestData());
