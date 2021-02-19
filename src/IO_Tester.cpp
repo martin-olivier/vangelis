@@ -1,5 +1,6 @@
 #include "IO_Tester.hpp"
 #include "Utils.hpp"
+#include <cstring>
 
 IOTester::IOTester(int ac, char **av) :
     m_passed(0), m_failed(0), m_crashed(0), m_position(0), m_details(false)
