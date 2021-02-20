@@ -2,7 +2,6 @@
 #define Utils_H
 
 #include <iostream>
-#include <fstream>
 #include <vector>
 
 #define RED   "\x1B[31m"

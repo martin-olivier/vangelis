@@ -5,9 +5,9 @@ enum CheckStatus {Input, Output};
 
 void ErrorHandling::Help(const char *bin)
 {
-    std::cout << "Usage: \t\t" << bin << " [file]" << std::endl;
-    std::cout << "Help menu : \t" << bin << " [file] [-h || --help]" << std::endl;
-    std::cout << "Show details : \t" << bin << " [file] [-d || --details]" << std::endl;
+    std::cout << "Usage: \t\t" << bin << " [files]" << std::endl;
+    std::cout << "Help menu : \t" << bin << " [files] [-h || --help]" << std::endl;
+    std::cout << "Show details : \t" << bin << " [files] [-d || --details]" << std::endl;
     exit(84);
 }
 

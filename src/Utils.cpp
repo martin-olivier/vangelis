@@ -1,4 +1,7 @@
 #include "Utils.hpp"
+#include <fstream>
+#include <sys/types.h>
+#include <dirent.h>
 
 void Utils::my_exit(int exit_status, const std::string &error_msg)
 {
@@ -32,6 +35,9 @@ Utils::CMD Utils::get_cmd_output(const std::string &command)
 
 std::string Utils::get_file_content(const std::string &in)
 {
+    DIR* dir = opendir(in.c_str());
+    if (dir)
+        my_exit(84, "Cannot open directory [" + in + "], exiting...");
     std::ifstream file;
     file.open(in, std::ifstream::in);
 
