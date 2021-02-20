@@ -17,7 +17,7 @@ IOTester::IOTester(int ac, char **av) :
         if (i != 1)
             std::cout << std::endl;
         if (ac > 2)
-            std::cout << CYN << av[i] << ":" << std::endl << std::endl << RESET;
+            std::cout << CYN << av[i] << ":" << RESET << std::endl << std::endl;
         m_file = ErrorHandling::CheckFile(av[i]);
         apply();
         resetValues();
