@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 
+#define VERSION "1.0"
+
 class Test
 {
 public:
@@ -28,6 +30,7 @@ private:
     bool m_details;
     std::vector<std::string> m_file;
 public:
+    static void Version();
     IOTester(int ac, char **av);
     ~IOTester() = default;
     Test getTestData();
