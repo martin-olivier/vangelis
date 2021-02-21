@@ -84,21 +84,18 @@ void IOTester::comparator(Test t)
 {
     Utils::CMD c = Utils::get_cmd_output(t.m_cmd);
 
-    if (WEXITSTATUS(c.returnValue) == 8 || WEXITSTATUS(c.returnValue) == 11 || WEXITSTATUS(c.returnValue) == 136)
+    if (c.error)
+        Utils::my_exit(84, "Pipe Error, Exiting...");
+    else if (c.returnValue == 8 || c.returnValue == 11 || c.returnValue == 136)
         t.m_status = Test::CRASH;
-    else if (c.error) {
-        t.m_status = Test::FAILED;
-        return;
-    }
     else
         t.m_status = Test::PASS;
 
     if (t.m_status == Test::CRASH) {
         std::cout << YEL << "[SF]" << RESET << " > " << t.m_name << std::endl;
         m_crashed++;
-        return;
     }
-    if (t.m_output == c.output) {
+    else if (t.m_output == c.output) {
         std::cout << GRN << "[OK]" << RESET << " > " << t.m_name << std::endl;
         m_passed++;
     }

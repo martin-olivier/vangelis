@@ -22,14 +22,11 @@ Utils::CMD Utils::get_cmd_output(const std::string &command)
         ret.output = "Pipe Failed !";
         return ret;
     }
-
     while (!feof(pipe)) {
         if (fgets(buffer, 2048, pipe) != NULL)
             ret.output += buffer;
     }
     ret.returnValue = pclose(pipe);
-    if (ret.output[ret.output.size() - 1] == '\n')
-        ret.output.pop_back();
     return ret;
 }
 
