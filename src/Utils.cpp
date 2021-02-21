@@ -47,8 +47,6 @@ std::string Utils::get_file_content(const std::string &in)
             c = file.get();
         }
         file.close();
-        if (data[data.size() - 1] == '\n')
-            data.pop_back();
         return data;
     }
     file.close();
