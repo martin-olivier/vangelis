@@ -17,7 +17,7 @@ OBJ			=	$(SRC:.cpp=.o)
 NAME		=	IO_Tester
 
 ifdef DEBUG
-	CXXFLAGS += -ggdb3
+	CXXFLAGS	+=	-ggdb3
 endif
 
 all:	$(NAME)
@@ -25,6 +25,14 @@ all:	$(NAME)
 $(NAME):	$(OBJ)
 	$(CXX) -o $(NAME) $(OBJ)
 	$(RM) $(OBJ)
+
+install: all
+	@echo -e "\033[92mCopying IO_Tester into /usr/bin\033[0m"
+	@sudo cp $(NAME) /usr/bin
+
+user_install: all
+	@echo -e "\033[92mCopying IO_Tester into ${HOME}/.local/bin\033[0m"
+	@cp $(NAME) ${HOME}/.local/bin
 
 clean:
 	$(RM) $(OBJ)
