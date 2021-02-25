@@ -2,11 +2,15 @@
 The goal of this software is to take files as parameter that contains lists of inputs and expected ouputs and to tell the user if the tests succeed, failed or crashed.
 
 # Installation
-After cloning the repository :
+After cloning the repository enter the following command :
 ```
-make
+make install
 ```
-After that you will be able to grab `IO_Tester` at the root of this project.
+If the the command fails, use sudo :
+```
+sudo make install
+```
+`IO_Tester` will be installed at usr/local/bin.
 
 # Usage
 
@@ -31,18 +35,21 @@ Then prepare your tests in a file with this patern :
 ```
 [Simple Print] ./printer test
 test
+
 [END]
 
 [Multiple Prints] ./printer Hello World !
 Hello
 World
 !
+
 [END]
 
 [Oooops] ./printer I am bad
 You
 are
 bad
+
 [END]
 ```
 Then execute `IO_Tester` with the file containing the tests as argument. You can add `-d` or `--details` as final argument to display the real and the expected output when a test fails.

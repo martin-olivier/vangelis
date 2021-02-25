@@ -13,9 +13,9 @@ IOTester::IOTester(int ac, char **av) :
     m_passed(0), m_failed(0), m_crashed(0), m_position(0), m_details(false)
 {
     if (ac < 2)
-        ErrorHandling::Help(av[0]);
+        ErrorHandling::Help(av[0], 84);
     if (strcmp(av[ac - 1], "-h") == 0 || strcmp(av[ac - 1], "--help") == 0)
-        ErrorHandling::Help(av[0]);
+        ErrorHandling::Help(av[0], 0);
     if (strcmp(av[ac - 1], "-v") == 0 || strcmp(av[ac - 1], "--version") == 0)
         IOTester::Version();
     if (ac > 2 && (strcmp(av[ac - 1], "-d") == 0 || strcmp(av[ac - 1], "--details") == 0)) {

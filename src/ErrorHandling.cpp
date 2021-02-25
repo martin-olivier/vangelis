@@ -3,13 +3,13 @@
 
 enum CheckStatus {Input, Output};
 
-void ErrorHandling::Help(const char *bin)
+void ErrorHandling::Help(const char *bin, int returnValue)
 {
     std::cout << "Usage: \t\t" << bin << " [files]" << std::endl;
     std::cout << "Help menu : \t" << bin << " [-h || --help]" << std::endl;
     std::cout << "Show version : \t" << bin << " [-v || --version]" << std::endl;
     std::cout << "Show details : \t" << bin << " [files] [-d || --details]" << std::endl;
-    exit(84);
+    exit(returnValue);
 }
 
 void ErrorHandling::isInput(const std::string &line)

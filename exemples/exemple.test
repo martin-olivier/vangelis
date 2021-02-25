@@ -18,7 +18,7 @@ OBJ			=	$(SRC:.cpp=.o)
 NAME		=	IO_Tester
 
 ifdef DEBUG
-	CXXFLAGS += -ggdb3
+	CXXFLAGS	+=	-ggdb3
 endif
 
 all:	$(NAME)
@@ -26,6 +26,10 @@ all:	$(NAME)
 $(NAME):	$(OBJ)
 	$(CXX) -o $(NAME) $(OBJ)
 	$(RM) $(OBJ)
+
+install: all
+	@cp $(NAME) /usr/local/bin
+	@echo "\033[92m[INSTALL] Success : IO_Tester ==> /usr/local/bin\033[0m"
 
 clean:
 	$(RM) $(OBJ)
@@ -36,6 +40,7 @@ fclean:	clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
 [END]
 
 [Cat Makefile stdin] cat < Makefile
@@ -58,7 +63,7 @@ OBJ			=	$(SRC:.cpp=.o)
 NAME		=	IO_Tester
 
 ifdef DEBUG
-	CXXFLAGS += -ggdb3
+	CXXFLAGS	+=	-ggdb3
 endif
 
 all:	$(NAME)
@@ -66,6 +71,10 @@ all:	$(NAME)
 $(NAME):	$(OBJ)
 	$(CXX) -o $(NAME) $(OBJ)
 	$(RM) $(OBJ)
+
+install: all
+	@cp $(NAME) /usr/local/bin
+	@echo "\033[92m[INSTALL] Success : IO_Tester ==> /usr/local/bin\033[0m"
 
 clean:
 	$(RM) $(OBJ)
@@ -76,8 +85,10 @@ fclean:	clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
 [END]
 
 [am i root ?] whoami
 root
+
 [END]

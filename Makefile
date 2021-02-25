@@ -27,12 +27,8 @@ $(NAME):	$(OBJ)
 	$(RM) $(OBJ)
 
 install: all
-	@echo -e "\033[92mCopying IO_Tester into /usr/bin\033[0m"
-	@sudo cp $(NAME) /usr/bin
-
-user_install: all
-	@echo -e "\033[92mCopying IO_Tester into ${HOME}/.local/bin\033[0m"
-	@cp $(NAME) ${HOME}/.local/bin
+	@cp $(NAME) /usr/local/bin
+	@echo "\033[92m[INSTALL] Success : IO_Tester ==> /usr/local/bin\033[0m"
 
 clean:
 	$(RM) $(OBJ)
