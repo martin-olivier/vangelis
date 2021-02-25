@@ -56,5 +56,5 @@ Then execute `IO_Tester` with the file containing the tests as argument. You can
 ![Details](exemples/exemple.png)
 You can also run multiple test files at once :
 ```sh
-./IO_Tester test1 test2 test3 --details
+IO_Tester test1 test2 test3 --details
 ```
