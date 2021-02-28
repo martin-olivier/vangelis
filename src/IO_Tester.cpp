@@ -86,7 +86,9 @@ void IOTester::comparator(Test t)
 
     if (c.error)
         Utils::my_exit(84, "Pipe Error, Exiting...");
-    else if (c.returnValue == 8 || c.returnValue == 11 || c.returnValue == 136)
+    else if ((c.returnValue >= 8 && c.returnValue <= 11) || (c.returnValue >= 132 && c.returnValue <= 139))
+        t.m_status = Test::CRASH;
+    else if ((WEXITSTATUS(c.returnValue) >= 8 && WEXITSTATUS(c.returnValue) <= 11) || (WEXITSTATUS(c.returnValue) >= 132 && WEXITSTATUS(c.returnValue) <= 139))
         t.m_status = Test::CRASH;
     else
         t.m_status = Test::PASS;

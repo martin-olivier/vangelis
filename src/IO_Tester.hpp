@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#define VERSION "1.0"
+#define VERSION "1.1"
 
 class Test
 {
