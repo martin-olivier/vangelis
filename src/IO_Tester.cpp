@@ -100,12 +100,24 @@ void IOTester::comparator(Test t)
     else if (t.m_output == c.output) {
         std::cout << GRN << "[OK]" << RESET << " > " << t.m_name << std::endl;
         m_passed++;
-    }
-    else {
+    } else {
         std::cout << RED << "[KO]" << RESET << " > " << t.m_name << std::endl;
         m_failed++;
-        if (m_details)
+        if (0 /* if --diff flag */) {
+            std::string filename1 = "\"/tmp/io_tester_got_" + t.m_name + "\"";
+            std::string filename2 = "\"/tmp/io_tester_expected_" + t.m_name + "\"";
+            std::string s1 = "echo \"" + c.output + "\" > " + filename1;
+            std::string s2 = "echo \"" + t.m_output + "\" " + filename2;
+            std::string command = "vimdiff " + filename1 + " " + filename2;
+
+            system(s1.c_str());
+            system(s2.c_str());
+            system(command.c_str());
+            command = "rm " + filename1 + " " + filename2;
+            system(command.c_str());
+        } else if (m_details) {
             std::cout << BLU << "[REAL OUTPUT] :" << RESET << std::endl << c.output << std::endl << BLU << "[EXPECTED OUTPUT] :" << RESET << std::endl << t.m_output << std::endl;
+        }
     }
 }
 
