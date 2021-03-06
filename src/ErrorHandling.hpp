@@ -1,8 +1,8 @@
 #ifndef ERROR_HANDLING_H
 #define ERROR_HANDLING_H
 
-#include <iostream>
 #include <vector>
+#include <string>
 
 namespace ErrorHandling
 {

@@ -15,11 +15,10 @@ Utils::CMD Utils::get_cmd_output(const std::string &command)
     CMD ret;
     ret.error = false;
 
-    FILE* pipe = popen(command.c_str(), "r");
+    FILE *pipe = popen(command.c_str(), "r");
     if (!pipe) {
         ret.error = true;
         ret.returnValue = -1;
-        ret.output = "Pipe Failed !";
         return ret;
     }
     while (!feof(pipe)) {
@@ -32,7 +31,7 @@ Utils::CMD Utils::get_cmd_output(const std::string &command)
 
 std::string Utils::get_file_content(const std::string &in)
 {
-    DIR* dir = opendir(in.c_str());
+    DIR *dir = opendir(in.c_str());
     if (dir)
         my_exit(84, "Cannot open directory [" + in + "], exiting...");
     std::ifstream file;

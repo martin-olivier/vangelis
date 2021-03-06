@@ -1,6 +1,6 @@
 #include "IO_Tester.hpp"
-#include "Utils.hpp"
 #include <cstring>
+#include <unistd.h>
 
 void IOTester::Version()
 {
@@ -10,7 +10,7 @@ void IOTester::Version()
 }
 
 IOTester::IOTester(int ac, char **av) :
-    m_passed(0), m_failed(0), m_crashed(0), m_position(0), m_details(false)
+    m_passed(0), m_failed(0), m_crashed(0), m_position(0), m_details(NO), m_VSCodeBin(UNCHECKED)
 {
     if (ac < 2)
         ErrorHandling::Help(av[0], 84);
@@ -18,8 +18,12 @@ IOTester::IOTester(int ac, char **av) :
         ErrorHandling::Help(av[0], 0);
     if (strcmp(av[ac - 1], "-v") == 0 || strcmp(av[ac - 1], "--version") == 0)
         IOTester::Version();
-    if (ac > 2 && (strcmp(av[ac - 1], "-d") == 0 || strcmp(av[ac - 1], "--details") == 0)) {
-        m_details = true;
+    if (ac > 2 && (strcmp(av[ac - 1], "--details") == 0)) {
+        m_details = DETAILS;
+        ac--;
+    }
+    if (ac > 2 && (strcmp(av[ac - 1], "--diff") == 0)) {
+        m_details = DIFF;
         ac--;
     }
     for (int i = 1; i < ac; i++) {
@@ -31,6 +35,11 @@ IOTester::IOTester(int ac, char **av) :
         apply();
         resetValues();
     }
+    if (m_VSCodeBin == KO) {
+        std::cerr << std::endl << RED << "You need to install Visual Studio Code to show diff" << std::endl;
+        std::cerr << "Use --details otherwise" << RESET << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 void IOTester::resetValues()
@@ -80,6 +89,39 @@ Test IOTester::getTestData()
     return t;
 }
 
+void IOTester::VSCodeDiff(const Test &t, const Utils::CMD &c)
+{
+    std::string filename1 = "\"/tmp/GOT(" + t.m_name + ")\"";
+    std::string filename2 = "\"/tmp/EXPECTED(" + t.m_name + ")\"";
+    std::string s1 = "echo \"" + c.output + "\" > " + filename1;
+    std::string s2 = "echo \"" + t.m_output + "\" > " + filename2;
+
+    system(std::string(s1 + " ; " + s2).c_str());
+    system(std::string(VSCodePath + filename1 + " " + filename2).c_str());
+}
+
+void IOTester::checkVSCodeBin()
+{
+#ifdef __APPLE__
+    if (access((std::string("/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code").c_str()), X_OK) != -1) {
+        m_VSCodeBin = OK;
+        return;
+    }
+    m_VSCodeBin = KO;
+    return;
+#endif
+    char* env_p = std::getenv("PATH");
+    auto PATHList = Utils::string_to_vector(env_p, ':');
+
+    for (auto &path : PATHList) {
+        if (access((std::string(path + "/code").c_str()), X_OK) != -1) {
+            m_VSCodeBin = OK;
+            return;
+        }
+    }
+    m_VSCodeBin = KO;
+}
+
 void IOTester::comparator(Test t)
 {
     Utils::CMD c = Utils::get_cmd_output(t.m_cmd);
@@ -100,23 +142,17 @@ void IOTester::comparator(Test t)
     else if (t.m_output == c.output) {
         std::cout << GRN << "[OK]" << RESET << " > " << t.m_name << std::endl;
         m_passed++;
-    } else {
+    }
+    else {
         std::cout << RED << "[KO]" << RESET << " > " << t.m_name << std::endl;
         m_failed++;
-        if (0 /* if --diff flag */) {
-            std::string filename1 = "\"/tmp/io_tester_got_" + t.m_name + "\"";
-            std::string filename2 = "\"/tmp/io_tester_expected_" + t.m_name + "\"";
-            std::string s1 = "echo \"" + c.output + "\" > " + filename1;
-            std::string s2 = "echo \"" + t.m_output + "\" " + filename2;
-            std::string command = "vimdiff " + filename1 + " " + filename2;
-
-            system(s1.c_str());
-            system(s2.c_str());
-            system(command.c_str());
-            command = "rm " + filename1 + " " + filename2;
-            system(command.c_str());
-        } else if (m_details) {
-            std::cout << BLU << "[REAL OUTPUT] :" << RESET << std::endl << c.output << std::endl << BLU << "[EXPECTED OUTPUT] :" << RESET << std::endl << t.m_output << std::endl;
+        if (m_details == DETAILS)
+            std::cout << BLU << "[GOT] :" << RESET << std::endl << c.output << std::endl << BLU << "[EXPECTED] :" << RESET << std::endl << t.m_output << std::endl;
+        else if (m_details == DIFF) {
+            if (m_VSCodeBin == UNCHECKED)
+                checkVSCodeBin();
+            if (m_VSCodeBin == OK)
+                VSCodeDiff(t, c);
         }
     }
 }
@@ -131,6 +167,6 @@ void IOTester::printFinalResults() const
 
 int main(int ac, char **av)
 {
-    IOTester(ac, av);
+    IOTester app(ac, av);
     return EXIT_SUCCESS;
 }

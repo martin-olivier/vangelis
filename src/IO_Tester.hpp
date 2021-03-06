@@ -2,10 +2,17 @@
 #define IO_TESTER_H
 
 #include "ErrorHandling.hpp"
-#include <iostream>
+#include "Utils.hpp"
+#include <string>
 #include <vector>
 
-#define VERSION "1.1"
+#define VERSION "1.2"
+
+#ifdef __APPLE__
+#define VSCodePath "\"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" --diff "
+#else
+#define VSCodePath "code --diff "
+#endif
 
 class Test
 {
@@ -22,15 +29,12 @@ public:
 
 class IOTester
 {
-private:
-    int m_passed;
-    int m_failed;
-    int m_crashed;
-    size_t m_position;
-    bool m_details;
-    std::vector<std::string> m_file;
 public:
+    enum Details {NO, DETAILS, DIFF};
+    enum VSCodeBin {KO, OK, UNCHECKED};
+
     static void Version();
+    static void VSCodeDiff(const Test &t, const Utils::CMD &c);
     IOTester(int ac, char **av);
     ~IOTester() = default;
     Test getTestData();
@@ -38,6 +42,15 @@ public:
     void printFinalResults() const;
     void apply();
     void resetValues();
+    void checkVSCodeBin();
+private:
+    int m_passed;
+    int m_failed;
+    int m_crashed;
+    size_t m_position;
+    Details m_details;
+    VSCodeBin m_VSCodeBin;
+    std::vector<std::string> m_file;
 };
 
 #endif

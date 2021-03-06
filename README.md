@@ -52,9 +52,17 @@ bad
 
 [END]
 ```
-Then execute `IO_Tester` with the file containing the tests as argument. You can add `-d` or `--details` as final argument to display the real and the expected output when a test fails.
+Then execute `IO_Tester` with the file containing the tests as argument.
+
+You can add `--details` as final argument to display the real and the expected output when a test fails.
 ![Details](exemples/exemple.png)
+You can add `--diff` as final argument to display the diff between the real and the expected output in VS Code when a test fails.
+![Details](exemples/diffexemple.png)
 You can also run multiple test files at once :
 ```sh
-IO_Tester test1 test2 test3 --details
+IO_Tester test1 test2 test3 --diff
 ```
+## Contributors
+
+ - [Benjamin Reigner](https://github.com/Breigner01)
+ - [Alexandre Chetrit](https://github.com/chetrit)
