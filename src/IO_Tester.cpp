@@ -111,6 +111,10 @@ void IOTester::checkVSCodeBin()
     return;
 #endif
     char* env_p = std::getenv("PATH");
+    if (env_p == NULL) {
+        m_VSCodeBin = KO;
+        return;
+    }
     auto PATHList = Utils::string_to_vector(env_p, ':');
 
     for (auto &path : PATHList) {
