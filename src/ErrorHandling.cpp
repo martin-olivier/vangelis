@@ -8,6 +8,8 @@ void ErrorHandling::Help(const char *bin, int returnValue)
     std::cout << "Usage: \t\t\t" << bin << " [files]" << std::endl;
     std::cout << "Help menu : \t\t" << bin << " [-h || --help]" << std::endl;
     std::cout << "Show version : \t\t" << bin << " [-v || --version]" << std::endl;
+    std::cout << "Show changelog : \t" << bin << " [-c || --changelog]" << std::endl;
+    std::cout << "Update : \t   sudo " << bin << " [-u || --update]" << std::endl;
     std::cout << "Show details : \t\t" << bin << " [files] [--details]" << std::endl;
     std::cout << "Show diff on VS Code : \t" << bin << " [files] [--diff]" << std::endl;
     exit(returnValue);

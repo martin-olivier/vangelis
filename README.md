@@ -1,12 +1,11 @@
 # IO-Tester
 The goal of this software is to take files as parameter that contains lists of inputs and expected ouputs and to tell the user if the tests succeed, failed or crashed.
 
+# Prerequisites
+Tested on `MacOS`, `Ubuntu`, `Fedora`
+
 # Installation
 After cloning the repository enter the following command :
-```
-make install
-```
-If the the command fails, use sudo :
 ```
 sudo make install
 ```

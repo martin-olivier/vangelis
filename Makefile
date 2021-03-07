@@ -11,10 +11,17 @@ CPPFLAGS	=	-iquote include
 SRC			+=	src/Utils.cpp
 SRC			+=	src/IO_Tester.cpp
 SRC			+=	src/ErrorHandling.cpp
+SRC			+=	src/Updater.cpp
 
 OBJ			=	$(SRC:.cpp=.o)
 
 NAME		=	IO_Tester
+
+ifneq (,$(findstring xterm,${TERM}))
+GREEN       := $(shell tput -Txterm setaf 2)
+else
+GREEN       := ""
+endif
 
 ifdef DEBUG
 	CXXFLAGS	+=	-ggdb3
@@ -28,7 +35,7 @@ $(NAME):	$(OBJ)
 
 install: all
 	@cp $(NAME) /usr/local/bin
-	@echo "\033[92m[INSTALL] Success : IO_Tester ==> /usr/local/bin\033[0m"
+	@echo "${GREEN}[SUCCESS] Install : IO_Tester ==> /usr/local/bin"
 
 clean:
 	$(RM) $(OBJ)

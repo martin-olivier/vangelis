@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#define VERSION "1.2"
+#define VERSION "1.3"
 
 #ifdef __APPLE__
 #define VSCodePath "\"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" --diff "
@@ -42,7 +42,12 @@ public:
     void printFinalResults() const;
     void apply();
     void resetValues();
+
     void checkVSCodeBin();
+
+    static void CheckUpdate();
+    static void Update();
+    static void Changelog();
 private:
     int m_passed;
     int m_failed;

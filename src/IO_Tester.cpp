@@ -4,8 +4,8 @@
 
 void IOTester::Version()
 {
-    std::cout << "IO Tester (" << VERSION << ")" << std::endl;
-    std::cout << "Written by Martin OLIVIER, Student at EPITECH Paris" << std::endl;
+    std::cout << "IO_Tester (" << VERSION << ")" << std::endl;
+    std::cout << "Written by Martin OLIVIER, Student at EPITECH Paris (martin.olivier@live.fr)" << std::endl;
     exit(0);
 }
 
@@ -18,6 +18,10 @@ IOTester::IOTester(int ac, char **av) :
         ErrorHandling::Help(av[0], 0);
     if (strcmp(av[ac - 1], "-v") == 0 || strcmp(av[ac - 1], "--version") == 0)
         IOTester::Version();
+    if (strcmp(av[ac - 1], "-u") == 0 || strcmp(av[ac - 1], "--update") == 0)
+        IOTester::Update();
+    if (strcmp(av[ac - 1], "-c") == 0 || strcmp(av[ac - 1], "--changelog") == 0)
+        IOTester::Changelog();
     if (ac > 2 && (strcmp(av[ac - 1], "--details") == 0)) {
         m_details = DETAILS;
         ac--;
@@ -30,15 +34,16 @@ IOTester::IOTester(int ac, char **av) :
         if (i != 1)
             std::cout << std::endl;
         if (ac > 2)
-            std::cout << CYN << av[i] << ":" << RESET << std::endl << std::endl;
+            std::cout << CYN << av[i] << ":\n" << RESET << std::endl;
         m_file = ErrorHandling::CheckFile(av[i]);
         apply();
         resetValues();
     }
     if (m_VSCodeBin == KO) {
-        std::cerr << std::endl << RED << "You need to install Visual Studio Code to show diff" << std::endl;
+        std::cerr << RED << "\nYou need to install Visual Studio Code to show diff" << std::endl;
         std::cerr << "Use --details otherwise" << RESET << std::endl;
     }
+    CheckUpdate();
     std::cout << std::endl;
 }
 
