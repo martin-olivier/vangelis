@@ -1,7 +1,9 @@
 # IO-Tester
+<a href="https://github.com/tocola/IO-TESTER"><img src="https://img.shields.io/badge/IO_Tester-v1.3-blue.svg"></a>
+
 The goal of this software is to take files as parameter that contains lists of inputs and expected ouputs and to tell the user if the tests succeed, failed or crashed.
 
-# Prerequisites
+# Compatibility
 Tested on `MacOS`, `Ubuntu`, `Fedora`
 
 # Installation
