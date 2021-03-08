@@ -10,25 +10,25 @@ Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 
 ## How to use it ?
 
-1. You need to have ```VSCode``` installed
-2. Clone this repository
-3. Go to the ```IO_Tester``` folder
-4. Execute the following command ```sudo make install``` (the binary will be installed at ***usr/local/bin***)
-5. Now let's write a test !
+1. Clone this repository
+2. Go to the ```IO-TESTER``` folder
+3. Execute the following command :  
+   ```sudo make install``` (the binary will be installed at ***usr/local/bin***)
+4. Now let's write a test !
 
 ## Usage
 
-Test files must follow the following template :
-```sh
-[NameOfTest] CommandRunYourProgram
-theOutputYouWant
+Test files must follow this patern :
+```
+[Test Name] command
+expected output
 [END]
 ```
 
-Here we test a program that takes parameters and prints them in the standard output.  
-In file ```test.io``` :
+Here we want to test a program that takes parameters and prints them in the standard output.  
+In the test file ```test.io``` :
 
-```sh
+```
 [Simple Print] python3 printer test
 test
 
@@ -49,9 +49,15 @@ bad
 [END]
 ```
 
-### Execute
+### Details
+![](.github/example1.png)  
+![](.github/example2.png)  
+### VSCode Diff
+![](.github/example3.png)  
 
-```sh
+### Manual
+
+```
 USAGE:
         IO_Tester test.io [OPTIONS]
 
@@ -71,18 +77,13 @@ RETURN VALUE:
         1               if one or more tests failed or crashed
         84              if IO_Tester failed to load the test file
 ```
-### Details
-![](.github/example1.png)  
-![](.github/example2.png)  
-### VSCode Diff
-![](.github/example3.png)  
 
 You can also run multiple test files at once :
 ```sh
 IO_Tester test1.io test2.io test3.io --diff
 ```
 
-## Annexe
+## Build Tips
 If you want to uninstall IO-Tester :  
 ```make uninstall```
 
