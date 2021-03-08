@@ -81,12 +81,19 @@ IO_Tester test1.io test2.io test3.io --diff
 ## Annexe
 If you want to uninstall IO-Tester run:  
 ```make uninstall```
+
+
 If you want just have binary run:  
 ```make```
+
+
 If you want remove all .o in folder run:  
 ```make clean```
+
+
 If you want remove .o and binary run:
 ```make fclean```
+
 
 ## Contributors
 
