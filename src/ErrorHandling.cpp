@@ -5,13 +5,19 @@ enum CheckStatus {Input, Output};
 
 void ErrorHandling::Help(const char *bin, int returnValue)
 {
-    std::cout << "Usage: \t\t\t" << bin << " [files]" << std::endl;
-    std::cout << "Help menu : \t\t" << bin << " [-h || --help]" << std::endl;
-    std::cout << "Show version : \t\t" << bin << " [-v || --version]" << std::endl;
-    std::cout << "Show changelog : \t" << bin << " [-c || --changelog]" << std::endl;
-    std::cout << "Update : \t   sudo " << bin << " [-u || --update]" << std::endl;
-    std::cout << "Show details : \t\t" << bin << " [files] [--details]" << std::endl;
-    std::cout << "Show diff on VS Code : \t" << bin << " [files] [--diff]" << std::endl;
+    std::cout << "USAGE:" << std::endl;
+    std::cout << "\t" << bin << " test.io [OPTIONS]\n" << std::endl;
+    std::cout << "DESCRIPTION:" << std::endl;
+    std::cout << "\ttest.io\t\tfile when contains all tests functional\n" << std::endl;
+
+    std::cout << "OPTIONS:" << std::endl;
+    std::cout << "\t-h --help\tDisplay this help" << std::endl;
+    std::cout << "\t-v --version\tDisplay this version" << std::endl;
+    std::cout << "\t-c --changelog\tDisplay this changelog" << std::endl;
+    std::cout << "\t-u --update\tUpdate this programm (sudo)" << std::endl;
+    std::cout << "\t--details\tDisplay details of all tests" << std::endl;
+    std::cout << "\t--diff\t\tDisplay difference in VSCode" << std::endl;
+
     exit(returnValue);
 }
 
