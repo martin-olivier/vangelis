@@ -1,16 +1,16 @@
-[Simple Print] ./printer test
+[Simple Print] python3 printer test
 test
 
 [END]
 
-[Multiple Prints] ./printer Hello World !
+[Multiple Prints] python3 printer Hello World !
 Hello
 World
 !
 
 [END]
 
-[Oooops] ./printer I am bad
+[Oooops] python3 printer I am bad
 You
 are
 bad

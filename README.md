@@ -10,15 +10,15 @@ Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 
 ## How to use it ?
 
-1. Need to have ```VSCode```
+1. You need to have ```VSCode``` installed
 2. Clone this repository
-3. Go to the ```project``` folder
-4. Execute the followind command ```sudo make install``` (the binary will be installed at ***usr/local/bin***)
-5. Now let's write your test !
+3. Go to the ```IO_Tester``` folder
+4. Execute the following command ```sudo make install``` (the binary will be installed at ***usr/local/bin***)
+5. Now let's write a test !
 
 ## Usage
 
-Write the following file:
+Test files must follow the following template :
 ```sh
 [NameOfTest] CommandRunYourProgram
 theOutputYouWant
@@ -26,22 +26,22 @@ theOutputYouWant
 ```
 
 Here we test a program that takes parameters and prints them in the standard output.  
-In file ```test.io```
+In file ```test.io``` :
 
 ```sh
-[Simple Print] ./printer test
+[Simple Print] python3 printer test
 test
 
 [END]
 
-[Multiple Prints] ./printer Hello World !
+[Multiple Prints] python3 printer Hello World !
 Hello
 World
 !
 
 [END]
 
-[Oooops] ./printer I am bad
+[Oooops] python3 printer I am bad
 You
 are
 bad
@@ -77,19 +77,19 @@ IO_Tester test1.io test2.io test3.io --diff
 ```
 
 ## Annexe
-If you want to uninstall IO-Tester run:  
+If you want to uninstall IO-Tester :  
 ```make uninstall```
 
 
-If you want just have binary run:  
+If you just want to get the binary without installing :  
 ```make```
 
 
-If you want remove all .o in folder run:  
+If you want to remove all objects files :  
 ```make clean```
 
 
-If you want remove .o and binary run:  
+If you want to remove all objects files and the binary :  
 ```make fclean```
 
 
