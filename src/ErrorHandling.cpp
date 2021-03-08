@@ -8,13 +8,13 @@ void ErrorHandling::Help(const char *bin, int returnValue)
     std::cout << "USAGE:" << std::endl;
     std::cout << "\t" << bin << " test.io [OPTIONS]\n" << std::endl;
     std::cout << "DESCRIPTION:" << std::endl;
-    std::cout << "\ttest.io\t\tfile when contains all tests functional\n" << std::endl;
+    std::cout << "\ttest.io\t\tfile that contains functional tests\n" << std::endl;
 
     std::cout << "OPTIONS:" << std::endl;
-    std::cout << "\t-h --help\tDisplay this help" << std::endl;
+    std::cout << "\t-h --help\tDisplay help menu" << std::endl;
     std::cout << "\t-v --version\tDisplay this version" << std::endl;
-    std::cout << "\t-c --changelog\tDisplay this changelog" << std::endl;
-    std::cout << "\t-u --update\tUpdate this programm (sudo)" << std::endl;
+    std::cout << "\t-c --changelog\tDisplay the changelog" << std::endl;
+    std::cout << "\t-u --update\tUpdate this program (sudo)" << std::endl;
     std::cout << "\t--details\tDisplay details of all tests" << std::endl;
     std::cout << "\t--diff\t\tDisplay difference in VSCode" << std::endl;
 

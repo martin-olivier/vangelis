@@ -11,7 +11,7 @@ Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 ## How to use it ?
 
 1. Need to have ```VSCode```
-2. Clone our repository
+2. Clone this repository
 3. Go to the ```project``` folder
 4. Execute the followind command ```sudo make install``` (the binary will be installed at ***usr/local/bin***)
 5. Now let's write your test !
@@ -56,15 +56,15 @@ USAGE:
 	./IO_Tester test.io [OPTIONS]
 
 DESCRIPTION:
-	test.io	            file when contains functional tests
+	test.io	            file that contains functional tests
 
 OPTIONS:
-	-h --help           Display this help
+	-h --help           Display help menu
 	-v --version	    Display this version
-	-c --changelog	    Display this changelog
-	-u --update	    Update this programm (sudo)
-	--details	    Display details of all tests
-	--diff		    Display difference in VSCode
+	-c --changelog	    Display the changelog
+	-u --update	        Update this program (sudo)
+	--details	        Display details of all tests
+	--diff		        Display difference in VSCode
 ```
 
 ![](.github/example1.png)  
