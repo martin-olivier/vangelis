@@ -7,16 +7,22 @@ void ErrorHandling::Help(const char *bin, int returnValue)
 {
     std::cout << "USAGE:" << std::endl;
     std::cout << "\t" << bin << " test.io [OPTIONS]\n" << std::endl;
+
     std::cout << "DESCRIPTION:" << std::endl;
     std::cout << "\ttest.io\t\tfile that contains functional tests\n" << std::endl;
 
     std::cout << "OPTIONS:" << std::endl;
     std::cout << "\t-h --help\tDisplay help menu" << std::endl;
-    std::cout << "\t-v --version\tDisplay this version" << std::endl;
+    std::cout << "\t-v --version\tDisplay actual version" << std::endl;
     std::cout << "\t-c --changelog\tDisplay the changelog" << std::endl;
-    std::cout << "\t-u --update\tUpdate this program (sudo)" << std::endl;
+    std::cout << "\t-u --update\tUpdate this software (sudo)" << std::endl;
     std::cout << "\t--details\tDisplay details of all tests" << std::endl;
-    std::cout << "\t--diff\t\tDisplay difference in VSCode" << std::endl;
+    std::cout << "\t--diff\t\tDisplay difference in VSCode\n" << std::endl;
+
+    std::cout << "RETURN VALUE:" << std::endl;
+    std::cout << "\t0\t\tif all tests succeed" << std::endl;
+    std::cout << "\t1\t\tif one or more tests failed or crashed" << std::endl;
+    std::cout << "\t84\t\tif IO_Tester failed to load the test file" << std::endl;
 
     exit(returnValue);
 }

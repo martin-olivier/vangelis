@@ -1,5 +1,5 @@
 # IO-Tester
-<a href="https://github.com/tocola/IO-TESTER"><img src="https://img.shields.io/badge/IO_Tester-v1.3-blue.svg"></a>
+<a href="https://github.com/tocola/IO-TESTER"><img src="https://img.shields.io/badge/IO_Tester-v1.4-blue.svg"></a>
 
 ## What is IO-Tester
 
@@ -53,22 +53,28 @@ bad
 
 ```sh
 USAGE:
-	./IO_Tester test.io [OPTIONS]
+        IO_Tester test.io [OPTIONS]
 
 DESCRIPTION:
-	test.io	            file that contains functional tests
+        test.io         file that contains functional tests
 
 OPTIONS:
-	-h --help           Display help menu
-	-v --version	    Display this version
-	-c --changelog	    Display the changelog
-	-u --update	        Update this program (sudo)
-	--details	        Display details of all tests
-	--diff		        Display difference in VSCode
-```
+        -h --help       Display help menu
+        -v --version    Display actual version
+        -c --changelog  Display the changelog
+        -u --update     Update this software (sudo)
+        --details       Display details of all tests
+        --diff          Display difference in VSCode
 
+RETURN VALUE:
+        0               if all tests succeed
+        1               if one or more tests failed or crashed
+        84              if IO_Tester failed to load the test file
+```
+### Details
 ![](.github/example1.png)  
 ![](.github/example2.png)  
+### VSCode Diff
 ![](.github/example3.png)  
 
 You can also run multiple test files at once :

@@ -15,6 +15,9 @@ void IOTester::Changelog()
             "(1.3)",
             "> [ADD] Updater (-u || --update)",
             "> [ADD] Changelog (-c || --changelog)",
+            "(1.4)",
+            "> [FIX] Optimised Updater",
+            "> [ADD] return value (0 when all tests succeed, 1 otherwise)",
             NULL
     };
     std::cout << "[CHANGELOG] :" << std::endl;
@@ -29,19 +32,16 @@ void IOTester::CheckUpdate()
     if (!dir) {
         if (system("git --help > /dev/null 2>&1") != 0)
             return;
-        if (system("git clone https://github.com/tocola/IO-TESTER.git /tmp/IO-TESTER > /dev/null 2>&1") != 0)
-            return;
+        system("git clone https://github.com/tocola/IO-TESTER.git /tmp/IO-TESTER > /dev/null 2>&1 &");
+        return;
     }
-    if (dir)
-        closedir(dir);
+    closedir(dir);
     if (access("/tmp/IO-TESTER/IO_Tester", X_OK) == -1) {
-        if (system("make -C /tmp/IO-TESTER > /dev/null 2>&1") != 0)
-            return;
+        system("make -C /tmp/IO-TESTER > /dev/null 2>&1 &");
+        return;
     }
-    if (system("diff /tmp/IO-TESTER/IO_Tester /usr/local/bin/IO_Tester > /dev/null 2>&1") != 0) {
-        std::cout << std::endl << MAG << "[UPDATE]" << RESET << " > New Version Available" << std::endl;
-        std::cout << MAG << "[UPDATE]" << RESET << " > sudo IO_Tester --update" << std::endl;
-    }
+    if (system("diff /tmp/IO-TESTER/IO_Tester /usr/local/bin/IO_Tester > /dev/null 2>&1") != 0)
+        std::cout << std::endl << MAG << "[UPDATE]" << RESET << " > New Version Available > sudo IO_Tester --update" << std::endl;
 }
 
 void IOTester::Update()

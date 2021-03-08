@@ -1,16 +1,15 @@
 #include "IO_Tester.hpp"
 #include <cstring>
-#include <unistd.h>
 
 void IOTester::Version()
 {
     std::cout << "IO_Tester (" << VERSION << ")" << std::endl;
-    std::cout << "Written by Martin OLIVIER, Student at EPITECH Paris (martin.olivier@live.fr)" << std::endl;
+    std::cout << "Written by Martin OLIVIER, Student at {EPITECH} Paris" << std::endl;
     exit(0);
 }
 
 IOTester::IOTester(int ac, char **av) :
-    m_passed(0), m_failed(0), m_crashed(0), m_position(0), m_details(NO), m_VSCodeBin(UNCHECKED)
+    m_passed(0), m_failed(0), m_crashed(0), m_position(0), m_details(NO), m_VSCodeBin(UNCHECKED), m_return(EXIT_SUCCESS)
 {
     if (ac < 2)
         ErrorHandling::Help(av[0], 84);
@@ -49,6 +48,8 @@ IOTester::IOTester(int ac, char **av) :
 
 void IOTester::resetValues()
 {
+    if (m_failed > 0 || m_crashed > 0)
+        m_return = EXIT_FAILURE;
     m_position = 0;
     m_passed = 0;
     m_failed = 0;
@@ -92,43 +93,6 @@ Test IOTester::getTestData()
     m_position++;
     t.m_output.pop_back();
     return t;
-}
-
-void IOTester::VSCodeDiff(const Test &t, const Utils::CMD &c)
-{
-    std::string filename1 = "\"/tmp/GOT(" + t.m_name + ")\"";
-    std::string filename2 = "\"/tmp/EXPECTED(" + t.m_name + ")\"";
-    std::string s1 = "echo \"" + c.output + "\" > " + filename1;
-    std::string s2 = "echo \"" + t.m_output + "\" > " + filename2;
-
-    system(std::string(s1 + " ; " + s2).c_str());
-    system(std::string(VSCodePath + filename1 + " " + filename2).c_str());
-}
-
-void IOTester::checkVSCodeBin()
-{
-#ifdef __APPLE__
-    if (access((std::string("/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code").c_str()), X_OK) != -1) {
-        m_VSCodeBin = OK;
-        return;
-    }
-    m_VSCodeBin = KO;
-    return;
-#endif
-    char* env_p = std::getenv("PATH");
-    if (env_p == NULL) {
-        m_VSCodeBin = KO;
-        return;
-    }
-    auto PATHList = Utils::string_to_vector(env_p, ':');
-
-    for (auto &path : PATHList) {
-        if (access((std::string(path + "/code").c_str()), X_OK) != -1) {
-            m_VSCodeBin = OK;
-            return;
-        }
-    }
-    m_VSCodeBin = KO;
 }
 
 void IOTester::comparator(Test t)
@@ -177,5 +141,5 @@ void IOTester::printFinalResults() const
 int main(int ac, char **av)
 {
     IOTester app(ac, av);
-    return EXIT_SUCCESS;
+    return app.exitStatus();
 }

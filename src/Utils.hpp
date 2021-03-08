@@ -1,5 +1,4 @@
-#ifndef Utils_H
-#define Utils_H
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -26,5 +25,3 @@ namespace Utils
     std::vector<std::string> string_to_vector(std::string str, char separator);
     void my_exit(int exit_status, const std::string &error_msg);
 };
-
-#endif

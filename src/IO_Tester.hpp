@@ -1,12 +1,11 @@
-#ifndef IO_TESTER_H
-#define IO_TESTER_H
+#pragma once
 
 #include "ErrorHandling.hpp"
 #include "Utils.hpp"
 #include <string>
 #include <vector>
 
-#define VERSION "1.3"
+#define VERSION "1.4"
 
 #ifdef __APPLE__
 #define VSCodePath "\"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" --diff "
@@ -48,6 +47,8 @@ public:
     static void CheckUpdate();
     static void Update();
     static void Changelog();
+
+    bool exitStatus() const {return m_return;};
 private:
     int m_passed;
     int m_failed;
@@ -55,7 +56,6 @@ private:
     size_t m_position;
     Details m_details;
     VSCodeBin m_VSCodeBin;
+    bool m_return;
     std::vector<std::string> m_file;
 };
-
-#endif
