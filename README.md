@@ -1,39 +1,36 @@
 # IO-Tester
 <a href="https://github.com/tocola/IO-TESTER"><img src="https://img.shields.io/badge/IO_Tester-v1.3-blue.svg"></a>
 
+## What is IO-Tester
+
 The goal of this software is to take files as parameter that contains lists of inputs and expected ouputs and to tell the user if the tests succeed, failed or crashed.
 
-# Compatibility
+### Compatibility
 Tested on `MacOS`, `Ubuntu`, `Fedora`
 
-# Installation
-After cloning the repository enter the following command :
-```
-sudo make install
-```
-`IO_Tester` will be installed at usr/local/bin.
+## How to use it ?
 
-# Usage
+1. Need to have ```VSCode```
+2. Clone our repository
+3. Go to the ```project``` folder
+4. Execute the followind command ```sudo make install``` (the binary will be installed at ***usr/local/bin***)
+5. Now let's write your test !
 
-Lets say we want to test that program :
-```c
-// main.c
+## Usage
 
-#include <stdio.h>
-
-int main(int ac, char **av)
-{
-    for (int i = 1; i < ac; i++)
-        printf("%s\n", av[i]);
-    return 0;
-}
-```
-First lets compile it :
+Write the following file:
 ```sh
-gcc main.c -o printer
+#template
+[NameOfTest] CommandRunYourProgram
+theOutputYouWant
+[END]
 ```
-Then prepare your tests in a file with this patern :
-```
+
+Here we test a program that takes parameters and prints them in the standard output.  
+In file ```test.io```
+
+```sh
+#test.io
 [Simple Print] ./printer test
 test
 
@@ -53,17 +50,46 @@ bad
 
 [END]
 ```
-Then execute `IO_Tester` with the file containing the tests as argument.
 
-You can add `--details` as final argument to display the real and the expected output when a test fails.
-![Details](exemples/exemple.png)
-You can add `--diff` as final argument to display the diff between the real and the expected output in VS Code when a test fails.
-![Details](exemples/diffexemple.png)
+### Execute
+
+```sh
+USAGE:
+	./IO_Tester test.io [OPTIONS]
+
+DESCRIPTION:
+	test.io	        file when contains all tests functional
+
+OPTIONS:
+	-h --help       Display this help
+	-v --version	Display this version
+	-c --changelog	Display this changelog
+	-u --update	    Update this programm (sudo)
+	--details	    Display details of all tests
+	--diff		    Display difference in VSCode
+```
+
+![](.github/example1.png)  
+![](.github/example2.png)  
+![](.github/example3.png)  
+
 You can also run multiple test files at once :
 ```sh
-IO_Tester test1 test2 test3 --diff
+IO_Tester test1.io test2.io test3.io --diff
 ```
+
+## Annexe
+If you want to uninstall IO-Tester run:  
+```make uninstall```
+If you want just have binary run:  
+```make```
+If you want remove all .o in folder run:  
+```make clean```
+If you want remove .o and binary run:
+```make fclean```
+
 ## Contributors
 
  - [Benjamin Reigner](https://github.com/Breigner01)
  - [Alexandre Chetrit](https://github.com/chetrit)
+ - [Coline Seguret](https://github.com/Cleopha)
