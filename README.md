@@ -6,7 +6,7 @@
 The goal of this software is to take files as parameter that contains lists of inputs and expected ouputs and to tell the user if the tests succeed, failed or crashed.
 
 ### Compatibility
-Tested on `MacOS`, `Ubuntu`, `Fedora`
+Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 
 ## How to use it ?
 
@@ -20,7 +20,6 @@ Tested on `MacOS`, `Ubuntu`, `Fedora`
 
 Write the following file:
 ```sh
-#template
 [NameOfTest] CommandRunYourProgram
 theOutputYouWant
 [END]
@@ -30,7 +29,6 @@ Here we test a program that takes parameters and prints them in the standard out
 In file ```test.io```
 
 ```sh
-#test.io
 [Simple Print] ./printer test
 test
 
@@ -58,12 +56,12 @@ USAGE:
 	./IO_Tester test.io [OPTIONS]
 
 DESCRIPTION:
-	test.io	        file when contains all tests functional
+	test.io	            file when contains functional tests
 
 OPTIONS:
-	-h --help       Display this help
-	-v --version	Display this version
-	-c --changelog	Display this changelog
+	-h --help           Display this help
+	-v --version	    Display this version
+	-c --changelog	    Display this changelog
 	-u --update	    Update this programm (sudo)
 	--details	    Display details of all tests
 	--diff		    Display difference in VSCode
@@ -91,8 +89,9 @@ If you want remove all .o in folder run:
 ```make clean```
 
 
-If you want remove .o and binary run:
+If you want remove .o and binary run:  
 ```make fclean```
+
 
 
 ## Contributors
