@@ -58,6 +58,8 @@ void IOTester::resetValues()
 
 void IOTester::apply()
 {
+    while (m_file[m_position].empty())
+        m_position++;
     while (true) {
         comparator(getTestData());
         while (true) {

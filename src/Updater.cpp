@@ -18,6 +18,10 @@ void IOTester::Changelog()
             "(1.4)",
             "> [FIX] Optimised Updater",
             "> [ADD] return value (0 when all tests succeed, 1 otherwise)",
+            "(1.5)",
+            "> [ADD] You can now put comments between tests in test files",
+            "> [FIX] Parsing Errors",
+            "> [FIX] Updater now only works when IO_Tester is already installed on the computer",
             NULL
     };
     std::cout << "[CHANGELOG] :" << std::endl;
@@ -28,6 +32,8 @@ void IOTester::Changelog()
 
 void IOTester::CheckUpdate()
 {
+    if (access("/usr/local/bin/IO_Tester", X_OK) == -1)
+        return;
     DIR *dir = opendir("/tmp/IO-TESTER");
     if (!dir) {
         if (system("git --help > /dev/null 2>&1") != 0)
@@ -46,6 +52,10 @@ void IOTester::CheckUpdate()
 
 void IOTester::Update()
 {
+    if (access("/usr/local/bin/IO_Tester", X_OK) == -1) {
+        std::cerr << RED << "\nIO_Tester needs to be installed to be updated (sudo make install)\n" << RESET << std::endl;
+        exit(84);
+    }
     if (system("git --help > /dev/null 2>&1") != 0) {
         std::cerr << RED << "\nYou need to install git to update\n" << RESET << std::endl;
         exit(84);

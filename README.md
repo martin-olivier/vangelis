@@ -1,5 +1,5 @@
 # IO-Tester
-<a href="https://github.com/tocola/IO-TESTER"><img src="https://img.shields.io/badge/IO_Tester-v1.4-blue.svg"></a>
+<a href="https://github.com/tocola/IO-TESTER"><img src="https://img.shields.io/badge/IO_Tester-v1.5-blue.svg"></a>
 
 ## What is IO-Tester
 
@@ -14,7 +14,6 @@ Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 2. Go to the ```IO-TESTER``` folder
 3. Execute the following command :  
    ```sudo make install``` (the binary will be installed at ***usr/local/bin***)
-4. Now let's write a test !
 
 ## Usage
 
@@ -26,9 +25,11 @@ expected output
 ```
 
 Here we want to test a program that takes parameters and prints them in the standard output.  
-In the test file ```test.io``` :
+Let's create a test file :
 
 ```
+# test.io
+
 [Simple Print] python3 printer test
 test
 

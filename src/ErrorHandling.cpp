@@ -37,16 +37,28 @@ void ErrorHandling::isInput(const std::string &line)
         Utils::my_exit(84, "Parsing Error at line :\n" + line);
 }
 
+void ErrorHandling::checkIsEmpty(const std::vector<std::string> &file)
+{
+    if (file.empty())
+        Utils::my_exit(84, "Error : File is Empty");
+    for (auto &line : file) {
+        if (!line.empty())
+            return;
+    }
+    Utils::my_exit(84, "Error : File is Empty");
+}
+
 std::vector<std::string> ErrorHandling::CheckFile(char *path)
 {
     std::vector<std::string> file = Utils::string_to_vector(Utils::get_file_content(path), '\n');
     CheckStatus status = Input;
 
-    if (file.empty())
-        Utils::my_exit(84, "Error : File is Empty");
-    for (const auto& line : file) {
+    ErrorHandling::checkIsEmpty(file);
+    for (auto& line : file) {
         if (line.empty())
             continue;
+        else if (status == Input && line[0] == '#')
+            line.clear();
         else if (status == Input) {
             isInput(line);
             status = Output;
