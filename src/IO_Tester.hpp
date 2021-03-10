@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#define VERSION "1.5"
+#define VERSION "1.6"
 
 #ifdef __APPLE__
 #define VSCodePath "\"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" --diff "

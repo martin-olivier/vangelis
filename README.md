@@ -1,14 +1,14 @@
 # IO-Tester
-<a href="https://github.com/tocola/IO-TESTER"><img src="https://img.shields.io/badge/IO_Tester-v1.5-blue.svg"></a>
+<a href="https://github.com/tocola/IO-TESTER"><img src="https://img.shields.io/badge/IO_Tester-v1.6-blue.svg"></a>
 
-## What is IO-Tester
+## What is IO-Tester ?
 
 The goal of this software is to take files as parameter that contains lists of inputs and expected ouputs and to tell the user if the tests succeed, failed or crashed.
 
-### Compatibility
+## Compatibility
 Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 
-## How to use it ?
+## Installation
 
 1. Clone this repository
 2. Go to the ```IO-TESTER``` folder
@@ -56,7 +56,7 @@ bad
 ### VSCode Diff
 ![](.github/example3.png)  
 
-### Manual
+## Manual
 
 ```
 USAGE:

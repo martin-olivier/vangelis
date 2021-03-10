@@ -93,13 +93,14 @@ Test IOTester::getTestData()
     for (; m_file[m_position] != "[END]"; m_position++)
         t.m_output += m_file[m_position] + '\n';
     m_position++;
-    t.m_output.pop_back();
+    if (!t.m_output.empty())
+        t.m_output.pop_back();
     return t;
 }
 
 void IOTester::comparator(Test t)
 {
-    Utils::CMD c = Utils::get_cmd_output(t.m_cmd);
+    Utils::CMD c = Utils::get_cmd_output("exec 2>&1 ; " + t.m_cmd);
 
     if (c.error)
         Utils::my_exit(84, "Pipe Error, Exiting...");

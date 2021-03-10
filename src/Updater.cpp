@@ -22,6 +22,9 @@ void IOTester::Changelog()
             "> [ADD] You can now put comments between tests in test files",
             "> [FIX] Parsing Errors",
             "> [FIX] Updater now only works when IO_Tester is already installed on the computer",
+            "(1.6)",
+            "> [ADD] stderr is now catch like stdout",
+            "> [FIX] Parsing Errors",
             NULL
     };
     std::cout << "[CHANGELOG] :" << std::endl;
@@ -87,7 +90,7 @@ void IOTester::Update()
 
     constexpr char *const args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", NULL};
 
-    std::cout << GRN << "[SUCCESS] Install" << RESET << " > " << BLU << "run IO_Tester -c to see changelog" << std::endl;
+    std::cout << GRN << "[SUCCESS] Install" << RESET << " > run IO_Tester -c to see changelog" << std::endl;
     if (execvp("cp", args) != 0) {
         std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
         exit(84);
