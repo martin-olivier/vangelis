@@ -1,8 +1,6 @@
 # IO-Tester
 <a href="https://github.com/tocola/IO-TESTER/releases/tag/v1.6.1"><img src="https://img.shields.io/badge/IO_Tester-v1.6.1-blue.svg"></a>
 
-## What is IO-Tester ?
-
 The goal of this software is to take files as parameter that contains lists of inputs and expected ouputs and to tell the user if the tests succeed, failed or crashed.
 
 ## Compatibility
@@ -53,9 +51,9 @@ bad
 Then execute `IO_Tester` with the file containing the tests as argument.
 
 You can add `--details` as final argument to display the real and the expected output in the shell when a test fails.
-![](.github/example_details.png)   
+![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)   
 You can add `--diff` as final argument to display the diff between the real and the expected output in VS Code when a test fails.
-![](.github/example_diff.png)   
+![example_diff](https://github.com/tocola/IO-TESTER/blob/main/.github/example_diff.png?raw=true)   
 
 ## Manual
 
