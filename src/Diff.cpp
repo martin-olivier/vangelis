@@ -15,7 +15,7 @@ void IOTester::VSCodeDiff(const Test &t, const Utils::CMD &c)
 void IOTester::checkVSCodeBin()
 {
 #ifdef __APPLE__
-    if (access((std::string("/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code").c_str()), X_OK) != -1) {
+    if (access("/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code", X_OK) != -1) {
         m_VSCodeBin = OK;
         return;
     }

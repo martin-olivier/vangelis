@@ -1,5 +1,5 @@
 # IO-Tester
-<a href="https://github.com/tocola/IO-TESTER"><img src="https://img.shields.io/badge/IO_Tester-v1.6-blue.svg"></a>
+<a href="https://github.com/tocola/IO-TESTER/releases/tag/v1.6.1"><img src="https://img.shields.io/badge/IO_Tester-v1.6.1-blue.svg"></a>
 
 ## What is IO-Tester ?
 
@@ -50,11 +50,12 @@ bad
 [END]
 ```
 
-### Details
-![](.github/example1.png)  
-![](.github/example2.png)  
-### VSCode Diff
-![](.github/example3.png)  
+Then execute `IO_Tester` with the file containing the tests as argument.
+
+You can add `--details` as final argument to display the real and the expected output in the shell when a test fails.
+![](.github/example_details.png)   
+You can add `--diff` as final argument to display the diff between the real and the expected output in VS Code when a test fails.
+![](.github/example_diff.png)  
 
 ## Manual
 

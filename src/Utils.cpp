@@ -29,31 +29,21 @@ Utils::CMD Utils::get_cmd_output(const std::string &command)
     return ret;
 }
 
-std::string Utils::get_file_content(const std::string &in)
+std::string Utils::get_file_content(const std::string &path)
 {
-    DIR *dir = opendir(in.c_str());
+    std::string file_content;
+    std::ifstream file_stream(path);
+    DIR *dir = opendir(path.c_str());
     if (dir)
-        my_exit(84, "Cannot open directory [" + in + "], exiting...");
-    std::ifstream file;
-    file.open(in, std::ifstream::in);
+        my_exit(84, "Cannot open directory [" + path + "], exiting...");
 
-    if (file.is_open()) {
-        std::string data;
-        char c = file.get();
-
-        while (file.good()) {
-            data += c;
-            c = file.get();
-        }
-        file.close();
-        return data;
-    }
-    file.close();
-    my_exit(84, "Cannot open file [" + in + "], exiting...");
-    return "";
+    if (!file_stream.is_open())
+        my_exit(84, "Cannot open file [" + path + "], exiting...");
+    std::getline(file_stream, file_content, '\0');
+    return file_content;
 }
 
-std::vector<std::string> Utils::string_to_vector(std::string str, char separator)
+std::vector<std::string> Utils::string_to_vector(const std::string &str, char separator)
 {
     std::vector<std::string> array;
     std::string temp;

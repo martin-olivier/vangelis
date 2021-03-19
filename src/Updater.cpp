@@ -25,6 +25,8 @@ void IOTester::Changelog()
             "(1.6)",
             "> [ADD] stderr is now catch like stdout",
             "> [FIX] Parsing Errors",
+            "(1.6.1)",
+            "> [FIX] Optimised file loading",
             NULL
     };
     std::cout << "[CHANGELOG] :" << std::endl;
