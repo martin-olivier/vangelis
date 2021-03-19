@@ -53,9 +53,9 @@ bad
 Then execute `IO_Tester` with the file containing the tests as argument.
 
 You can add `--details` as final argument to display the real and the expected output in the shell when a test fails.
-![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)   
+![](.github/example_details.png)   
 You can add `--diff` as final argument to display the diff between the real and the expected output in VS Code when a test fails.
-![example_diff](https://github.com/tocola/IO-TESTER/blob/main/.github/example_diff.png?raw=true)     
+![](.github/example_diff.png)   
 
 ## Manual
 
