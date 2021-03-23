@@ -2,10 +2,11 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string_view>
 
 void IOTester::Changelog()
 {
-    constexpr static const char* const changelog[] = {
+    constexpr std::string_view changelog[] = {
             "(1.0)",
             "> [ADD] IO_Tester",
             "(1.1)",
@@ -27,11 +28,13 @@ void IOTester::Changelog()
             "> [FIX] Parsing Errors",
             "(1.6.1)",
             "> [FIX] Optimised file loading",
-            NULL
+            "(1.6.2)",
+            "> [ADD] Now builds with C++17",
+            "> [FIX] Minor Details",
     };
     std::cout << "[CHANGELOG] :" << std::endl;
-    for (size_t i = 0; changelog[i] != NULL; i++)
-        std::cout << changelog[i] << std::endl;
+    for (auto line : changelog)
+        std::cout << line << std::endl;
     exit(0);
 }
 
@@ -90,7 +93,7 @@ void IOTester::Update()
         exit(0);
     }
 
-    constexpr char *const args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", NULL};
+    constexpr char *args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", NULL};
 
     std::cout << GRN << "[SUCCESS] Install" << RESET << " > run IO_Tester -c to see changelog" << std::endl;
     if (execvp("cp", args) != 0) {

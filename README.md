@@ -1,5 +1,5 @@
 # IO-Tester
-<a href="https://github.com/tocola/IO-TESTER/releases/tag/v1.6.1"><img src="https://img.shields.io/badge/IO_Tester-v1.6.1-blue.svg"></a>
+<a href="https://github.com/tocola/IO-TESTER/releases/tag/v1.6.2"><img src="https://img.shields.io/badge/IO_Tester-v1.6.2-blue.svg"></a>
 
 ## What is IO-Tester ?
 

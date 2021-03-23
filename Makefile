@@ -4,7 +4,7 @@ CXX 		?=	g++
 
 RM			?=	rm -f
 
-CXXFLAGS	=	-std=c++14 -Wall -Wextra
+CXXFLAGS	=	-std=c++17 -Wall -Wextra
 
 CPPFLAGS	=	-iquote include
 
@@ -44,7 +44,7 @@ $(NAME):	$(OBJ)
 
 install: all
 	@cp $(NAME) /usr/local/bin
-	@echo "${GREEN}[SUCCESS]${RESET} Install : IO_Tester ==> /usr/local/bin"
+	@echo "${GREEN}[SUCCESS]${RESET} Install : IO_Tester => /usr/local/bin"
 
 uninstall:
 	@rm /usr/local/bin/IO_Tester
