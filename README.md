@@ -1,8 +1,6 @@
 # IO-Tester
 [![MIT license](https://img.shields.io/badge/IO_Tester-v1.6.2-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.6.2)
-[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
-
-[![cpp](https://forthebadge.com/images/badges/made-with-c-plus-plus.svg)](https://forthebadge.com)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/tocola/IO-TESTER/blob/main/LICENSE)
 
 The goal of this software is to take files as parameter that contains lists of inputs and expected ouputs and to tell the user if the tests succeed, failed or crashed.
 
