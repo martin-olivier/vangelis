@@ -3,6 +3,10 @@
 [![MIT license](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/tocola/IO-TESTER/blob/main/LICENSE)
 [![CPP Version](https://img.shields.io/badge/C++-17-darkgreen.svg)](https://isocpp.org/)
 
+[![GitHub watchers](https://img.shields.io/github/watchers/tocola/IO-TESTER.svg?style=social&label=Watch&maxAge=2592000)](https://github.com/tocola/IO-TESTER/watchers/)
+[![GitHub forks](https://img.shields.io/github/forks/tocola/IO-TESTER.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/tocola/IO-TESTER/network/members/)
+[![GitHub stars](https://img.shields.io/github/stars/tocola/IO-TESTER.svg?style=social&label=Star&maxAge=2592000)](https://github.com/tocola/IO-TESTER/stargazers/)
+
 The goal of this software is to take files as parameter that contains lists of inputs and expected ouputs and to tell the user if the tests succeed, failed or crashed.
 
 ## Compatibility
