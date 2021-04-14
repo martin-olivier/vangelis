@@ -1,7 +1,7 @@
 #include "IO_Tester.hpp"
+#include <iostream>
 #include <dirent.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include <string_view>
 
 void IOTester::Changelog()
@@ -31,6 +31,9 @@ void IOTester::Changelog()
             "(1.6.2)",
             "> [ADD] Now builds with C++17",
             "> [FIX] Minor Details",
+            "(1.7.0)",
+            "> [ADD] Timeout",
+            "> [ADD] Expected Return Value",
     };
     std::cout << "[CHANGELOG] :" << std::endl;
     for (auto line : changelog)

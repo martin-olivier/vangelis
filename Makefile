@@ -40,7 +40,7 @@ endif
 all:	$(NAME)
 
 $(NAME):	$(OBJ)
-	@$(CXX) -o $(NAME) $(OBJ)
+	@$(CXX) -o $(NAME) $(OBJ) -lpthread
 
 install: all
 	@cp $(NAME) /usr/local/bin

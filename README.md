@@ -1,5 +1,5 @@
 # IO-Tester
-[![Version](https://img.shields.io/badge/IO_Tester-v1.6.2-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.6.2)
+[![Version](https://img.shields.io/badge/IO_Tester-v1.7.0-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.7.0)
 [![MIT license](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/tocola/IO-TESTER/blob/main/LICENSE)
 [![CPP Version](https://img.shields.io/badge/C++-17-darkgreen.svg)](https://isocpp.org/)
 
@@ -15,9 +15,9 @@ Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 ## Installation
 
 1. Clone this repository
-2. Go to the ```IO-TESTER``` folder
+2. Go to the `IO-TESTER` folder
 3. Execute the following command :  
-   ```sudo make install``` (the binary will be installed at ***usr/local/bin***)
+   `sudo make install` (the binary will be installed at ***usr/local/bin***)
 
 ## Usage
 
@@ -25,10 +25,11 @@ Test files must follow this patern :
 ```
 [Test Name] command
 expected output
-[END]
+[END] expected return value
 ```
+expected return value is optional (default : 0)
 
-Here we want to test a program that takes parameters and prints them in the standard output.  
+Here we want to test a program that takes parameters and prints them in the standard output. We will also test some system commands  
 Let's create a test file :
 
 ```
@@ -37,24 +38,35 @@ Let's create a test file :
 [Simple Print] python3 printer test
 test
 
-[END]
+[END] 0
 
 [Multiple Prints] python3 printer Hello World !
 Hello
 World
 !
 
-[END]
+[END] -> 0
 
 [Oooops] python3 printer I am bad
 You
 are
 bad
 
+[END] > 0
+
+[Power] whoami
+root
+
+[END]
+
+[ZZZzzz] sleep 10
+
 [END]
 ```
 
 Then execute `IO_Tester` with the file containing the tests as argument.
+
+You can add `--timeout` or `-t` as first argument followed by a value in seconds as second argument to change the timeout (default : 3 sec)
 
 You can add `--details` as final argument to display the real and the expected output in the shell when a test fails.
 ![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)   
@@ -71,6 +83,8 @@ DESCRIPTION:
         test.io         file that contains functional tests
 
 OPTIONS:
+        -t --timeout    Change the tests timeout
+                        must be the first argument followed by the value in seconds as second argument
         -h --help       Display help menu
         -v --version    Display actual version
         -c --changelog  Display the changelog
@@ -86,26 +100,21 @@ RETURN VALUE:
 
 You can also run multiple test files at once :
 ```sh
-IO_Tester test1.io test2.io test3.io --diff
+IO_Tester --timeout 5 test1.io test2.io test3.io --diff
 ```
 
 ## Build Tips
 If you want to uninstall IO-Tester :  
-```make uninstall```
-
+`make uninstall`  
 
 If you just want to get the binary without installing :  
-```make```
-
+`make`  
 
 If you want to remove all objects files :  
-```make clean```
-
+`make clean`  
 
 If you want to remove all objects files and the binary :  
-```make fclean```
-
-
+`make fclean`  
 
 ## Contributors
 

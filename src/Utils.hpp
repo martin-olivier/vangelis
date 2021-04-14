@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <string>
 #include <vector>
 
 #define RED   "\x1B[31m"
@@ -14,13 +14,6 @@
 
 namespace Utils
 {
-    struct CMD
-    {
-        std::string output;
-        int returnValue;
-        bool error;
-    };
-    CMD get_cmd_output(const std::string &command);
     std::string get_file_content(const std::string &path);
     std::vector<std::string> string_to_vector(const std::string &str, char separator);
     void my_exit(int exit_status, const std::string &error_msg);

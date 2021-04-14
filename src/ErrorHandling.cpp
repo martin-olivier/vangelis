@@ -1,5 +1,7 @@
 #include "ErrorHandling.hpp"
 #include "Utils.hpp"
+#include <iostream>
+#include <algorithm>
 
 enum CheckStatus {Input, Output};
 
@@ -12,6 +14,8 @@ void ErrorHandling::Help(const char *bin, int returnValue)
     std::cout << "\ttest.io\t\tfile that contains functional tests\n" << std::endl;
 
     std::cout << "OPTIONS:" << std::endl;
+    std::cout << "\t-t --timeout\tChange the tests timeout" << std::endl;
+    std::cout << "\t\t\tmust be the first argument followed by the value in seconds as second argument" << std::endl;
     std::cout << "\t-h --help\tDisplay help menu" << std::endl;
     std::cout << "\t-v --version\tDisplay actual version" << std::endl;
     std::cout << "\t-c --changelog\tDisplay the changelog" << std::endl;
@@ -64,8 +68,20 @@ std::vector<std::string> ErrorHandling::CheckFile(char *path)
             status = Output;
         }
         else if (status == Output) {
-            if (line == "[END]")
+            if (line.find("[END]") == 0) {
                 status = Input;
+                line.erase(remove_if(line.begin(), line.end(), isspace), line.end());
+                std::string ret_val = line.substr(5);
+                if (!ret_val.empty() and ret_val[0] == '>')
+                    ret_val.erase(ret_val.begin());
+                else if (ret_val.size() >= 2 and ret_val[0] == '-' and ret_val[1] == '>') {
+                    ret_val.erase(ret_val.begin());
+                    ret_val.erase(ret_val.begin());
+                }
+                if (ret_val.empty())
+                    ret_val.push_back('0');
+                line = "[END]" + ret_val;
+            }
         }
     }
     if (status == Output)

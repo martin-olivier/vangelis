@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#define VERSION "1.6.2"
+#define VERSION "1.7.0"
 
 #ifdef __APPLE__
 #define VSCodePath "\"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" --diff "
@@ -16,13 +16,14 @@
 class Test
 {
 public:
-    enum Status {PASS, CRASH, FAILED};
+    enum Status {PASS, CRASH, FAILED, TIMEOUT, ERROR, NIL};
 
     std::string m_name;
     std::string m_cmd;
     std::string m_output;
+    int m_return_value;
     Status m_status;
-    Test() {m_status = FAILED;};
+    Test() {m_status = NIL;};
     ~Test() = default;
 };
 
@@ -30,10 +31,9 @@ class IOTester
 {
 public:
     enum Details {NO, DETAILS, DIFF};
-    enum VSCodeBin {KO, OK, UNCHECKED};
 
     static void Version();
-    static void VSCodeDiff(const Test &t, const Utils::CMD &c);
+    static void VSCodeDiff(const Test &t, const std::string &output);
     IOTester(int ac, char **av);
     ~IOTester() = default;
     Test getTestData();
@@ -42,7 +42,7 @@ public:
     void apply();
     void resetValues();
 
-    void checkVSCodeBin();
+    static bool checkVSCodeBin();
 
     static void CheckUpdate();
     static void Update();
@@ -53,9 +53,10 @@ private:
     int m_passed;
     int m_failed;
     int m_crashed;
+    int m_timeout;
     size_t m_position;
     Details m_details;
-    VSCodeBin m_VSCodeBin;
     bool m_return;
+    long m_timeout_value;
     std::vector<std::string> m_file;
 };

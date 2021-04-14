@@ -1,32 +1,12 @@
 #include "Utils.hpp"
 #include <fstream>
-#include <sys/types.h>
 #include <dirent.h>
+#include <iostream>
 
 void Utils::my_exit(int exit_status, const std::string &error_msg)
 {
     std::cerr << error_msg << std::endl;
     exit(exit_status);
-}
-
-Utils::CMD Utils::get_cmd_output(const std::string &command)
-{
-    char buffer[2048];
-    CMD ret;
-    ret.error = false;
-
-    FILE *pipe = popen(command.c_str(), "r");
-    if (!pipe) {
-        ret.error = true;
-        ret.returnValue = -1;
-        return ret;
-    }
-    while (!feof(pipe)) {
-        if (fgets(buffer, 2048, pipe) != NULL)
-            ret.output += buffer;
-    }
-    ret.returnValue = pclose(pipe);
-    return ret;
 }
 
 std::string Utils::get_file_content(const std::string &path)
