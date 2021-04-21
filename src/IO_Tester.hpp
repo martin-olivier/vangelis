@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#define VERSION "1.7.0"
+#define VERSION "1.7.1"
 
 #ifdef __APPLE__
 #define VSCodePath "\"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" --diff "
@@ -57,6 +57,6 @@ private:
     size_t m_position;
     Details m_details;
     bool m_return;
-    long m_timeout_value;
+    float m_timeout_value;
     std::vector<std::string> m_file;
 };

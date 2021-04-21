@@ -34,6 +34,9 @@ void IOTester::Changelog()
             "(1.7.0)",
             "> [ADD] Timeout",
             "> [ADD] Expected Return Value",
+            "(1.7.1)",
+            "> [ADD] Timeout value can be a float",
+            "> [FIX] Better error messages",
     };
     std::cout << "[CHANGELOG] :" << std::endl;
     for (auto line : changelog)

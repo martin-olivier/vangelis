@@ -34,22 +34,22 @@ void ErrorHandling::Help(const char *bin, int returnValue)
 void ErrorHandling::isInput(const std::string &line)
 {
     if (line[0] != '[')
-        Utils::my_exit(84, "Parsing Error at line :\n" + line);
+        Utils::my_exit(84, "parsing error at line :\n" + line);
     if (line.find(']') == std::string::npos)
-        Utils::my_exit(84, "Parsing Error at line :\n" + line);
+        Utils::my_exit(84, "parsing error at line :\n" + line);
     if (line.find(']') == line.size() - 1 || line.find(']') == 1)
-        Utils::my_exit(84, "Parsing Error at line :\n" + line);
+        Utils::my_exit(84, "parsing error at line :\n" + line);
 }
 
 void ErrorHandling::checkIsEmpty(const std::vector<std::string> &file)
 {
     if (file.empty())
-        Utils::my_exit(84, "Error : File is Empty");
+        Utils::my_exit(84, "error : file is empty");
     for (auto &line : file) {
         if (!line.empty())
             return;
     }
-    Utils::my_exit(84, "Error : File is Empty");
+    Utils::my_exit(84, "error : file is empty");
 }
 
 std::vector<std::string> ErrorHandling::CheckFile(char *path)
@@ -85,6 +85,6 @@ std::vector<std::string> ErrorHandling::CheckFile(char *path)
         }
     }
     if (status == Output)
-        Utils::my_exit(84, "Parsing Error at the last line");
+        Utils::my_exit(84, "parsing error at the last line");
     return file;
 }

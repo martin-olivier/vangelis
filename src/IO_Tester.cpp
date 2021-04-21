@@ -12,12 +12,12 @@
 void IOTester::Version()
 {
     std::cout << "IO_Tester (" << VERSION << ")" << std::endl;
-    std::cout << "Written by Martin OLIVIER, Student at {EPITECH} Paris" << std::endl;
+    std::cout << "Written by Martin OLIVIER, student at {EPITECH} Paris" << std::endl;
     exit(0);
 }
 
 IOTester::IOTester(int ac, char **av) :
-    m_passed(0), m_failed(0), m_crashed(0), m_timeout(0), m_position(0), m_details(NO), m_return(EXIT_SUCCESS), m_timeout_value(3)
+    m_passed(0), m_failed(0), m_crashed(0), m_timeout(0), m_position(0), m_details(NO), m_return(EXIT_SUCCESS), m_timeout_value(3.0)
 {
     int i = 1;
     if (ac < 2)
@@ -25,7 +25,7 @@ IOTester::IOTester(int ac, char **av) :
     if (std::string_view(av[1]) == "-t" or std::string_view(av[1]) == "--timeout") {
         if (ac == 2)
             ErrorHandling::Help(av[0], 84);
-        try {m_timeout_value = std::stol(av[2]);}
+        try {m_timeout_value = std::stof(av[2]);}
         catch (...) {Utils::my_exit(84, "Invalid timeout argument : IO_Tester " + std::string(av[1]) + " <time in seconds> test.io");}
         if (m_timeout_value < 0)
             Utils::my_exit(84, "Invalid timeout argument : IO_Tester " + std::string(av[1]) + " <time in seconds> test.io");
@@ -118,7 +118,7 @@ Test IOTester::getTestData()
         t.m_output += m_file[m_position] + '\n';
     std::string ret_val = m_file[m_position].substr(5);
     try {t.m_return_value = std::stoi(ret_val);}
-    catch (...) {Utils::my_exit(84, "Error : bad expected return value : " + ret_val);}
+    catch (...) {Utils::my_exit(84, "error : bad expected return value : " + ret_val);}
     m_position++;
     if (!t.m_output.empty())
         t.m_output.pop_back();
@@ -194,10 +194,9 @@ void IOTester::comparator(Test t)
     int ret = Test::NIL;
     std::thread th(compute, t, pid, std::ref(ret), m_details);
 
-    std::chrono::system_clock::time_point chrono
-            = std::chrono::system_clock::now() + std::chrono::seconds(m_timeout_value);
+    std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now() + std::chrono::microseconds(static_cast<int>(m_timeout_value * 1000000));
     while (true) {
-        if (std::chrono::system_clock::now() >= chrono)
+        if (std::chrono::system_clock::now() >= deadline)
             break;
         if (ret != Test::NIL)
             break;
@@ -215,7 +214,7 @@ void IOTester::comparator(Test t)
         m_timeout++;
     }
     else if (ret == Test::ERROR)
-        Utils::my_exit(84, "Pipe Error, Exiting...");
+        Utils::my_exit(84, "pipe error, exiting...");
 }
 
 void IOTester::printFinalResults() const

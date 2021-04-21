@@ -1,5 +1,5 @@
 # IO-Tester
-[![Version](https://img.shields.io/badge/IO_Tester-v1.7.0-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.7.0)
+[![Version](https://img.shields.io/badge/IO_Tester-v1.7.1-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.7.1)
 [![MIT license](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/tocola/IO-TESTER/blob/main/LICENSE)
 [![CPP Version](https://img.shields.io/badge/C++-17-darkgreen.svg)](https://isocpp.org/)
 
@@ -100,7 +100,7 @@ RETURN VALUE:
 
 You can also run multiple test files at once :
 ```sh
-IO_Tester --timeout 5 test1.io test2.io test3.io --diff
+IO_Tester --timeout 0.05 test1.io test2.io test3.io --diff
 ```
 
 ## Build Tips
