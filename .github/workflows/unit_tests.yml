@@ -1,4 +1,4 @@
-name: Build IO_Tester
+name: CI
 
 on: [push]
 
@@ -8,7 +8,7 @@ defaults:
 
 jobs:
     build_ubuntu:
-        name: Build IO_Tester
+        name: build ubuntu
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
@@ -17,7 +17,7 @@ jobs:
               run: make
 
     build_macos:
-        name: Build IO_Tester
+        name: build macOS
         runs-on: macos-latest
         steps:
             - uses: actions/checkout@v2
