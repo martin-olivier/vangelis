@@ -1,4 +1,5 @@
 #include "IO_Tester.hpp"
+#include "Utils.hpp"
 #include <unistd.h>
 
 void IOTester::VSCodeDiff(const Test &test, const std::string &output)
