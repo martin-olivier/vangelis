@@ -11,6 +11,7 @@ CPPFLAGS	=	-iquote include
 SRC			+=	src/Utils.cpp
 SRC			+=	src/IO_Tester.cpp
 SRC			+=	src/Parsing.cpp
+SRC			+=	src/Test.cpp
 SRC			+=	src/Diff.cpp
 SRC			+=	src/Updater.cpp
 

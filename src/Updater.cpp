@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <string_view>
 
-void IOTester::Changelog()
+void IOTester::Changelog() noexcept
 {
     constexpr std::string_view changelog[] = {
             "(1.0)",
@@ -45,7 +45,7 @@ void IOTester::Changelog()
     exit(0);
 }
 
-void IOTester::CheckUpdate()
+void IOTester::CheckUpdate() noexcept
 {
     if (access("/usr/local/bin/IO_Tester", X_OK) == -1)
         return;
@@ -65,7 +65,7 @@ void IOTester::CheckUpdate()
         std::cout << std::endl << MAG << "[UPDATE]" << RESET << " > New Version Available > sudo IO_Tester --update" << std::endl;
 }
 
-void IOTester::Update()
+void IOTester::Update() noexcept
 {
     if (access("/usr/local/bin/IO_Tester", X_OK) == -1) {
         std::cerr << RED << "\nIO_Tester needs to be installed to be updated (sudo make install)\n" << RESET << std::endl;

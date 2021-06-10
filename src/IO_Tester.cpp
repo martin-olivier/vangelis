@@ -2,23 +2,16 @@
 #include "Parsing.hpp"
 #include "Utils.hpp"
 #include <iostream>
-#include <string>
 #include <string_view>
-#include <thread>
-#include <chrono>
-#include <csignal>
-#include <cstdio>
-#include <unistd.h>
-#include <sys/wait.h>
 
-void IOTester::Version()
+void IOTester::Version() noexcept
 {
     std::cout << "IO_Tester (" << VERSION << ")" << std::endl;
     std::cout << "Written by Martin OLIVIER, student at {EPITECH} Paris" << std::endl;
     exit(0);
 }
 
-void IOTester::Help(const char *bin, int returnValue)
+void IOTester::Help(const char *bin, int returnValue) noexcept
 {
     std::cout << "USAGE:" << std::endl;
     std::cout << "\t" << bin << " test.io [OPTIONS]\n" << std::endl;
@@ -39,7 +32,7 @@ void IOTester::Help(const char *bin, int returnValue)
     std::cout << "RETURN VALUE:" << std::endl;
     std::cout << "\t0\t\tif all tests succeed" << std::endl;
     std::cout << "\t1\t\tif one or more tests failed or crashed" << std::endl;
-    std::cout << "\t84\t\tif IO_Tester failed to load the test file" << std::endl;
+    std::cout << "\t84\t\tif IO_Tester failed to load a test file" << std::endl;
 
     exit(returnValue);
 }
@@ -53,10 +46,10 @@ IOTester::IOTester(int ac, char **av)
         if (ac == 2)
             IOTester::Help(av[0], 84);
         try {m_timeout_value = std::stof(av[2]);}
-        catch (...) {Utils::my_exit(84, "Invalid timeout argument : IO_Tester " + std::string(av[1]) + " <time in seconds> test.io");}
+        catch (...) {throw exception("invalid timeout argument : IO_Tester " + std::string(av[1]) + " <time in seconds> test.io");}
         if (m_timeout_value < 0)
-            Utils::my_exit(84, "Invalid timeout argument : IO_Tester " + std::string(av[1]) + " <time in seconds> test.io");
-        i+=2;
+            throw exception("invalid timeout argument : IO_Tester " + std::string(av[1]) + " <time in seconds> test.io");
+        i += 2;
         if (i >= ac)
             return;
     }
@@ -96,7 +89,7 @@ IOTester::IOTester(int ac, char **av)
     std::cout << std::endl;
 }
 
-void IOTester::resetValues()
+void IOTester::resetValues() noexcept
 {
     if (m_failed > 0 or m_crashed > 0 or m_timeout > 0)
         m_return = EXIT_FAILURE;
@@ -105,6 +98,40 @@ void IOTester::resetValues()
     m_failed = 0;
     m_crashed = 0;
     m_timeout = 0;
+}
+
+void IOTester::printFinalResults() const noexcept
+{
+    std::cout << "\n> Synthesis: Tested: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
+    std::cout << " | Pass: " << GRN << m_passed << RESET;
+    std::cout << " | Fail: " << RED << m_failed << RESET;
+    std::cout << " | Crash: " << YEL << m_crashed << RESET;
+    std::cout << " | Timeout: " << MAG << m_timeout << RESET << std::endl;
+}
+
+Test IOTester::getTestData()
+{
+    Test t;
+    std::string line = m_file[m_position];
+    size_t pos = 1;
+    for (; pos < line.size(); pos++) {
+        if (line[pos] == ']')
+            break;
+        else
+            t.m_name += line[pos];
+    }
+    pos++;
+    for (; pos < line.size(); pos++)
+        t.m_cmd += line[pos];
+    m_position++;
+    for (; m_file[m_position].find("[END]") != 0; m_position++)
+        t.m_output += m_file[m_position] + '\n';
+    std::string ret_val = m_file[m_position].substr(5);
+    t.m_return_value = std::stoi(ret_val);
+    m_position++;
+    if (!t.m_output.empty())
+        t.m_output.pop_back();
+    return t;
 }
 
 void IOTester::apply()
@@ -126,140 +153,18 @@ void IOTester::apply()
     }
 }
 
-Test IOTester::getTestData()
-{
-    Test t;
-    std::string line = m_file[m_position];
-    size_t pos = 1;
-    for (; pos < line.size(); pos++) {
-        if (line[pos] == ']')
-            break;
-        else
-            t.m_name += line[pos];
-    }
-    pos++;
-    for (; pos < line.size(); pos++)
-        t.m_cmd += line[pos];
-    m_position++;
-    for (; m_file[m_position].find("[END]") != 0; m_position++)
-        t.m_output += m_file[m_position] + '\n';
-    std::string ret_val = m_file[m_position].substr(5);
-    try {t.m_return_value = std::stoi(ret_val);}
-    catch (...) {Utils::my_exit(84, "error : bad expected return value : " + ret_val);}
-    m_position++;
-    if (!t.m_output.empty())
-        t.m_output.pop_back();
-    return t;
-}
-
-void IOTester::display(Test t, const std::string &output, int returnValue, Details details)
-{
-    if ((returnValue >= 8 and returnValue <= 11) or (returnValue >= 132 and returnValue <= 139))
-        t.m_status = Test::CRASH;
-    else if ((WEXITSTATUS(returnValue) >= 8 and WEXITSTATUS(returnValue) <= 11) or (WEXITSTATUS(returnValue) >= 132 and WEXITSTATUS(returnValue) <= 139))
-        t.m_status = Test::CRASH;
-    else
-        t.m_status = Test::PASS;
-
-    if (t.m_status == Test::CRASH)
-        std::cout << YEL << "[SF]" << RESET << " > " << t.m_name << std::endl;
-    else if (t.m_output == output and t.m_return_value == WEXITSTATUS(returnValue))
-        std::cout << GRN << "[OK]" << RESET << " > " << t.m_name << std::endl;
-    else {
-        std::cout << RED << "[KO]" << RESET << " > " << t.m_name << std::endl;
-        t.m_status = Test::FAILED;
-        if (details == IOTester::DETAILS) {
-            if (t.m_output == output)
-                std::cout << BLU << "[GOT] :\n" << RESET << "Return Value -> " << WEXITSTATUS(returnValue) << BLU << "\n[EXPECTED] :\n" << RESET << "Return Value -> " << t.m_return_value << std::endl;
-            else
-                std::cout << BLU << "[GOT] :\n" << RESET << output << BLU << "\n[EXPECTED] :\n" << RESET << t.m_output << std::endl;
-        }
-        else if (details == IOTester::DIFF) {
-            std::string out = output;
-            if (t.m_output == output) {
-                t.m_output = "Return Value -> " + std::to_string(t.m_return_value);
-                out = "Return Value -> " + std::to_string(WEXITSTATUS(returnValue));
-            }
-            if (IOTester::CheckVSCodeBin())
-                IOTester::VSCodeDiff(t, out);
-        }
-    }
-    _exit(t.m_status);
-}
-
-void IOTester::compute(Test test, pid_t pid, int &status, Details details)
-{
-    char buffer[2048];
-
-    if (pid == -1) {
-        status = Test::ERROR;
-        return;
-    } else if (pid == 0) {
-        std::string output;
-        int return_value;
-        FILE *pipe = popen(std::string("exec 2>&1 ; " + test.m_cmd).c_str(), "r");
-        if (!pipe)
-            _exit(Test::ERROR);
-        while (!feof(pipe)) {
-            if (fgets(buffer, 2048, pipe) != NULL)
-                output += buffer;
-        }
-        return_value = pclose(pipe);
-        display(test, output, return_value, details);
-    } else {
-        int ret = 0;
-        waitpid(pid, &ret, WUNTRACED | WCONTINUED);
-        status = WEXITSTATUS(ret);
-        if (WIFSIGNALED(ret))
-            status = Test::TIMEOUT;
-    }
-}
-
-void IOTester::comparator(Test t)
-{
-    pid_t pid = fork();
-    int ret = Test::NIL;
-    std::thread th(compute, t, pid, std::ref(ret), m_details);
-
-    std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now() + std::chrono::microseconds(static_cast<int>(m_timeout_value * 1000000));
-    while (true) {
-        if (std::chrono::system_clock::now() >= deadline)
-            break;
-        if (ret != Test::NIL)
-            break;
-    }
-    kill(pid, SIGKILL);
-    th.join();
-    if (ret == Test::PASS)
-        m_passed++;
-    else if (ret == Test::FAILED)
-        m_failed++;
-    else if (ret == Test::CRASH)
-        m_crashed++;
-    else if (ret == Test::TIMEOUT) {
-        std::cout << MAG << "[TO]" << RESET << " > " << t.m_name << std::endl;
-        m_timeout++;
-    }
-    else if (ret == Test::ERROR)
-        Utils::my_exit(84, "pipe error, exiting...");
-}
-
-void IOTester::printFinalResults() const
-{
-    std::cout << "\n> Synthesis: Tested: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
-    std::cout << " | Pass: " << GRN << m_passed << RESET;
-    std::cout << " | Fail: " << RED << m_failed << RESET;
-    std::cout << " | Crash: " << YEL << m_crashed << RESET;
-    std::cout << " | Timeout: " << MAG << m_timeout << RESET << std::endl;
-}
-
 int main(int ac, char **av)
 {
     try {
         IOTester app(ac, av);
         return app.exitStatus();
     }
-    catch (...) {
-
+    catch (const IOTester::exception &e) {
+        std::cerr << RED << "error: " << RESET << e.what() << std::endl;
+        return 84;
+    }
+    catch (const std::exception &e) {
+        std::cerr << RED << "error: " << RESET << e.what() << std::endl;
+        return 84;
     }
 }
