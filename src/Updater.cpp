@@ -38,6 +38,10 @@ void IOTester::Changelog() noexcept
             "(1.7.1)",
             "> [ADD] Timeout value can be a float",
             "> [FIX] Better error messages",
+            "(1.7.2)",
+            "> [ADD] Better error messages",
+            "> [ADD] throw and noexcept",
+            "> [REM] Removed '>' and '->' before return values",
     };
     std::cout << "[CHANGELOG] :" << std::endl;
     for (auto line : changelog)
@@ -62,7 +66,7 @@ void IOTester::CheckUpdate() noexcept
         return;
     }
     if (system("diff /tmp/IO-TESTER/IO_Tester /usr/local/bin/IO_Tester > /dev/null 2>&1") != 0)
-        std::cout << std::endl << MAG << "[UPDATE]" << RESET << " > New Version Available > sudo IO_Tester --update" << std::endl;
+        std::cout << std::endl << MAG << "[UPDATE]" << RESET << " > A new version is available : sudo IO_Tester --update" << std::endl;
 }
 
 void IOTester::Update() noexcept
