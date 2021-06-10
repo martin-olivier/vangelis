@@ -1,0 +1,17 @@
+name: Build IO_Tester
+
+on: [push]
+
+defaults:
+    run:
+        shell: bash
+
+jobs:
+    run_unit_tests:
+        name: Build IO_Tester
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: make IO_Tester
+              run: make

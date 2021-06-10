@@ -1,4 +1,6 @@
 #include "IO_Tester.hpp"
+#include "Parsing.hpp"
+#include "Utils.hpp"
 #include <iostream>
 #include <string>
 #include <string_view>
@@ -16,15 +18,40 @@ void IOTester::Version()
     exit(0);
 }
 
-IOTester::IOTester(int ac, char **av) :
-    m_passed(0), m_failed(0), m_crashed(0), m_timeout(0), m_position(0), m_details(NO), m_return(EXIT_SUCCESS), m_timeout_value(3.0)
+void IOTester::Help(const char *bin, int returnValue)
+{
+    std::cout << "USAGE:" << std::endl;
+    std::cout << "\t" << bin << " test.io [OPTIONS]\n" << std::endl;
+
+    std::cout << "DESCRIPTION:" << std::endl;
+    std::cout << "\ttest.io\t\tfile that contains functional tests\n" << std::endl;
+
+    std::cout << "OPTIONS:" << std::endl;
+    std::cout << "\t-t --timeout\tChange the tests timeout" << std::endl;
+    std::cout << "\t\t\tmust be the first argument followed by the value in seconds as second argument" << std::endl;
+    std::cout << "\t-h --help\tDisplay help menu" << std::endl;
+    std::cout << "\t-v --version\tDisplay actual version" << std::endl;
+    std::cout << "\t-c --changelog\tDisplay the changelog" << std::endl;
+    std::cout << "\t-u --update\tUpdate this software (sudo)" << std::endl;
+    std::cout << "\t--details\tDisplay details of all tests" << std::endl;
+    std::cout << "\t--diff\t\tDisplay difference in VSCode\n" << std::endl;
+
+    std::cout << "RETURN VALUE:" << std::endl;
+    std::cout << "\t0\t\tif all tests succeed" << std::endl;
+    std::cout << "\t1\t\tif one or more tests failed or crashed" << std::endl;
+    std::cout << "\t84\t\tif IO_Tester failed to load the test file" << std::endl;
+
+    exit(returnValue);
+}
+
+IOTester::IOTester(int ac, char **av)
 {
     int i = 1;
     if (ac < 2)
-        ErrorHandling::Help(av[0], 84);
+        IOTester::Help(av[0], 84);
     if (std::string_view(av[1]) == "-t" or std::string_view(av[1]) == "--timeout") {
         if (ac == 2)
-            ErrorHandling::Help(av[0], 84);
+            IOTester::Help(av[0], 84);
         try {m_timeout_value = std::stof(av[2]);}
         catch (...) {Utils::my_exit(84, "Invalid timeout argument : IO_Tester " + std::string(av[1]) + " <time in seconds> test.io");}
         if (m_timeout_value < 0)
@@ -35,7 +62,7 @@ IOTester::IOTester(int ac, char **av) :
     }
     std::string_view last_arg(av[ac - 1]);
     if (last_arg == "-h" or last_arg == "--help")
-        ErrorHandling::Help(av[0], 0);
+        IOTester::Help(av[0], 0);
     if (last_arg == "-v" or last_arg == "--version")
         IOTester::Version();
     if (last_arg == "-u" or last_arg == "--update")
@@ -57,11 +84,11 @@ IOTester::IOTester(int ac, char **av) :
             std::cout << CYN << av[i] << ":\n" << RESET << std::endl;
         if (ac > 4 and (std::string_view(av[1]) == "-t" or std::string_view(av[1]) == "--timeout"))
             std::cout << CYN << av[i] << ":\n" << RESET << std::endl;
-        m_file = ErrorHandling::CheckFile(av[i]);
+        m_file = Parsing::CheckFile(av[i]);
         apply();
         resetValues();
     }
-    if (m_details == DIFF and !checkVSCodeBin()) {
+    if (m_details == DIFF and !CheckVSCodeBin()) {
         std::cerr << RED << "\nYou need to install Visual Studio Code to show diff" << std::endl;
         std::cerr << "Use --details otherwise" << RESET << std::endl;
     }
@@ -125,7 +152,7 @@ Test IOTester::getTestData()
     return t;
 }
 
-void display(Test t, const std::string &output, int returnValue, IOTester::Details details)
+void IOTester::display(Test t, const std::string &output, int returnValue, Details details)
 {
     if ((returnValue >= 8 and returnValue <= 11) or (returnValue >= 132 and returnValue <= 139))
         t.m_status = Test::CRASH;
@@ -153,14 +180,14 @@ void display(Test t, const std::string &output, int returnValue, IOTester::Detai
                 t.m_output = "Return Value -> " + std::to_string(t.m_return_value);
                 out = "Return Value -> " + std::to_string(WEXITSTATUS(returnValue));
             }
-            if (IOTester::checkVSCodeBin())
+            if (IOTester::CheckVSCodeBin())
                 IOTester::VSCodeDiff(t, out);
         }
     }
     _exit(t.m_status);
 }
 
-void compute(Test test, pid_t pid, int &status, IOTester::Details details)
+void IOTester::compute(Test test, pid_t pid, int &status, Details details)
 {
     char buffer[2048];
 
@@ -219,7 +246,7 @@ void IOTester::comparator(Test t)
 
 void IOTester::printFinalResults() const
 {
-    std::cout << std::endl << "> Synthesis: Tested: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
+    std::cout << "\n> Synthesis: Tested: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
     std::cout << " | Pass: " << GRN << m_passed << RESET;
     std::cout << " | Fail: " << RED << m_failed << RESET;
     std::cout << " | Crash: " << YEL << m_crashed << RESET;
@@ -228,6 +255,11 @@ void IOTester::printFinalResults() const
 
 int main(int ac, char **av)
 {
-    IOTester app(ac, av);
-    return app.exitStatus();
+    try {
+        IOTester app(ac, av);
+        return app.exitStatus();
+    }
+    catch (...) {
+
+    }
 }

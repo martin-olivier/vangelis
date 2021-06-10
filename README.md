@@ -1,5 +1,5 @@
 # IO-Tester
-[![Version](https://img.shields.io/badge/IO_Tester-v1.7.1-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.7.1)
+[![Version](https://img.shields.io/badge/IO_Tester-v1.7.2-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.7.2)
 [![MIT license](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/tocola/IO-TESTER/blob/main/LICENSE)
 [![CPP Version](https://img.shields.io/badge/C++-17-darkgreen.svg)](https://isocpp.org/)
 
@@ -45,14 +45,14 @@ Hello
 World
 !
 
-[END] -> 0
+[END] 0
 
 [Oooops] python3 printer I am bad
 You
 are
 bad
 
-[END] > 0
+[END]
 
 [Power] whoami
 root
@@ -95,7 +95,7 @@ OPTIONS:
 RETURN VALUE:
         0               if all tests succeed
         1               if one or more tests failed or crashed
-        84              if IO_Tester failed to load the test file
+        84              if IO_Tester failed to load a test file
 ```
 
 You can also run multiple test files at once :
@@ -118,6 +118,7 @@ If you want to remove all objects files and the binary :
 
 ## Contributors
 
+ - [Martin Olivier](https://github.com/tocola)
  - [Benjamin Reigner](https://github.com/Breigner01)
  - [Alexandre Chetrit](https://github.com/chetrit)
  - [Coline Seguret](https://github.com/Cleopha)

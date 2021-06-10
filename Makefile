@@ -4,13 +4,13 @@ CXX 		?=	g++
 
 RM			?=	rm -f
 
-CXXFLAGS	=	-std=c++17 -Wall -Wextra
+CXXFLAGS	=	-std=c++17 -Wall -Wextra -Weffc++
 
 CPPFLAGS	=	-iquote include
 
 SRC			+=	src/Utils.cpp
 SRC			+=	src/IO_Tester.cpp
-SRC			+=	src/ErrorHandling.cpp
+SRC			+=	src/Parsing.cpp
 SRC			+=	src/Diff.cpp
 SRC			+=	src/Updater.cpp
 

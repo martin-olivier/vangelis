@@ -10,14 +10,14 @@ Hello
 World
 !
 
-[END] -> 0
+[END] 0
 
 [Oooops] python3 printer I am bad
 You
 are
 bad
 
-[END] > 0
+[END]
 
 [Power] whoami
 root

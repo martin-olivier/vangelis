@@ -1,37 +1,10 @@
-#include "ErrorHandling.hpp"
+#include "Parsing.hpp"
 #include "Utils.hpp"
-#include <iostream>
 #include <algorithm>
 
 enum CheckStatus {Input, Output};
 
-void ErrorHandling::Help(const char *bin, int returnValue)
-{
-    std::cout << "USAGE:" << std::endl;
-    std::cout << "\t" << bin << " test.io [OPTIONS]\n" << std::endl;
-
-    std::cout << "DESCRIPTION:" << std::endl;
-    std::cout << "\ttest.io\t\tfile that contains functional tests\n" << std::endl;
-
-    std::cout << "OPTIONS:" << std::endl;
-    std::cout << "\t-t --timeout\tChange the tests timeout" << std::endl;
-    std::cout << "\t\t\tmust be the first argument followed by the value in seconds as second argument" << std::endl;
-    std::cout << "\t-h --help\tDisplay help menu" << std::endl;
-    std::cout << "\t-v --version\tDisplay actual version" << std::endl;
-    std::cout << "\t-c --changelog\tDisplay the changelog" << std::endl;
-    std::cout << "\t-u --update\tUpdate this software (sudo)" << std::endl;
-    std::cout << "\t--details\tDisplay details of all tests" << std::endl;
-    std::cout << "\t--diff\t\tDisplay difference in VSCode\n" << std::endl;
-
-    std::cout << "RETURN VALUE:" << std::endl;
-    std::cout << "\t0\t\tif all tests succeed" << std::endl;
-    std::cout << "\t1\t\tif one or more tests failed or crashed" << std::endl;
-    std::cout << "\t84\t\tif IO_Tester failed to load the test file" << std::endl;
-
-    exit(returnValue);
-}
-
-void ErrorHandling::isInput(const std::string &line)
+void Parsing::isInput(const std::string &line)
 {
     if (line[0] != '[')
         Utils::my_exit(84, "parsing error at line :\n" + line);
@@ -41,7 +14,7 @@ void ErrorHandling::isInput(const std::string &line)
         Utils::my_exit(84, "parsing error at line :\n" + line);
 }
 
-void ErrorHandling::checkIsEmpty(const std::vector<std::string> &file)
+void Parsing::checkIsEmpty(const std::vector<std::string> &file)
 {
     if (file.empty())
         Utils::my_exit(84, "error : file is empty");
@@ -52,12 +25,12 @@ void ErrorHandling::checkIsEmpty(const std::vector<std::string> &file)
     Utils::my_exit(84, "error : file is empty");
 }
 
-std::vector<std::string> ErrorHandling::CheckFile(char *path)
+std::vector<std::string> Parsing::CheckFile(char *path)
 {
     std::vector<std::string> file = Utils::string_to_vector(Utils::get_file_content(path), '\n');
     CheckStatus status = Input;
 
-    ErrorHandling::checkIsEmpty(file);
+    Parsing::checkIsEmpty(file);
     for (auto& line : file) {
         if (line.empty())
             continue;

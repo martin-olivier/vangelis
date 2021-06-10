@@ -1,4 +1,5 @@
 #include "IO_Tester.hpp"
+#include "Utils.hpp"
 #include <iostream>
 #include <dirent.h>
 #include <unistd.h>
