@@ -7,9 +7,18 @@ defaults:
         shell: bash
 
 jobs:
-    run_unit_tests:
+    build_ubuntu:
         name: Build IO_Tester
         runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: make IO_Tester
+              run: make
+
+    build_macos:
+        name: Build IO_Tester
+        runs-on: macos-latest
         steps:
             - uses: actions/checkout@v2
 
