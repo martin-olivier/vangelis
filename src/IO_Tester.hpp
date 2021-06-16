@@ -4,29 +4,23 @@
 #include <vector>
 #include <exception>
 
-#define VERSION "1.7.2"
+#define VERSION "1.8.0 beta"
 
-#ifdef __APPLE__
-#define VSCodePath "\"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" --diff "
-#else
-#define VSCodePath "code --diff "
-#endif
-
-class Test
+class Test final
 {
 public:
     enum Status {PASS, CRASH, FAILED, TIMEOUT, ERROR, NIL};
 
+    Test() = default;
+    ~Test() = default;
     std::string m_name{};
     std::string m_cmd{};
     std::string m_output{};
     int m_return_value = 0;
     Status m_status = NIL;
-    Test() = default;
-    ~Test() = default;
 };
 
-class IOTester
+class IOTester final
 {
 public:
     enum Details {NO, DETAILS, DIFF};
@@ -37,7 +31,7 @@ public:
         const std::string m_error;
     public:
         explicit exception(std::string message) : m_error(std::move(message)) {};
-        [[nodiscard]] const char *what() const noexcept override {return m_error.c_str();};
+        [[nodiscard]] inline const char *what() const noexcept override {return m_error.c_str();};
     };
 
     IOTester(int ac, char **av);

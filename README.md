@@ -1,5 +1,5 @@
 # IO Tester
-[![Version](https://img.shields.io/badge/IO_Tester-v1.7.2-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.7.2)
+[![Version](https://img.shields.io/badge/IO_Tester-v1.8.0-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.8.0)
 [![MIT license](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/tocola/IO-TESTER/blob/main/LICENSE)
 [![CPP Version](https://img.shields.io/badge/C++-17-darkgreen.svg)](https://isocpp.org/)
 
@@ -7,7 +7,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/tocola/IO-TESTER?style=social)](https://github.com/tocola/IO-TESTER/network/members/)
 [![GitHub stars](https://img.shields.io/github/stars/tocola/IO-TESTER?style=social)](https://github.com/tocola/IO-TESTER/stargazers/)
 
-The goal of this software is to take files as parameter that contains lists of inputs and expected ouputs and to tell the user if the tests succeed, failed or crashed.
+The goal of this software is to take files as parameter that contains lists of inputs and expected outputs and to tell the user if the tests succeed, failed or crashed.
 
 ## Compatibility
 Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
@@ -21,7 +21,7 @@ Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 
 ## Usage
 
-Test files must follow this patern :
+Test files must follow this pattern :
 ```
 [Test Name] command
 expected output
@@ -68,9 +68,9 @@ Then execute `IO_Tester` with the file containing the tests as argument.
 
 You can add `--timeout` or `-t` as first argument followed by a value in seconds as second argument to change the timeout (default : 3 sec)
 
-You can add `--details` as final argument to display the real and the expected output in the shell when a test fails.
+You can add `--details` as final argument to display the real, and the expected output in the shell when a test fails.
 ![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)   
-You can add `--diff` as final argument to display the diff between the real and the expected output in VS Code when a test fails.
+You can add `--diff` as final argument to display the diff between the real, and the expected output in VS Code when a test fails.
 ![example_diff](https://github.com/tocola/IO-TESTER/blob/main/.github/example_diff.png?raw=true)   
 
 ## Manual
@@ -104,7 +104,7 @@ IO_Tester --timeout 0.05 test1.io test2.io test3.io --diff
 ```
 
 ## Build Tips
-If you want to uninstall IO-Tester :  
+If you want to uninstall IO Tester :  
 `make uninstall`  
 
 If you just want to get the binary without installing :  
