@@ -6,34 +6,33 @@
 
 void IOTester::Version() noexcept
 {
-    std::cout << "IO_Tester (" << VERSION << ")" << std::endl;
+    std::cout << "IO_Tester (" << VERSION << ")\n";
     std::cout << "Written by Martin OLIVIER, student at {EPITECH} Paris" << std::endl;
     exit(0);
 }
 
 void IOTester::Help(const char *bin, int returnValue) noexcept
 {
-    std::cout << "USAGE:" << std::endl;
-    std::cout << "\t" << bin << " test.io [OPTIONS]\n" << std::endl;
+    std::cout << "USAGE:\n";
+    std::cout << "\t" << bin << " test.io [OPTIONS]\n\n";
 
-    std::cout << "DESCRIPTION:" << std::endl;
-    std::cout << "\ttest.io\t\tfile that contains functional tests\n" << std::endl;
+    std::cout << "DESCRIPTION:\n";
+    std::cout << "\ttest.io\t\tfile that contains functional tests\n\n";
 
-    std::cout << "OPTIONS:" << std::endl;
-    std::cout << "\t-t --timeout\tChange the tests timeout" << std::endl;
-    std::cout << "\t\t\tmust be the first argument followed by the value in seconds as second argument" << std::endl;
-    std::cout << "\t-h --help\tDisplay help menu" << std::endl;
-    std::cout << "\t-v --version\tDisplay actual version" << std::endl;
-    std::cout << "\t-c --changelog\tDisplay the changelog" << std::endl;
-    std::cout << "\t-u --update\tUpdate this software (sudo)" << std::endl;
-    std::cout << "\t--details\tDisplay details of all tests" << std::endl;
-    std::cout << "\t--diff\t\tDisplay difference in VSCode\n" << std::endl;
+    std::cout << "OPTIONS:\n";
+    std::cout << "\t-h --help\tDisplay this help menu\n";
+    std::cout << "\t-v --version\tDisplay the actual version\n";
+    std::cout << "\t-c --changelog\tDisplay the changelog\n";
+    std::cout << "\t-u --update\tUpdate this software (sudo)\n";
+    std::cout << "\t--details\tDisplay the output difference in the shell\n";
+    std::cout << "\t--diff\t\tDisplay the output difference in Visual Studio Code\n\n";
 
-    std::cout << "RETURN VALUE:" << std::endl;
-    std::cout << "\t0\t\tif all tests succeed" << std::endl;
-    std::cout << "\t1\t\tif one or more tests failed or crashed" << std::endl;
-    std::cout << "\t84\t\tif IO_Tester failed to load a test file" << std::endl;
+    std::cout << "RETURN VALUE:\n";
+    std::cout << "\t0\t\tif all tests succeed\n";
+    std::cout << "\t1\t\tif one or more tests failed or crashed\n";
+    std::cout << "\t84\t\tif IO_Tester failed to load a test file\n";
 
+    std::cout << std::flush;
     exit(returnValue);
 }
 

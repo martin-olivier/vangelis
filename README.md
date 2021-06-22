@@ -19,6 +19,8 @@ Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 3. Execute the following command :  
    `sudo make install` (the binary will be installed at ***usr/local/bin***)
 
+`Don't forget to leave a star 🌟`
+
 ## Usage
 
 Test files must follow this pattern :
@@ -66,11 +68,9 @@ root
 
 Then execute `IO_Tester` with the file containing the tests as argument.
 
-You can add `--timeout` or `-t` as first argument followed by a value in seconds as second argument to change the timeout (default : 3 sec)
-
-You can add `--details` as final argument to display the real, and the expected output in the shell when a test fails.
+You can add `--details` to display the difference between the real, and the expected output in the shell when a test fails.
 ![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)   
-You can add `--diff` as final argument to display the diff between the real, and the expected output in VS Code when a test fails.
+You can add `--diff` to display the difference between the real, and the expected output in Visual Studio Code when a test fails.
 ![example_diff](https://github.com/tocola/IO-TESTER/blob/main/.github/example_diff.png?raw=true)   
 
 ## Manual
@@ -83,14 +83,12 @@ DESCRIPTION:
         test.io         file that contains functional tests
 
 OPTIONS:
-        -t --timeout    Change the tests timeout
-                        must be the first argument followed by the value in seconds as second argument
-        -h --help       Display help menu
-        -v --version    Display actual version
+        -h --help       Display this help menu
+        -v --version    Display the actual version
         -c --changelog  Display the changelog
         -u --update     Update this software (sudo)
-        --details       Display details of all tests
-        --diff          Display difference in VSCode
+        --details       Display the output difference in the shell
+        --diff          Display the output difference in Visual Studio Code
 
 RETURN VALUE:
         0               if all tests succeed
@@ -99,8 +97,8 @@ RETURN VALUE:
 ```
 
 You can also run multiple test files at once :
-```sh
-IO_Tester --timeout 0.05 test1.io test2.io test3.io --diff
+```
+IO_Tester test1.io test2.io test3.io --diff
 ```
 
 ## Build Tips
