@@ -107,8 +107,8 @@ IO_Tester test1.io test2.io test3.io --diff
 ```
 
 ## Test Parameters
-Parameters:  
-You can change the value of a parameter for the next test:
+Parameters :  
+You can change the value of a parameter for the next test :
 ```
 @stdout <bool> (default: true)
 @stderr <bool> (default: true)
