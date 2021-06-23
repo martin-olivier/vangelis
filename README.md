@@ -106,20 +106,18 @@ You can also run multiple test files at once :
 IO_Tester test1.io test2.io test3.io --diff
 ```
 
-## Test parameters
-You can add custom parameters for your tests :
+## Test Parameters
+Parameters:  
+You can change the value of a parameter for the next test:
 ```
-change the default value of a parameter :
-
-@default parameter value
-
-change the value of a parameter for the next test:
-parameters:
-
 @stdout <bool> (default: true)
 @stderr <bool> (default: true)
 @return <int> (default: 0)
 @timeout <float> (default: 3.0)
+```
+You can also change the default value of a parameter :
+```
+@default parameter value
 ```
 
 ## Build Tips
