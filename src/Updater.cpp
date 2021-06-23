@@ -4,6 +4,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <string_view>
+#include <sys/wait.h>
 
 void IOTester::Changelog() noexcept
 {
