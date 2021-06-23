@@ -109,9 +109,9 @@ IO_Tester test1.io test2.io test3.io --diff
 ## Test Parameters
 You can change the value of a parameter for the next test :
 ```
-@stdout <bool> (default: true)
-@stderr <bool> (default: true)
-@return <int> (default: 0)
+@stdout  <bool>  (default: true)
+@stderr  <bool>  (default: true)
+@return  <int>   (default: 0)
 @timeout <float> (default: 3.0)
 ```
 You can also change the default value of a parameter :
