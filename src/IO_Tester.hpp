@@ -12,13 +12,17 @@ class Test final
 public:
     enum Status {PASS, CRASH, FAILED, TIMEOUT, ERROR, NIL};
 
-    Test() = default;
+    Test(bool a_stdout, bool a_stderr, int a_return, float a_timeout)
+        : m_stdout(a_stdout), m_stderr(a_stderr), m_return(a_return), m_timeout(a_timeout) {};
     ~Test() = default;
     std::string m_name{};
     std::string m_cmd{};
     std::string m_output{};
-    int m_return_value = 0;
     Status m_status = NIL;
+    bool m_stdout;
+    bool m_stderr;
+    int m_return;
+    float m_timeout;
 };
 
 class IOTester final
@@ -56,14 +60,20 @@ public:
 
     static void display(Test test, const std::string &output, int returnValue, Details details);
     static void compute(const Test &test, pid_t pid, int &status, Details details);
+    static std::string getCMD(const Test &test);
+
+    bool m_default_stdout = true;
+    bool m_default_stderr = true;
+    int m_default_return = 0;
+    float m_default_timeout = 3.0;
+
 private:
     int m_passed = 0;
     int m_failed = 0;
     int m_crashed = 0;
     int m_timeout = 0;
+    std::vector<std::string> m_file{};
     size_t m_position = 0;
     Details m_details = NO;
     bool m_return = EXIT_SUCCESS;
-    float m_timeout_value = 3.0;
-    std::vector<std::string> m_file{};
 };

@@ -54,9 +54,9 @@ std::vector<std::string_view> IOTester::parseArgs(int ac, char **av)
         else if (arg == "--diff" and m_details == NO)
             m_details = DIFF;
         else if (arg == "--details" or arg == "--diff")
-            throw exception("bad option : please choose between --details and --diff");
-        else if (arg.find("-") == 0)
-            throw exception("bad option : " + std::string(arg));
+            throw exception("bad option: please choose between --details and --diff");
+        else if (arg.find('-') == 0)
+            throw exception("bad option: " + std::string(arg));
         else
             files.push_back(arg);
     }
@@ -74,7 +74,8 @@ IOTester::IOTester(int ac, char **av)
     for (size_t i = 0; i < files.size(); i++) {
         if (i != 0)
             std::cout << '\n';
-        std::cout << CYN << files[i] << ":\n" << RESET << std::endl;
+        if (files.size() > 1)
+            std::cout << CYN << files[i] << ":\n" << RESET << std::endl;
         m_file = Parsing::CheckFile(files[i].data());
         apply();
         resetValues();
@@ -96,6 +97,11 @@ void IOTester::resetValues() noexcept
     m_failed = 0;
     m_crashed = 0;
     m_timeout = 0;
+
+    m_default_stdout = true;
+    m_default_stderr = true;
+    m_default_return = 0;
+    m_default_timeout = 3.0;
 }
 
 void IOTester::printFinalResults() const noexcept
@@ -105,31 +111,6 @@ void IOTester::printFinalResults() const noexcept
     std::cout << " | Fail: " << RED << m_failed << RESET;
     std::cout << " | Crash: " << YEL << m_crashed << RESET;
     std::cout << " | Timeout: " << MAG << m_timeout << RESET << std::endl;
-}
-
-Test IOTester::getTestData()
-{
-    Test t;
-    std::string line = m_file[m_position];
-    size_t pos = 1;
-    for (; pos < line.size(); pos++) {
-        if (line[pos] == ']')
-            break;
-        else
-            t.m_name += line[pos];
-    }
-    pos++;
-    for (; pos < line.size(); pos++)
-        t.m_cmd += line[pos];
-    m_position++;
-    for (; m_file[m_position].find("[END]") != 0; m_position++)
-        t.m_output += m_file[m_position] + '\n';
-    std::string ret_val = m_file[m_position].substr(5);
-    t.m_return_value = std::stoi(ret_val);
-    m_position++;
-    if (!t.m_output.empty())
-        t.m_output.pop_back();
-    return t;
 }
 
 void IOTester::apply()

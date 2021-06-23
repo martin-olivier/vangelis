@@ -3,14 +3,14 @@
 [Simple Print] python3 printer test
 test
 
-[END] 0
+[END]
 
 [Multiple Prints] python3 printer Hello World !
 Hello
 World
 !
 
-[END] 0
+[END]
 
 [Oooops] python3 printer I am bad
 You
@@ -24,6 +24,6 @@ root
 
 [END]
 
-[ZZZzzz] sleep 10
+[ZZZzzz] sleep 5
 
 [END]
