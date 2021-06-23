@@ -4,46 +4,56 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <string_view>
+#include <sys/wait.h>
 
 void IOTester::Changelog() noexcept
 {
     constexpr std::string_view changelog[] = {
-            "(1.0)",
+            BLU "(1.0)" RESET,
             "> [ADD] IO_Tester",
-            "(1.1)",
-            "> [FIX] Segmentation Fault now appears properly",
-            "(1.2)",
-            "> [ADD] VS Code diff (--diff)",
-            "(1.3)",
-            "> [ADD] Updater (-u || --update)",
-            "> [ADD] Changelog (-c || --changelog)",
-            "(1.4)",
-            "> [FIX] Optimised Updater",
+            BLU "(1.1)" RESET,
+            "> [FIX] segmentation fault now appears properly",
+            BLU "(1.2)" RESET,
+            "> [ADD] Visual Studio Code diff (--diff)",
+            BLU "(1.3)" RESET,
+            "> [ADD] updater (-u || --update)",
+            "> [ADD] changelog (-c || --changelog)",
+            BLU "(1.4)" RESET,
+            "> [FIX] optimised Updater",
             "> [ADD] return value (0 when all tests succeed, 1 otherwise)",
-            "(1.5)",
-            "> [ADD] You can now put comments between tests in test files",
-            "> [FIX] Parsing Errors",
-            "> [FIX] Updater now only works when IO_Tester is already installed on the computer",
-            "(1.6)",
+            BLU "(1.5)" RESET,
+            "> [ADD] comments between tests in test files",
+            "> [FIX] parsing errors",
+            "> [FIX] updater now only works when IO_Tester is installed",
+            BLU "(1.6)" RESET,
             "> [ADD] stderr is now catch like stdout",
-            "> [FIX] Parsing Errors",
-            "(1.6.1)",
-            "> [FIX] Optimised file loading",
-            "(1.6.2)",
-            "> [ADD] Now builds with C++17",
-            "> [FIX] Minor Details",
-            "(1.7.0)",
-            "> [ADD] Timeout",
-            "> [ADD] Expected Return Value",
-            "(1.7.1)",
-            "> [ADD] Timeout value can be a float",
-            "> [FIX] Better error messages",
-            "(1.7.2)",
-            "> [ADD] Better error messages",
+            "> [FIX] parsing errors",
+            BLU "(1.6.1)" RESET,
+            "> [FIX] optimised file loading",
+            BLU "(1.6.2)" RESET,
+            "> [ADD] now builds with C++17",
+            "> [FIX] minor details",
+            BLU "(1.7.0)" RESET,
+            "> [ADD] timeout",
+            "> [ADD] expected return value",
+            BLU "(1.7.1)" RESET,
+            "> [ADD] timeout value can be a float",
+            "> [FIX] better error messages",
+            BLU "(1.7.2)" RESET,
+            "> [ADD] better error messages",
             "> [ADD] throw and noexcept",
-            "> [REM] Removed '>' and '->' before return values",
+            "> [REM] removed '>' and '->' before return values",
+            BLU "(1.8.0)" RESET,
+            "> [ADD] test parameters",
+            "> [ADD] parameter: stdout",
+            "> [ADD] parameter: stderr",
+            "> [ADD] parameter: return",
+            "> [ADD] parameter: timeout",
+            "> [ADD] details and diff limit",
+            "> [FIX] args parser",
+            "> [FIX] cleaner display",
     };
-    std::cout << "[CHANGELOG] :" << std::endl;
+    std::cout << YEL << "[CHANGELOG]" << RESET << std::endl;
     for (auto line : changelog)
         std::cout << line << std::endl;
     exit(0);
@@ -66,7 +76,7 @@ void IOTester::CheckUpdate() noexcept
         return;
     }
     if (system("diff /tmp/IO-TESTER/IO_Tester /usr/local/bin/IO_Tester > /dev/null 2>&1") != 0)
-        std::cout << std::endl << MAG << "[UPDATE]" << RESET << " > A new version is available : sudo IO_Tester --update" << std::endl;
+        std::cout << std::endl << MAG << "[UPDATE]" << RESET << " A new version is available : sudo IO_Tester --update" << std::endl;
 }
 
 void IOTester::Update() noexcept
@@ -104,12 +114,24 @@ void IOTester::Update() noexcept
         exit(0);
     }
 
-    constexpr char *args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", NULL};
-
-    std::cout << GRN << "[SUCCESS] Install" << RESET << " > run IO_Tester -c to see changelog" << std::endl;
-    if (execvp("cp", args) != 0) {
+    pid_t pid = fork();
+    if (pid == -1) {
         std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
         exit(84);
+    } else if (pid == 0) {
+        constexpr char *args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", NULL};
+        if (execvp("cp", args) != 0) {
+            std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
+            exit(84);
+        }
+    } else {
+        int ret = 0;
+        waitpid(pid, &ret, WUNTRACED | WCONTINUED);
+        if (ret != 0) {
+            std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
+            exit(84);
+        }
+        std::cout << GRN << "[SUCCESS] Install" << RESET << " > run IO_Tester -c to see changelog" << std::endl;
     }
     exit(0);
 }

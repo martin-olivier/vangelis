@@ -1,16 +1,19 @@
 # test.io
 
+# set the default timeout value to 1 sec
+@default timeout 1
+
 [Simple Print] python3 printer test
 test
 
-[END] 0
+[END]
 
 [Multiple Prints] python3 printer Hello World !
 Hello
 World
 !
 
-[END] 0
+[END]
 
 [Oooops] python3 printer I am bad
 You
@@ -24,6 +27,9 @@ root
 
 [END]
 
-[ZZZzzz] sleep 10
+# disable stdout and stderr catch for this test
+@stdout false
+@stderr false
 
+[ZZZzzz] sleep 5
 [END]

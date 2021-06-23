@@ -2,6 +2,12 @@
 #include "Utils.hpp"
 #include <unistd.h>
 
+#ifdef __APPLE__
+#define VSCodePath "\"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" --diff "
+#else
+#define VSCodePath "code --diff "
+#endif
+
 void IOTester::VSCodeDiff(const Test &test, const std::string &output)
 {
     std::string filename1 = "\"/tmp/GOT(" + test.m_name + ")\"";

@@ -5,54 +5,77 @@
 
 enum CheckStatus {Input, Output};
 
+void Parsing::checkIsEmpty(const std::vector<std::string> &file)
+{
+    if (file.empty())
+        throw IOTester::exception("the file is empty");
+    for (auto &line : file) {
+        if (!line.empty())
+            return;
+    }
+    throw IOTester::exception("the file is empty");
+}
+
 void Parsing::isInput(const std::string &line, size_t pos)
 {
     if (line[0] != '[')
         throw IOTester::exception("parsing error at line " + std::to_string(pos));
     if (line.find(']') == std::string::npos)
         throw IOTester::exception("parsing error at line : " + std::to_string(pos));
-    if (line.find(']') == line.size() - 1 || line.find(']') == 1)
+    if (line.find(']') == line.size() - 1 or line.find(']') == 1)
         throw IOTester::exception("parsing error at line : " + std::to_string(pos));
 }
 
-void Parsing::checkIsEmpty(const std::vector<std::string> &file)
+void Parsing::isParam(const std::string &line, size_t pos)
 {
-    if (file.empty())
-        throw IOTester::exception("empty test file");
-    for (auto &line : file) {
-        if (!line.empty())
-            return;
+    auto list = Utils::string_to_vector(line, ' ');
+    if (list[0] == "@default" and list.size() == 3) {
+        list.erase(list.begin());
+        list.front() = '@' + list.front();
     }
-    throw IOTester::exception("empty test file");
+    if (list.size() != 2)
+        throw IOTester::exception("bad parameter at line " + std::to_string(pos) + " : " + line);
+    if (list[0] == "@stdout" or list[0] == "@stderr") {
+        if (list[1] != "true" and list[1] != "false")
+            throw IOTester::exception("bad parameter at line " + std::to_string(pos) + " : " + line);
+    }
+    else if (list[0] == "@timeout" or list[0] == "@return") {
+        try {
+            auto res = std::stof(list[1]);
+            if (list[0] == "@timeout" and res <= 0)
+                throw IOTester::exception("bad parameter at line " + std::to_string(pos) + " : " + line);
+        }
+        catch (...) {
+            throw IOTester::exception("bad parameter at line " + std::to_string(pos) + " : " + line);
+        }
+        if (list[0] == "@return" and list[1].find('.') != std::string::npos)
+            throw IOTester::exception("bad parameter at line " + std::to_string(pos) + " : " + line);
+    }
+    else
+        throw IOTester::exception("bad parameter at line " + std::to_string(pos) + " : " + line);
 }
 
-std::vector<std::string> Parsing::CheckFile(char *path)
+std::vector<std::string> Parsing::CheckFile(const char *path)
 {
-    std::vector<std::string> file = Utils::string_to_vector(Utils::get_file_content(path), '\n');
+    auto file = Utils::string_to_vector(Utils::get_file_content(path), '\n');
     CheckStatus status = Input;
     size_t pos = 0;
 
     Parsing::checkIsEmpty(file);
-    for (auto& line : file) {
+    for (auto &line : file) {
         pos += 1;
         if (line.empty())
             continue;
         else if (status == Input and line[0] == '#')
             line.clear();
+        else if (status == Input and line[0] == '@')
+            isParam(line, pos);
         else if (status == Input) {
             isInput(line, pos);
             status = Output;
         }
-        else if (status == Output and line.find("[END]") == 0) {
+        else if (line == "[END]")
             status = Input;
-            line.erase(remove_if(line.begin(), line.end(), isspace), line.end());
-            std::string ret_val = line.substr(5);
-            if (ret_val.empty())
-                ret_val.push_back('0');
-            try {std::stoi(ret_val);}
-            catch (...) {throw IOTester::exception("bad expected return value \"" + ret_val + "\" at line " + std::to_string(pos));}
-            line = "[END]" + ret_val;
-        }
     }
     if (status == Output)
         throw IOTester::exception("parsing error at the end of the file");

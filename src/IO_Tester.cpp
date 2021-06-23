@@ -2,82 +2,91 @@
 #include "Parsing.hpp"
 #include "Utils.hpp"
 #include <iostream>
-#include <string_view>
 
 void IOTester::Version() noexcept
 {
-    std::cout << "IO_Tester (" << VERSION << ")" << std::endl;
+    std::cout << "IO_Tester (" << VERSION << ")\n";
     std::cout << "Written by Martin OLIVIER, student at {EPITECH} Paris" << std::endl;
     exit(0);
 }
 
 void IOTester::Help(const char *bin, int returnValue) noexcept
 {
-    std::cout << "USAGE:" << std::endl;
-    std::cout << "\t" << bin << " test.io [OPTIONS]\n" << std::endl;
+    std::cout << "USAGE:\n";
+    std::cout << "\t" << bin << " test.io [OPTIONS]\n\n";
 
-    std::cout << "DESCRIPTION:" << std::endl;
-    std::cout << "\ttest.io\t\tfile that contains functional tests\n" << std::endl;
+    std::cout << "DESCRIPTION:\n";
+    std::cout << "\ttest.io\t\tfile that contains functional tests\n\n";
 
-    std::cout << "OPTIONS:" << std::endl;
-    std::cout << "\t-t --timeout\tChange the tests timeout" << std::endl;
-    std::cout << "\t\t\tmust be the first argument followed by the value in seconds as second argument" << std::endl;
-    std::cout << "\t-h --help\tDisplay help menu" << std::endl;
-    std::cout << "\t-v --version\tDisplay actual version" << std::endl;
-    std::cout << "\t-c --changelog\tDisplay the changelog" << std::endl;
-    std::cout << "\t-u --update\tUpdate this software (sudo)" << std::endl;
-    std::cout << "\t--details\tDisplay details of all tests" << std::endl;
-    std::cout << "\t--diff\t\tDisplay difference in VSCode\n" << std::endl;
+    std::cout << "OPTIONS:\n";
+    std::cout << "\t-h --help\tDisplay this help menu\n";
+    std::cout << "\t-v --version\tDisplay the actual version\n";
+    std::cout << "\t-c --changelog\tDisplay the changelog\n";
+    std::cout << "\t-u --update\tUpdate this software (sudo)\n";
+    std::cout << "\t--details\tDisplay the output difference in the shell\n";
+    std::cout << "\t--diff\t\tDisplay the output difference in Visual Studio Code\n\n";
 
-    std::cout << "RETURN VALUE:" << std::endl;
-    std::cout << "\t0\t\tif all tests succeed" << std::endl;
-    std::cout << "\t1\t\tif one or more tests failed or crashed" << std::endl;
-    std::cout << "\t84\t\tif IO_Tester failed to load a test file" << std::endl;
+    std::cout << "RETURN VALUE:\n";
+    std::cout << "\t0\t\tif all tests succeed\n";
+    std::cout << "\t1\t\tif one or more tests failed or crashed\n";
+    std::cout << "\t84\t\tif IO_Tester failed to load a test file\n";
 
+    std::cout << std::flush;
     exit(returnValue);
+}
+
+std::vector<std::string_view> IOTester::parseArgs(int ac, char **av)
+{
+    std::vector<std::string_view> files{};
+    bool last_arg_diff = false;
+
+    for (int i = 1; i < ac; i++) {
+        std::string_view arg(av[i]);
+        if (arg == "-h" or arg == "--help")
+            Help(av[0], 0);
+        else if (arg == "-v" or arg == "--version")
+            Version();
+        else if (arg == "-u" or arg == "--update")
+            Update();
+        else if (arg == "-c" or arg == "--changelog")
+            Changelog();
+        else if (arg == "--details" and m_details == NO) {
+            m_details = DETAILS;
+            last_arg_diff = true;
+        }
+        else if (arg == "--diff" and m_details == NO) {
+            m_details = DIFF;
+            last_arg_diff = true;
+        }
+        else if (arg == "--details" or arg == "--diff")
+            throw exception("bad option: please choose between --details and --diff");
+        else if (arg.find('-') == 0)
+            throw exception("bad option: " + std::string(arg));
+        else if (last_arg_diff) {
+            try {m_details_count = std::stoul(arg.data());}
+            catch (...) {m_details_count = -1;}
+            last_arg_diff = false;
+        }
+        else
+            files.push_back(arg);
+    }
+    return files;
 }
 
 IOTester::IOTester(int ac, char **av)
 {
-    int i = 1;
     if (ac < 2)
-        IOTester::Help(av[0], 84);
-    if (std::string_view(av[1]) == "-t" or std::string_view(av[1]) == "--timeout") {
-        if (ac == 2)
-            IOTester::Help(av[0], 84);
-        try {m_timeout_value = std::stof(av[2]);}
-        catch (...) {throw exception("invalid timeout argument : IO_Tester " + std::string(av[1]) + " <time in seconds> test.io");}
-        if (m_timeout_value < 0)
-            throw exception("invalid timeout argument : IO_Tester " + std::string(av[1]) + " <time in seconds> test.io");
-        i += 2;
-        if (i >= ac)
-            return;
-    }
-    std::string_view last_arg(av[ac - 1]);
-    if (last_arg == "-h" or last_arg == "--help")
-        IOTester::Help(av[0], 0);
-    if (last_arg == "-v" or last_arg == "--version")
-        IOTester::Version();
-    if (last_arg == "-u" or last_arg == "--update")
-        IOTester::Update();
-    if (last_arg == "-c" or last_arg == "--changelog")
-        IOTester::Changelog();
-    if (ac > 2 and last_arg == "--details") {
-        m_details = DETAILS;
-        ac--;
-    }
-    if (ac > 2 and last_arg == "--diff") {
-        m_details = DIFF;
-        ac--;
-    }
-    for (int loop = 0; i < ac; i++, loop++) {
-        if (loop != 0)
-            std::cout << std::endl;
-        if (ac > 2 and !(std::string_view(av[1]) == "-t" or std::string_view(av[1]) == "--timeout"))
-            std::cout << CYN << av[i] << ":\n" << RESET << std::endl;
-        if (ac > 4 and (std::string_view(av[1]) == "-t" or std::string_view(av[1]) == "--timeout"))
-            std::cout << CYN << av[i] << ":\n" << RESET << std::endl;
-        m_file = Parsing::CheckFile(av[i]);
+        Help(av[0], 84);
+    auto files = parseArgs(ac, av);
+    if (files.empty())
+        Help(av[0], 84);
+
+    for (size_t i = 0; i < files.size(); i++) {
+        if (i != 0)
+            std::cout << '\n';
+        if (files.size() > 1)
+            std::cout << CYN << files[i] << ":\n" << RESET << std::endl;
+        m_file = Parsing::CheckFile(files[i].data());
         apply();
         resetValues();
     }
@@ -98,40 +107,20 @@ void IOTester::resetValues() noexcept
     m_failed = 0;
     m_crashed = 0;
     m_timeout = 0;
+
+    m_default_stdout = true;
+    m_default_stderr = true;
+    m_default_return = 0;
+    m_default_timeout = 3.0;
 }
 
 void IOTester::printFinalResults() const noexcept
 {
-    std::cout << "\n> Synthesis: Tested: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
+    std::cout << "\n> Tested: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
     std::cout << " | Pass: " << GRN << m_passed << RESET;
     std::cout << " | Fail: " << RED << m_failed << RESET;
     std::cout << " | Crash: " << YEL << m_crashed << RESET;
     std::cout << " | Timeout: " << MAG << m_timeout << RESET << std::endl;
-}
-
-Test IOTester::getTestData()
-{
-    Test t;
-    std::string line = m_file[m_position];
-    size_t pos = 1;
-    for (; pos < line.size(); pos++) {
-        if (line[pos] == ']')
-            break;
-        else
-            t.m_name += line[pos];
-    }
-    pos++;
-    for (; pos < line.size(); pos++)
-        t.m_cmd += line[pos];
-    m_position++;
-    for (; m_file[m_position].find("[END]") != 0; m_position++)
-        t.m_output += m_file[m_position] + '\n';
-    std::string ret_val = m_file[m_position].substr(5);
-    t.m_return_value = std::stoi(ret_val);
-    m_position++;
-    if (!t.m_output.empty())
-        t.m_output.pop_back();
-    return t;
 }
 
 void IOTester::apply()
@@ -159,12 +148,12 @@ int main(int ac, char **av)
         IOTester app(ac, av);
         return app.exitStatus();
     }
-    catch (const IOTester::exception &e) {
+    catch (const std::exception &e) {
         std::cerr << RED << "error: " << RESET << e.what() << std::endl;
         return 84;
     }
-    catch (const std::exception &e) {
-        std::cerr << RED << "error: " << RESET << e.what() << std::endl;
+    catch (...) {
+        std::cerr << RED << "error: " << RESET << "unknown exception caught" << std::endl;
         return 84;
     }
 }
