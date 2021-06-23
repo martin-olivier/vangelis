@@ -89,8 +89,10 @@ void IOTester::compute(const Test &test, pid_t pid, int &status, Details details
 
 void IOTester::comparator(const Test &test)
 {
-    pid_t pid = fork();
     int ret = Test::NIL;
+    if (m_details_count == 0)
+        m_details = NO;
+    pid_t pid = fork();
     std::thread proc(compute, std::cref(test), pid, std::ref(ret), m_details);
 
     std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now();
@@ -105,8 +107,10 @@ void IOTester::comparator(const Test &test)
     proc.join();
     if (ret == Test::PASS)
         m_passed++;
-    else if (ret == Test::FAILED)
+    else if (ret == Test::FAILED) {
         m_failed++;
+        m_details_count -= 1;
+    }
     else if (ret == Test::CRASH)
         m_crashed++;
     else if (ret == Test::TIMEOUT) {

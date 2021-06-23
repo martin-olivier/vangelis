@@ -38,6 +38,7 @@ void IOTester::Help(const char *bin, int returnValue) noexcept
 std::vector<std::string_view> IOTester::parseArgs(int ac, char **av)
 {
     std::vector<std::string_view> files{};
+    bool last_arg_diff = false;
 
     for (int i = 1; i < ac; i++) {
         std::string_view arg(av[i]);
@@ -49,14 +50,23 @@ std::vector<std::string_view> IOTester::parseArgs(int ac, char **av)
             Update();
         else if (arg == "-c" or arg == "--changelog")
             Changelog();
-        else if (arg == "--details" and m_details == NO)
+        else if (arg == "--details" and m_details == NO) {
             m_details = DETAILS;
-        else if (arg == "--diff" and m_details == NO)
+            last_arg_diff = true;
+        }
+        else if (arg == "--diff" and m_details == NO) {
             m_details = DIFF;
+            last_arg_diff = true;
+        }
         else if (arg == "--details" or arg == "--diff")
             throw exception("bad option: please choose between --details and --diff");
         else if (arg.find('-') == 0)
             throw exception("bad option: " + std::string(arg));
+        else if (last_arg_diff) {
+            try {m_details_count = std::stoul(arg.data());}
+            catch (...) {m_details_count = -1;}
+            last_arg_diff = false;
+        }
         else
             files.push_back(arg);
     }

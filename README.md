@@ -103,7 +103,7 @@ You can add `--diff` to display the difference between the real, and the expecte
 
 You can also run multiple test files at once :
 ```
-IO_Tester test1.io test2.io test3.io --diff
+IO_Tester test1.io test2.io test3.io --diff 1
 ```
 
 ## Test Parameters

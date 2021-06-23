@@ -5,7 +5,7 @@
 #include <exception>
 #include <string_view>
 
-#define VERSION "1.8.0 beta"
+#define VERSION "1.8.0"
 
 class Test final
 {
@@ -75,5 +75,6 @@ private:
     std::vector<std::string> m_file{};
     size_t m_position = 0;
     Details m_details = NO;
+    size_t m_details_count = -1;
     bool m_return = EXIT_SUCCESS;
 };
