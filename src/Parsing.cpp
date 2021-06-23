@@ -26,14 +26,14 @@ void Parsing::checkIsEmpty(const std::vector<std::string> &file)
     throw IOTester::exception("empty test file");
 }
 
-std::vector<std::string> Parsing::CheckFile(char *path)
+std::vector<std::string> Parsing::CheckFile(const char *path)
 {
     std::vector<std::string> file = Utils::string_to_vector(Utils::get_file_content(path), '\n');
     CheckStatus status = Input;
     size_t pos = 0;
 
     Parsing::checkIsEmpty(file);
-    for (auto& line : file) {
+    for (auto &line : file) {
         pos += 1;
         if (line.empty())
             continue;

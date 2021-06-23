@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <exception>
+#include <string_view>
 
 #define VERSION "1.8.0 beta"
 
@@ -37,11 +38,13 @@ public:
     IOTester(int ac, char **av);
     ~IOTester() = default;
 
+    std::vector<std::string_view> parseArgs(int ac, char **av);
     Test getTestData();
     void comparator(const Test &test);
     void printFinalResults() const noexcept;
     void apply();
     void resetValues() noexcept;
+    [[nodiscard]] inline bool exitStatus() const noexcept {return m_return;};
 
     static void Version() noexcept;
     static void Help(const char *bin, int returnValue) noexcept;
@@ -53,8 +56,6 @@ public:
 
     static void display(Test test, const std::string &output, int returnValue, Details details);
     static void compute(const Test &test, pid_t pid, int &status, Details details);
-
-    [[nodiscard]] inline bool exitStatus() const noexcept {return m_return;};
 private:
     int m_passed = 0;
     int m_failed = 0;

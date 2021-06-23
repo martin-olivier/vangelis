@@ -2,7 +2,6 @@
 #include "Parsing.hpp"
 #include "Utils.hpp"
 #include <iostream>
-#include <string_view>
 
 void IOTester::Version() noexcept
 {
@@ -36,47 +35,47 @@ void IOTester::Help(const char *bin, int returnValue) noexcept
     exit(returnValue);
 }
 
+std::vector<std::string_view> IOTester::parseArgs(int ac, char **av)
+{
+    std::vector<std::string_view> files{};
+
+    for (int i = 1; i < ac; i++) {
+        std::string_view arg(av[i]);
+        if (arg == "-h" or arg == "--help")
+            Help(av[0], 0);
+        else if (arg == "-v" or arg == "--version")
+            Version();
+        else if (arg == "-u" or arg == "--update")
+            Update();
+        else if (arg == "-c" or arg == "--changelog")
+            Changelog();
+        else if (arg == "--details" and m_details == NO)
+            m_details = DETAILS;
+        else if (arg == "--diff" and m_details == NO)
+            m_details = DIFF;
+        else if (arg == "--details" or arg == "--diff")
+            throw exception("bad option : please choose between --details and --diff");
+        else if (arg.find("-") == 0)
+            throw exception("bad option : " + std::string(arg));
+        else
+            files.push_back(arg);
+    }
+    return files;
+}
+
 IOTester::IOTester(int ac, char **av)
 {
-    int i = 1;
     if (ac < 2)
-        IOTester::Help(av[0], 84);
-    if (std::string_view(av[1]) == "-t" or std::string_view(av[1]) == "--timeout") {
-        if (ac == 2)
-            IOTester::Help(av[0], 84);
-        try {m_timeout_value = std::stof(av[2]);}
-        catch (...) {throw exception("invalid timeout argument : IO_Tester " + std::string(av[1]) + " <time in seconds> test.io");}
-        if (m_timeout_value < 0)
-            throw exception("invalid timeout argument : IO_Tester " + std::string(av[1]) + " <time in seconds> test.io");
-        i += 2;
-        if (i >= ac)
-            return;
-    }
-    std::string_view last_arg(av[ac - 1]);
-    if (last_arg == "-h" or last_arg == "--help")
-        IOTester::Help(av[0], 0);
-    if (last_arg == "-v" or last_arg == "--version")
-        IOTester::Version();
-    if (last_arg == "-u" or last_arg == "--update")
-        IOTester::Update();
-    if (last_arg == "-c" or last_arg == "--changelog")
-        IOTester::Changelog();
-    if (ac > 2 and last_arg == "--details") {
-        m_details = DETAILS;
-        ac--;
-    }
-    if (ac > 2 and last_arg == "--diff") {
-        m_details = DIFF;
-        ac--;
-    }
-    for (int loop = 0; i < ac; i++, loop++) {
-        if (loop != 0)
-            std::cout << std::endl;
-        if (ac > 2 and !(std::string_view(av[1]) == "-t" or std::string_view(av[1]) == "--timeout"))
-            std::cout << CYN << av[i] << ":\n" << RESET << std::endl;
-        if (ac > 4 and (std::string_view(av[1]) == "-t" or std::string_view(av[1]) == "--timeout"))
-            std::cout << CYN << av[i] << ":\n" << RESET << std::endl;
-        m_file = Parsing::CheckFile(av[i]);
+        Help(av[0], 84);
+    auto files = parseArgs(ac, av);
+    if (files.empty())
+        Help(av[0], 84);
+
+    for (size_t i = 0; i < files.size(); i++) {
+        if (i != 0)
+            std::cout << '\n';
+        std::cout << CYN << files[i] << ":\n" << RESET << std::endl;
+        m_file = Parsing::CheckFile(files[i].data());
         apply();
         resetValues();
     }
