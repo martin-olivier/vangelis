@@ -112,12 +112,24 @@ void IOTester::Update() noexcept
         exit(0);
     }
 
-    constexpr char *args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", NULL};
-
-    std::cout << GRN << "[SUCCESS] Install" << RESET << " > run IO_Tester -c to see changelog" << std::endl;
-    if (execvp("cp", args) != 0) {
+    pid_t pid = fork();
+    if (pid == -1) {
         std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
         exit(84);
+    } else if (pid == 0) {
+        constexpr char *args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", NULL};
+        if (execvp("cp", args) != 0) {
+            std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
+            exit(84);
+        }
+    } else {
+        int ret = 0;
+        waitpid(pid, &ret, WUNTRACED | WCONTINUED);
+        if (ret != 0) {
+            std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
+            exit(84);
+        }
+        std::cout << GRN << "[SUCCESS] Install" << RESET << " > run IO_Tester -c to see changelog" << std::endl;
     }
     exit(0);
 }

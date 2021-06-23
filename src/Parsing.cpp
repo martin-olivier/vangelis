@@ -57,7 +57,7 @@ void Parsing::isParam(const std::string &line, size_t pos)
 
 std::vector<std::string> Parsing::CheckFile(const char *path)
 {
-    std::vector<std::string> file = Utils::string_to_vector(Utils::get_file_content(path), '\n');
+    auto file = Utils::string_to_vector(Utils::get_file_content(path), '\n');
     CheckStatus status = Input;
     size_t pos = 0;
 

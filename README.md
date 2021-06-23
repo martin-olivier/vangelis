@@ -31,12 +31,12 @@ DESCRIPTION:
         test.io         file that contains functional tests
 
 OPTIONS:
-        -h --help       Display this help menu
-        -v --version    Display the actual version
-        -c --changelog  Display the changelog
-        -u --update     Update this software (sudo)
-        --details       Display the output difference in the shell
-        --diff          Display the output difference in Visual Studio Code
+        -h --help       display this help menu
+        -v --version    display the actual version
+        -c --changelog  display the changelog
+        -u --update     update this software (sudo)
+        --details       display the output difference in the shell
+        --diff          display the output difference in Visual Studio Code
 
 RETURN VALUE:
         0               if all tests succeed
@@ -107,7 +107,6 @@ IO_Tester test1.io test2.io test3.io --diff
 ```
 
 ## Test Parameters
-Parameters :  
 You can change the value of a parameter for the next test :
 ```
 @stdout <bool> (default: true)
