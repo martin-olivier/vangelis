@@ -42,6 +42,14 @@ void IOTester::Changelog() noexcept
             "> [ADD] Better error messages",
             "> [ADD] throw and noexcept",
             "> [REM] Removed '>' and '->' before return values",
+            BLU "(1.8.0)" RESET,
+            "> [ADD] Test parameters",
+            "> [ADD] parameter: stdout",
+            "> [ADD] parameter: stderr",
+            "> [ADD] parameter: return",
+            "> [ADD] parameter: timeout",
+            "> [FIX] Args parser",
+            "> [FIX] Cleaner display",
     };
     std::cout << YEL << "[CHANGELOG]" << RESET << std::endl;
     for (auto line : changelog)
@@ -66,7 +74,7 @@ void IOTester::CheckUpdate() noexcept
         return;
     }
     if (system("diff /tmp/IO-TESTER/IO_Tester /usr/local/bin/IO_Tester > /dev/null 2>&1") != 0)
-        std::cout << std::endl << MAG << "[UPDATE]" << RESET << " > A new version is available : sudo IO_Tester --update" << std::endl;
+        std::cout << std::endl << MAG << "[UPDATE]" << RESET << " A new version is available : sudo IO_Tester --update" << std::endl;
 }
 
 void IOTester::Update() noexcept

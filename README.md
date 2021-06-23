@@ -21,58 +21,6 @@ Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 
 `Don't forget to leave a star 🌟`
 
-## Usage
-
-Test files must follow this pattern :
-```
-[Test Name] command
-expected output
-[END] expected return value
-```
-expected return value is optional (default : 0)
-
-Here we want to test a program that takes parameters and prints them in the standard output. We will also test some system commands  
-Let's create a test file :
-
-```
-# test.io
-
-[Simple Print] python3 printer test
-test
-
-[END] 0
-
-[Multiple Prints] python3 printer Hello World !
-Hello
-World
-!
-
-[END] 0
-
-[Oooops] python3 printer I am bad
-You
-are
-bad
-
-[END]
-
-[Power] whoami
-root
-
-[END]
-
-[ZZZzzz] sleep 10
-
-[END]
-```
-
-Then execute `IO_Tester` with the file containing the tests as argument.
-
-You can add `--details` to display the difference between the real, and the expected output in the shell when a test fails.
-![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)   
-You can add `--diff` to display the difference between the real, and the expected output in Visual Studio Code when a test fails.
-![example_diff](https://github.com/tocola/IO-TESTER/blob/main/.github/example_diff.png?raw=true)   
-
 ## Manual
 
 ```
@@ -96,9 +44,82 @@ RETURN VALUE:
         84              if IO_Tester failed to load a test file
 ```
 
+## Usage
+
+Test files must follow this pattern :
+```
+[Test Name] command
+expected output
+[END]
+```
+
+Here we want to test a program that takes parameters and prints them in the standard output. We will also test some system commands  
+Let's create a test file :
+
+```
+# test.io
+
+# set the default timeout value to 1 sec
+@default timeout 1
+
+[Simple Print] python3 printer test
+test
+
+[END]
+
+[Multiple Prints] python3 printer Hello World !
+Hello
+World
+!
+
+[END]
+
+[Oooops] python3 printer I am bad
+You
+are
+bad
+
+[END]
+
+[Power] whoami
+root
+
+[END]
+
+# disable stdout and stderr catch for this test
+@stdout false
+@stderr false
+
+[ZZZzzz] sleep 5
+[END]
+```
+
+Then execute `IO_Tester` with the file containing the tests as argument.
+
+You can add `--details` to display the difference between the real, and the expected output in the shell when a test fails.
+![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)   
+You can add `--diff` to display the difference between the real, and the expected output in Visual Studio Code when a test fails.
+![example_diff](https://github.com/tocola/IO-TESTER/blob/main/.github/example_diff.png?raw=true)   
+
 You can also run multiple test files at once :
 ```
 IO_Tester test1.io test2.io test3.io --diff
+```
+
+## Test parameters
+You can add custom parameters for your tests :
+```
+change the default value of a parameter :
+
+@default parameter value
+
+change the value of a parameter for the next test:
+parameters:
+
+@stdout <bool> (default: true)
+@stderr <bool> (default: true)
+@return <int> (default: 0)
+@timeout <float> (default: 3.0)
 ```
 
 ## Build Tips

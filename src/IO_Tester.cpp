@@ -106,7 +106,7 @@ void IOTester::resetValues() noexcept
 
 void IOTester::printFinalResults() const noexcept
 {
-    std::cout << "\n> Synthesis: Tested: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
+    std::cout << "\n> Tested: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
     std::cout << " | Pass: " << GRN << m_passed << RESET;
     std::cout << " | Fail: " << RED << m_failed << RESET;
     std::cout << " | Crash: " << YEL << m_crashed << RESET;
