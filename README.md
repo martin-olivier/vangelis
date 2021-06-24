@@ -60,6 +60,7 @@ Let's create a test file :
 # test.io
 
 # set the default timeout value to 1 sec
+
 @default timeout 1
 
 [Simple Print] python3 printer test
@@ -87,6 +88,7 @@ root
 [END]
 
 # disable stdout and stderr catch for this test
+
 @stdout false
 @stderr false
 
