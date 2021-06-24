@@ -9,4 +9,4 @@ namespace Parsing
     void checkIsEmpty(const std::vector<std::string> &file);
     void isInput(const std::string &line, size_t pos);
     void isParam(const std::string &line, size_t pos);
-};
+}

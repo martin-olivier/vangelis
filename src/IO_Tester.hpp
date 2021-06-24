@@ -13,7 +13,7 @@ public:
     enum Status {PASS, CRASH, FAILED, TIMEOUT, ERROR, NIL};
 
     Test(bool a_stdout, bool a_stderr, int a_return, float a_timeout)
-        : m_stdout(a_stdout), m_stderr(a_stderr), m_return(a_return), m_timeout(a_timeout) {};
+        : m_stdout(a_stdout), m_stderr(a_stderr), m_return(a_return), m_timeout(a_timeout) {}
     ~Test() = default;
     std::string m_name{};
     std::string m_cmd{};
@@ -35,8 +35,8 @@ public:
     protected:
         const std::string m_error;
     public:
-        explicit exception(std::string message) : m_error(std::move(message)) {};
-        [[nodiscard]] inline const char *what() const noexcept override {return m_error.c_str();};
+        explicit exception(std::string message) : m_error(std::move(message)) {}
+        [[nodiscard]] inline const char *what() const noexcept override {return m_error.c_str();}
     };
 
     IOTester(int ac, char **av);
@@ -48,7 +48,7 @@ public:
     void printFinalResults() const noexcept;
     void apply();
     void resetValues() noexcept;
-    [[nodiscard]] inline bool exitStatus() const noexcept {return m_return;};
+    [[nodiscard]] inline bool exitStatus() const noexcept {return m_return;}
 
     static void Version() noexcept;
     static void Help(const char *bin, int returnValue) noexcept;

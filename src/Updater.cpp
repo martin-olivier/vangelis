@@ -119,7 +119,7 @@ void IOTester::Update() noexcept
         std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
         exit(84);
     } else if (pid == 0) {
-        constexpr char *args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", NULL};
+        constexpr char *args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", nullptr};
         if (execvp("cp", args) != 0) {
             std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
             exit(84);
