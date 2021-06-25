@@ -10,7 +10,7 @@
 The goal of this software is to take files as parameter that contains lists of inputs and expected outputs and to tell the user if the tests succeed, failed or crashed.
 
 ## Compatibility
-Tested on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
+Works on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 
 ## Installation
 
@@ -96,10 +96,11 @@ root
 Then execute `IO_Tester` with the file containing the tests as argument.
 
 You can add `--details` to display the difference between the real, and the expected output in the shell when a test fails.
-![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)   
+![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)  
 You can add `--diff` to display the difference between the real, and the expected output in Visual Studio Code when a test fails.
-![example_diff](https://github.com/tocola/IO-TESTER/blob/main/.github/example_diff.png?raw=true)   
+![example_diff](https://github.com/tocola/IO-TESTER/blob/main/.github/example_diff.png?raw=true)  
 
+You can add the number of maximum failed tests to display after `--details` or `--diff`.  
 You can also run multiple test files at once :
 ```
 IO_Tester test1.io test2.io test3.io --diff 1
