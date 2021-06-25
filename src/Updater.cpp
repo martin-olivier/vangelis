@@ -19,7 +19,7 @@ void IOTester::Changelog() noexcept
             "> [ADD] updater (-u || --update)",
             "> [ADD] changelog (-c || --changelog)",
             BLU "(1.4)" RESET,
-            "> [FIX] optimised Updater",
+            "> [FIX] optimised updater",
             "> [ADD] return value (0 when all tests succeed, 1 otherwise)",
             BLU "(1.5)" RESET,
             "> [ADD] comments between tests in test files",
