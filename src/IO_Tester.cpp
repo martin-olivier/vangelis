@@ -63,8 +63,13 @@ std::vector<std::string_view> IOTester::parseArgs(int ac, char **av)
         else if (arg.find('-') == 0)
             throw exception("bad option: " + std::string(arg));
         else if (last_arg_diff) {
-            try {m_details_count = std::stoul(arg.data());}
-            catch (...) {m_details_count = -1;}
+            try {
+                m_details_count = std::stoul(arg.data());
+            }
+            catch (...) {
+                m_details_count = -1;
+                files.push_back(arg);
+            }
             last_arg_diff = false;
         }
         else
