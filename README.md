@@ -93,7 +93,7 @@ root
 [END]
 ```
 
-Then execute `IO_Tester` with the file containing the tests as argument.
+Then execute `IO_Tester` with files that contains the tests as arguments.
 
 You can add `--details` to display the difference between the real, and the expected output in the shell when a test fails.
 ![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)  
