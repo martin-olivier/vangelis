@@ -19,7 +19,7 @@ Works on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 3. Execute the following command :  
    `sudo make install` (the binary will be installed at ***usr/local/bin***)
 
-`Don't forget to leave a star 🌟`
+`Don't forget to put a star on the project 🌟`
 
 ## Manual
 
