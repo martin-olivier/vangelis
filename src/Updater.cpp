@@ -6,7 +6,7 @@
 #include <string_view>
 #include <sys/wait.h>
 
-void IOTester::Changelog() noexcept
+void IOTester::changelog() noexcept
 {
     constexpr std::string_view changelog[] = {
             BLU "(1.0)" RESET,
@@ -52,6 +52,11 @@ void IOTester::Changelog() noexcept
             "> [ADD] details and diff limit",
             "> [FIX] args parser",
             "> [FIX] cleaner display",
+            BLU "(1.8.1)" RESET,
+            "> [FIX] the test pid is killed only if process is not terminated",
+            "> [FIX] missing display if --diff and Visual Studio Code not installed",
+            "> [FIX] code is now in camelCase",
+            "> [FIX] args parser",
     };
     std::cout << YEL << "[CHANGELOG]" << RESET << std::endl;
     for (auto line : changelog)
@@ -59,7 +64,7 @@ void IOTester::Changelog() noexcept
     exit(0);
 }
 
-void IOTester::CheckUpdate() noexcept
+void IOTester::checkUpdate() noexcept
 {
     if (access("/usr/local/bin/IO_Tester", X_OK) == -1)
         return;
@@ -79,7 +84,7 @@ void IOTester::CheckUpdate() noexcept
         std::cout << std::endl << MAG << "[UPDATE]" << RESET << " A new version is available : sudo IO_Tester --update" << std::endl;
 }
 
-void IOTester::Update() noexcept
+void IOTester::update() noexcept
 {
     if (access("/usr/local/bin/IO_Tester", X_OK) == -1) {
         std::cerr << RED << "\nIO_Tester needs to be installed to be updated (sudo make install)\n" << RESET << std::endl;

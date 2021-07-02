@@ -3,14 +3,14 @@
 #include "Utils.hpp"
 #include <iostream>
 
-void IOTester::Version() noexcept
+void IOTester::version() noexcept
 {
     std::cout << "IO_Tester (" << VERSION << ")\n";
     std::cout << "Written by Martin OLIVIER, student at {EPITECH} Paris" << std::endl;
     exit(0);
 }
 
-void IOTester::Help(const char *bin, int returnValue) noexcept
+void IOTester::help(const char *bin, int returnValue) noexcept
 {
     std::cout << "USAGE:\n";
     std::cout << "\t" << bin << " test.io [OPTIONS]\n\n";
@@ -43,13 +43,13 @@ std::vector<std::string_view> IOTester::parseArgs(int ac, char **av)
     for (int i = 1; i < ac; i++) {
         std::string_view arg(av[i]);
         if (arg == "-h" or arg == "--help")
-            Help(av[0], 0);
+            help(av[0], 0);
         else if (arg == "-v" or arg == "--version")
-            Version();
+            version();
         else if (arg == "-u" or arg == "--update")
-            Update();
+            update();
         else if (arg == "-c" or arg == "--changelog")
-            Changelog();
+            changelog();
         else if (arg == "--details" and m_details == NO) {
             m_details = DETAILS;
             last_arg_diff = true;
@@ -81,25 +81,25 @@ std::vector<std::string_view> IOTester::parseArgs(int ac, char **av)
 IOTester::IOTester(int ac, char **av)
 {
     if (ac < 2)
-        Help(av[0], 84);
+        help(av[0], 84);
     auto files = parseArgs(ac, av);
     if (files.empty())
-        Help(av[0], 84);
+        help(av[0], 84);
 
     for (size_t i = 0; i < files.size(); i++) {
         if (i != 0)
             std::cout << '\n';
         if (files.size() > 1)
             std::cout << CYN << files[i] << ":\n" << RESET << std::endl;
-        m_file = Parsing::CheckFile(files[i].data());
+        m_file = Parsing::checkFile(files[i].data());
         apply();
         resetValues();
     }
-    if (m_details == DIFF and !CheckVSCodeBin()) {
+    if (m_details == DIFF and !checkVSCodeBin()) {
         std::cerr << RED << "\nYou need to install Visual Studio Code to show diff" << std::endl;
         std::cerr << "Use --details otherwise" << RESET << std::endl;
     }
-    CheckUpdate();
+    checkUpdate();
     std::cout << std::endl;
 }
 

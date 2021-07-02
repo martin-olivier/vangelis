@@ -38,7 +38,7 @@ void IOTester::display(Test test, const std::string &output, int returnValue, De
                 test.m_output = "Return Value -> " + std::to_string(test.m_return);
                 out = "Return Value -> " + std::to_string(WEXITSTATUS(returnValue));
             }
-            if (IOTester::CheckVSCodeBin())
+            if (IOTester::checkVSCodeBin())
                 IOTester::VSCodeDiff(test, out);
         }
     }
@@ -90,10 +90,12 @@ void IOTester::compute(const Test &test, pid_t pid, int &status, Details details
 void IOTester::comparator(const Test &test)
 {
     int ret = Test::NIL;
+    Details det = m_details;
+
     if (m_details_count == 0)
-        m_details = NO;
+        det = NO;
     pid_t pid = fork();
-    std::thread proc(compute, std::cref(test), pid, std::ref(ret), m_details);
+    std::thread proc(compute, std::cref(test), pid, std::ref(ret), det);
 
     std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now();
     deadline += std::chrono::microseconds(static_cast<int>(test.m_timeout * 1000000));
@@ -103,7 +105,8 @@ void IOTester::comparator(const Test &test)
         if (ret != Test::NIL)
             break;
     }
-    kill(pid, SIGKILL);
+    if (ret == Test::NIL)
+        kill(pid, SIGKILL);
     proc.join();
     if (ret == Test::PASS)
         m_passed++;
@@ -139,7 +142,7 @@ Test IOTester::getTestData()
     };
 
     while (m_file[m_position].find('[') != 0) {
-        auto tab = Utils::string_to_vector(m_file[m_position], ' ');
+        auto tab = Utils::stringToVector(m_file[m_position], ' ');
         if (m_file[m_position].find("@default") == 0)
             defaultParamMap[tab[1]](tab[2]);
         else if (m_file[m_position].find('@') == 0)

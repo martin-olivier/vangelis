@@ -4,7 +4,7 @@
 #include <dirent.h>
 #include <iostream>
 
-std::string Utils::get_file_content(const std::string &path)
+std::string Utils::getFileContent(const std::string &path)
 {
     std::string file_content{};
     std::ifstream file_stream(path);
@@ -17,7 +17,7 @@ std::string Utils::get_file_content(const std::string &path)
     return file_content;
 }
 
-std::vector<std::string> Utils::string_to_vector(const std::string &str, char separator)
+std::vector<std::string> Utils::stringToVector(const std::string &str, char separator)
 {
     std::vector<std::string> array{};
     std::string temp{};

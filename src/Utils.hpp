@@ -13,6 +13,6 @@
 
 namespace Utils
 {
-    std::string get_file_content(const std::string &path);
-    std::vector<std::string> string_to_vector(const std::string &str, char separator);
+    std::string getFileContent(const std::string &path);
+    std::vector<std::string> stringToVector(const std::string &str, char separator);
 }

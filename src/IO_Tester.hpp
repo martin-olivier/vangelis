@@ -5,7 +5,7 @@
 #include <exception>
 #include <string_view>
 
-#define VERSION "1.8.0"
+#define VERSION "1.8.1"
 
 class Test final
 {
@@ -50,13 +50,13 @@ public:
     void resetValues() noexcept;
     [[nodiscard]] inline bool exitStatus() const noexcept {return m_return;}
 
-    static void Version() noexcept;
-    static void Help(const char *bin, int returnValue) noexcept;
+    static void version() noexcept;
+    static void help(const char *bin, int returnValue) noexcept;
     static void VSCodeDiff(const Test &test, const std::string &output);
-    static bool CheckVSCodeBin();
-    static void CheckUpdate() noexcept;
-    static void Update() noexcept;
-    static void Changelog() noexcept;
+    static bool checkVSCodeBin();
+    static void checkUpdate() noexcept;
+    static void update() noexcept;
+    static void changelog() noexcept;
 
     static void display(Test test, const std::string &output, int returnValue, Details details);
     static void compute(const Test &test, pid_t pid, int &status, Details details);

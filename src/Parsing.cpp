@@ -5,7 +5,7 @@
 
 enum CheckStatus {Input, Output};
 
-void Parsing::checkIsEmpty(const std::vector<std::string> &file)
+void Parsing::isEmpty(const std::vector<std::string> &file)
 {
     if (file.empty())
         throw IOTester::exception("the file is empty");
@@ -28,7 +28,7 @@ void Parsing::isInput(const std::string &line, size_t pos)
 
 void Parsing::isParam(const std::string &line, size_t pos)
 {
-    auto list = Utils::string_to_vector(line, ' ');
+    auto list = Utils::stringToVector(line, ' ');
     if (list[0] == "@default" and list.size() == 3) {
         list.erase(list.begin());
         list.front() = '@' + list.front();
@@ -55,13 +55,13 @@ void Parsing::isParam(const std::string &line, size_t pos)
         throw IOTester::exception("bad parameter at line " + std::to_string(pos) + " : " + line);
 }
 
-std::vector<std::string> Parsing::CheckFile(const char *path)
+std::vector<std::string> Parsing::checkFile(const char *path)
 {
-    auto file = Utils::string_to_vector(Utils::get_file_content(path), '\n');
+    auto file = Utils::stringToVector(Utils::getFileContent(path), '\n');
     CheckStatus status = Input;
     size_t pos = 0;
 
-    Parsing::checkIsEmpty(file);
+    Parsing::isEmpty(file);
     for (auto &line : file) {
         pos += 1;
         if (line.empty())
