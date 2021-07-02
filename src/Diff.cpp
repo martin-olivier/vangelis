@@ -12,8 +12,8 @@ void IOTester::VSCodeDiff(const Test &test, const std::string &output)
 {
     const std::string filename1 = "\"/tmp/GOT(" + test.m_name + ")\"";
     const std::string filename2 = "\"/tmp/EXPECTED(" + test.m_name + ")\"";
-    const std::string s1 = "echo \"" + output + "\" > " + filename1;
-    const std::string s2 = "echo \"" + test.m_output + "\" > " + filename2;
+    const std::string s1 = "printf \"" + output + "\" > " + filename1;
+    const std::string s2 = "printf \"" + test.m_output + "\" > " + filename2;
 
     system(std::string(s1 + " ; " + s2).c_str());
     system(std::string(VSCodePath + filename1 + " " + filename2).c_str());

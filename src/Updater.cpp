@@ -54,6 +54,7 @@ void IOTester::changelog() noexcept
             "> [FIX] cleaner display",
             BLU "(1.8.1)" RESET,
             "> [FIX] the test pid is killed only if process is not terminated",
+            "> [FIX] no useless newline in --diff display",
             "> [FIX] missing display if --diff and Visual Studio Code not installed",
             "> [FIX] code is now in camelCase",
             "> [FIX] args parser",
