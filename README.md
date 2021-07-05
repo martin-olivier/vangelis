@@ -86,6 +86,7 @@ root
 [END]
 
 # disable stdout and stderr catch for this test :
+
 @stdout false
 @stderr false
 
@@ -94,8 +95,6 @@ root
 ```
 
 Then execute `IO_Tester` with files that contains the tests as arguments.
-
-You can add `--details` to display the difference between the real, and the expected output in the shell when a test fails.
 ![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)  
 You can add `--diff` to display the difference between the real, and the expected output in Visual Studio Code when a test fails.
 ![example_diff](https://github.com/tocola/IO-TESTER/blob/main/.github/example_diff.png?raw=true)  
