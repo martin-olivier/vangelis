@@ -8,7 +8,7 @@ defaults:
 
 jobs:
     build_ubuntu:
-        name: build ubuntu
+        name: ubuntu
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
@@ -17,7 +17,7 @@ jobs:
               run: make
 
     build_macos:
-        name: build macOS
+        name: macOS
         runs-on: macos-latest
         steps:
             - uses: actions/checkout@v2
