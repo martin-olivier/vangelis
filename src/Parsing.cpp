@@ -61,7 +61,7 @@ std::vector<std::string> Parsing::checkFile(const char *path)
     CheckStatus status = Input;
     size_t pos = 0;
 
-    Parsing::isEmpty(file);
+    isEmpty(file);
     for (auto &line : file) {
         pos += 1;
         if (line.empty())
