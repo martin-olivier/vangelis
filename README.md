@@ -7,6 +7,8 @@
 [![GitHub forks](https://img.shields.io/github/forks/tocola/IO-TESTER?style=social)](https://github.com/tocola/IO-TESTER/network/members/)
 [![GitHub stars](https://img.shields.io/github/stars/tocola/IO-TESTER?style=social)](https://github.com/tocola/IO-TESTER/stargazers/)
 
+[![workflow](https://github.com/tocola/IO-TESTER/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/tocola/IO-TESTER/actions/workflows/unit_tests.yml)
+
 The goal of this software is to take files as parameter that contains lists of inputs and expected outputs and to tell the user if the tests succeed, failed or crashed.
 
 ## Compatibility
