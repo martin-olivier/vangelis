@@ -58,6 +58,9 @@ void IOTester::changelog() noexcept
             "> [FIX] missing display if --diff and Visual Studio Code not installed",
             "> [FIX] code is now in camelCase",
             "> [FIX] args parser",
+            BLU "(1.8.2)" RESET,
+            "> [FIX] updater",
+            "> [FIX] the test pid is not threaded anymore",
     };
     std::cout << YEL << "[CHANGELOG]" << RESET << std::endl;
     for (auto line : changelog)
@@ -120,24 +123,9 @@ void IOTester::update() noexcept
         exit(0);
     }
 
-    pid_t pid = fork();
-    if (pid == -1) {
-        std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
-        exit(84);
-    } else if (pid == 0) {
-        constexpr char *args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", nullptr};
-        if (execvp("cp", args) != 0) {
-            std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
-            exit(84);
-        }
-    } else {
-        int ret = 0;
-        waitpid(pid, &ret, WUNTRACED | WCONTINUED);
-        if (ret != 0) {
-            std::cerr << RED << "[FAILED] Install" << RESET << std::endl;
-            exit(84);
-        }
-        std::cout << GRN << "[SUCCESS] Install" << RESET << " > run IO_Tester -c to see changelog" << std::endl;
-    }
+    constexpr char *args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", nullptr};
+
+    std::cout << GRN << "[SUCCESS] Install" << RESET << " > run IO_Tester -c to see changelog" << std::endl;
+    execvp("cp", args);
     exit(0);
 }

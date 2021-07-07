@@ -1,5 +1,5 @@
 # IO Tester
-[![Version](https://img.shields.io/badge/IO_Tester-v1.8.1-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.8.1)
+[![Version](https://img.shields.io/badge/IO_Tester-v1.8.2-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.8.2)
 [![MIT license](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/tocola/IO-TESTER/blob/main/LICENSE)
 [![CPP Version](https://img.shields.io/badge/C++-17-darkgreen.svg)](https://isocpp.org/)
 

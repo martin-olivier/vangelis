@@ -27,6 +27,7 @@ root
 [END]
 
 # disable stdout and stderr catch for this test :
+
 @stdout false
 @stderr false
 

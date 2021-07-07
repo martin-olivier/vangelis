@@ -95,6 +95,8 @@ void IOTester::comparator(const Test &test)
     if (m_details_count == 0)
         det = NO;
     pid_t pid = fork();
+    if (pid == 0)
+        compute(test, pid, ret, det);
     std::thread proc(compute, std::cref(test), pid, std::ref(ret), det);
 
     std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now();

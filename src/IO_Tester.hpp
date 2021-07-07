@@ -5,7 +5,7 @@
 #include <exception>
 #include <string_view>
 
-#define VERSION "1.8.1"
+#define VERSION "1.8.2"
 
 class Test final
 {
