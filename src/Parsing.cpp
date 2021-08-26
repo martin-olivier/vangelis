@@ -21,9 +21,9 @@ void Parsing::isInput(const std::string &line, size_t pos)
     if (line[0] != '[')
         throw IOTester::exception("parsing error at line " + std::to_string(pos));
     if (line.find(']') == std::string::npos)
-        throw IOTester::exception("parsing error at line : " + std::to_string(pos));
+        throw IOTester::exception("parsing error at line " + std::to_string(pos));
     if (line.find(']') == line.size() - 1 or line.find(']') == 1)
-        throw IOTester::exception("parsing error at line : " + std::to_string(pos));
+        throw IOTester::exception("parsing error at line " + std::to_string(pos));
 }
 
 void Parsing::isParam(const std::string &line, size_t pos)
