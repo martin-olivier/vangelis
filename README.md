@@ -1,5 +1,5 @@
 # IO Tester
-[![Version](https://img.shields.io/badge/IO_Tester-v1.8.2-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.8.2)
+[![Version](https://img.shields.io/badge/IO_Tester-v1.9.0-blue.svg)](https://github.com/tocola/IO-TESTER/releases/tag/v1.9.0)
 [![MIT license](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/tocola/IO-TESTER/blob/main/LICENSE)
 [![CPP Version](https://img.shields.io/badge/C++-17-darkgreen.svg)](https://isocpp.org/)
 
@@ -11,19 +11,19 @@
 
 The goal of this software is to take files as parameter that contains lists of inputs and expected outputs and to tell the user if the tests succeed, failed or crashed.
 
-## Compatibility
+## ⚠️ Compatibility
 Works on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
 
-## Installation
+## 💻 Installation
 
 1. Clone this repository
 2. Go to the `IO-TESTER` folder
 3. Execute the following command :  
    `sudo make install` (the binary will be installed at ***usr/local/bin***)
 
-`Don't forget to put a star on the project 🌟`
+`⭐ Don't forget to put a star if you like the project!`
 
-## Manual
+## 📒 Manual
 
 ```
 USAGE:
@@ -46,7 +46,7 @@ RETURN VALUE:
         84              if IO_Tester failed to load a test file
 ```
 
-## Usage
+## ✍️ Usage
 
 Test files must follow this pattern :
 ```
@@ -61,6 +61,7 @@ Let's create a test file :
 ```
 # test.io
 
+# set the default timeout of the tests to 1 sec :
 @default timeout 1
 
 [Simple Print] python3 printer test
@@ -107,7 +108,7 @@ You can also run multiple test files at once :
 IO_Tester test1.io test2.io test3.io --diff 1
 ```
 
-## Test Parameters
+## 💬 Test Parameters
 You can change the value of a parameter for the next test :
 ```
 @stdout  <bool>  (default: true)
@@ -120,7 +121,7 @@ You can also change the default value of a parameter :
 @default parameter value
 ```
 
-## Build Tips
+## 💡 Build Tips
 If you want to uninstall IO Tester :  
 `make uninstall`  
 
@@ -133,7 +134,7 @@ If you want to remove all objects files :
 If you want to remove all objects files and the binary :  
 `make fclean`  
 
-## Contributors
+## 👤 Contributors
 
  - [Martin Olivier](https://github.com/tocola)
  - [Benjamin Reigner](https://github.com/Breigner01)
