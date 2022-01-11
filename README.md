@@ -48,7 +48,7 @@ RETURN VALUE:
 
 ## ✍️ Usage
 
-Test files must follow this pattern :
+Test files must follow this pattern:
 ```
 [Test Name] command
 expected output
@@ -56,12 +56,12 @@ expected output
 ```
 
 Here we want to test a program that takes parameters and prints them in the standard output. We will also test some system commands  
-Let's create a test file :
+Let's create a test file:
 
 ```
 # test.io
 
-# set the default timeout of the tests to 1 sec :
+# set the default timeout of the tests to 1 sec:
 @default timeout 1
 
 [Simple Print] python3 printer test
@@ -88,7 +88,7 @@ root
 
 [END]
 
-# disable stdout and stderr catch for this test :
+# disable stdout and stderr catch for this test:
 
 @stdout false
 @stderr false
@@ -97,41 +97,41 @@ root
 [END]
 ```
 
-Then execute `IO_Tester` with files that contains the tests as arguments.
+Then execute `IO_Tester` with files that contains the tests as arguments:
 ![example_details](https://github.com/tocola/IO-TESTER/blob/main/.github/example_details.png?raw=true)  
-You can add `--diff` to display the difference between the real, and the expected output in Visual Studio Code when a test fails.
+You can add `--diff` to display the difference between the real, and the expected output in Visual Studio Code when a test fails:
 ![example_diff](https://github.com/tocola/IO-TESTER/blob/main/.github/example_diff.png?raw=true)  
 
 You can add the number of maximum failed tests to display after `--details` or `--diff`.  
-You can also run multiple test files at once :
+You can also run multiple test files at once:
 ```
 IO_Tester test1.io test2.io test3.io --diff 1
 ```
 
 ## 💬 Test Parameters
-You can change the value of a parameter for the next test :
+You can change the value of a parameter for the next test:
 ```
 @stdout  <bool>  (default: true)
 @stderr  <bool>  (default: true)
 @return  <int>   (default: 0)
 @timeout <float> (default: 3.0)
 ```
-You can also change the default value of a parameter :
+You can also change the default value of a parameter:
 ```
 @default parameter value
 ```
 
 ## 💡 Build Tips
-If you want to uninstall IO Tester :  
+If you want to uninstall IO Tester:  
 `make uninstall`  
 
-If you just want to get the binary without installing :  
+If you just want to get the binary without installing:  
 `make`  
 
-If you want to remove all objects files :  
+If you want to remove all objects files:  
 `make clean`  
 
-If you want to remove all objects files and the binary :  
+If you want to remove all objects files and the binary:  
 `make fclean`  
 
 ## 👤 Contributors
