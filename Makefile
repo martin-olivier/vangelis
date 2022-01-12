@@ -22,7 +22,7 @@ install: all
 
 uninstall:
 	@rm /usr/local/bin/IO_Tester
-	@echo "${GREEN}[SUCCESS]${RESET} IO_Tester has been unistalled"
+	@echo "${GREEN}[SUCCESS]${RESET} IO_Tester has been uninstalled"
 
 clean:
 	@rm -rf build
