@@ -1,5 +1,7 @@
 # test.io
 
+# set the default timeout of the tests to 1 sec:
+
 @default timeout 1
 
 [Simple Print] python3 printer test
@@ -26,7 +28,7 @@ root
 
 [END]
 
-# disable stdout and stderr catch for this test :
+# disable stdout and stderr catch for this test:
 
 @stdout false
 @stderr false

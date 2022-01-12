@@ -90,11 +90,12 @@ IOTester::IOTester(int ac, char **av)
         if (i != 0)
             std::cout << '\n';
         if (files.size() > 1)
-            std::cout << CYN << files[i] << ":\n" << RESET << std::endl;
+            std::cout << CYN << files[i] << "\n" << RESET << std::endl;
         m_file = Parsing::checkFile(files[i].data());
         apply();
         resetValues();
     }
+    printFinalResults();
     if (m_details == DIFF and !checkVSCodeBin()) {
         std::cerr << RED << "\nYou need to install Visual Studio Code to show diff" << std::endl;
         std::cerr << "Use --details otherwise" << RESET << std::endl;
@@ -108,11 +109,6 @@ void IOTester::resetValues() noexcept
     if (m_failed > 0 or m_crashed > 0 or m_timeout > 0)
         m_return = EXIT_FAILURE;
     m_position = 0;
-    m_passed = 0;
-    m_failed = 0;
-    m_crashed = 0;
-    m_timeout = 0;
-
     m_default_stdout = true;
     m_default_stderr = true;
     m_default_return = 0;
@@ -121,7 +117,7 @@ void IOTester::resetValues() noexcept
 
 void IOTester::printFinalResults() const noexcept
 {
-    std::cout << "\n> Tested: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
+    std::cout << "\n> Tests: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
     std::cout << " | Pass: " << GRN << m_passed << RESET;
     std::cout << " | Fail: " << RED << m_failed << RESET;
     std::cout << " | Crash: " << YEL << m_crashed << RESET;
@@ -135,10 +131,8 @@ void IOTester::apply()
     while (true) {
         comparator(getTestData());
         while (true) {
-            if (m_position >= m_file.size()) {
-                printFinalResults();
+            if (m_position >= m_file.size())
                 return;
-            }
             else if (m_file[m_position].empty())
                 m_position++;
             else

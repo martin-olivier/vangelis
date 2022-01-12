@@ -20,17 +20,17 @@ void IOTester::display(Test test, const std::string &output, int returnValue, De
         test.m_status = Test::PASS;
 
     if (test.m_status == Test::CRASH)
-        std::cout << YEL << "[SF]" << RESET << ' ' << test.m_name << std::endl;
+        std::cout << YEL << "[!]" << RESET << ' ' << test.m_name << std::endl;
     else if (test.m_output == output and test.m_return == WEXITSTATUS(returnValue))
-        std::cout << GRN << "[OK]" << RESET << ' ' << test.m_name << std::endl;
+        std::cout << GRN << "[O]" << RESET << ' ' << test.m_name << std::endl;
     else {
-        std::cout << RED << "[KO]" << RESET << ' ' << test.m_name << std::endl;
+        std::cout << RED << "[X]" << RESET << ' ' << test.m_name << std::endl;
         test.m_status = Test::FAILED;
         if (details == IOTester::DETAILS) {
             if (test.m_output == output)
-                std::cout << BLU << "[GOT] :\n" << RESET << "Return Value -> " << WEXITSTATUS(returnValue) << BLU << "\n[EXPECTED] :\n" << RESET << "Return Value -> " << test.m_return << std::endl;
+                std::cout << BLU << "[GOT]\n" << RESET << "Return Value -> " << WEXITSTATUS(returnValue) << BLU << "\n[EXPECTED]\n" << RESET << "Return Value -> " << test.m_return << std::endl;
             else
-                std::cout << BLU << "[GOT] :\n" << RESET << output << BLU << "\n[EXPECTED] :\n" << RESET << test.m_output << std::endl;
+                std::cout << BLU << "[GOT]\n" << RESET << output << BLU << "\n[EXPECTED]\n" << RESET << test.m_output << std::endl;
         }
         else if (details == IOTester::DIFF) {
             std::string out = output;
@@ -119,7 +119,7 @@ void IOTester::comparator(const Test &test)
     else if (ret == Test::CRASH)
         m_crashed++;
     else if (ret == Test::TIMEOUT) {
-        std::cout << MAG << "[TO]" << RESET << ' ' << test.m_name << std::endl;
+        std::cout << MAG << "[?]" << RESET << ' ' << test.m_name << std::endl;
         m_timeout++;
     }
     else if (ret == Test::ERROR)

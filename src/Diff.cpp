@@ -3,9 +3,9 @@
 #include <unistd.h>
 
 #ifdef __APPLE__
-#define VSCodePath "\"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" --diff "
+const std::string VSCodePath = "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code";
 #else
-#define VSCodePath "code --diff "
+const std::string VSCodePath = "code";
 #endif
 
 void IOTester::VSCodeDiff(const Test &test, const std::string &output)
@@ -16,13 +16,13 @@ void IOTester::VSCodeDiff(const Test &test, const std::string &output)
     const std::string s2 = "printf \"" + test.m_output + "\" > " + filename2;
 
     system(std::string(s1 + " ; " + s2).c_str());
-    system(std::string(VSCodePath + filename1 + " " + filename2).c_str());
+    system(std::string("\"" + VSCodePath + "\" --diff " + filename1 + " " + filename2).c_str());
 }
 
 bool IOTester::checkVSCodeBin()
 {
 #ifdef __APPLE__
-    if (access("/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code", X_OK) != -1)
+    if (access(VSCodePath.c_str(), X_OK) != -1)
         return true;
     return false;
 #else

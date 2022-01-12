@@ -4,7 +4,6 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <string_view>
-#include <sys/wait.h>
 
 void IOTester::changelog() noexcept
 {
@@ -123,9 +122,9 @@ void IOTester::update() noexcept
         exit(0);
     }
 
-    constexpr char *args[] = {(char *)"cp", (char *)"/tmp/IO-TESTER/IO_Tester", (char *)"/usr/local/bin", nullptr};
+    constexpr const char *args[] = {"cp", "/tmp/IO-TESTER/IO_Tester", "/usr/local/bin", nullptr};
 
     std::cout << GRN << "[SUCCESS] Install" << RESET << " > run IO_Tester -c to see changelog" << std::endl;
-    execvp("cp", args);
+    execvp("cp", const_cast<char *const *>(args));
     exit(0);
 }
