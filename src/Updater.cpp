@@ -75,7 +75,7 @@ void IOTester::checkUpdate() noexcept
     if (!dir) {
         if (system("git --help > /dev/null 2>&1") != 0)
             return;
-        system("git clone https://github.com/tocola/IO-TESTER.git /tmp/IO-TESTER > /dev/null 2>&1 &");
+        system("git clone https://github.com/martin-olivier/IO-TESTER.git /tmp/IO-TESTER > /dev/null 2>&1 &");
         return;
     }
     closedir(dir);
@@ -103,7 +103,7 @@ void IOTester::update() noexcept
     }
     DIR *dir = opendir("/tmp/IO-TESTER");
     if (!dir) {
-        if (system("git clone https://github.com/tocola/IO-TESTER.git /tmp/IO-TESTER > /dev/null 2>&1") != 0) {
+        if (system("git clone https://github.com/martin-olivier/IO-TESTER.git /tmp/IO-TESTER > /dev/null 2>&1") != 0) {
             std::cout << RED << "[FAILED] Download" << RESET << std::endl;
             exit(84);
         }
