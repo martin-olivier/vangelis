@@ -27,7 +27,7 @@ set(MAIN src/main.cpp)
 
 set(SOURCES
     src/IO_Tester.cpp
-    src/Utils.cpp
+    src/tools.cpp
     src/Parsing.cpp
     src/Test.cpp
     src/Diff.cpp

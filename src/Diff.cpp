@@ -1,5 +1,5 @@
 #include "IO_Tester.hpp"
-#include "Utils.hpp"
+#include "tools.hpp"
 #include <unistd.h>
 
 #ifdef __APPLE__
@@ -29,7 +29,7 @@ bool IOTester::checkVSCodeBin()
     char* env_p = std::getenv("PATH");
     if (env_p == NULL)
         return false;
-    auto PATHList = Utils::stringToVector(env_p, ':');
+    auto PATHList = tools::string_to_vector(env_p, ':');
 
     for (auto &path : PATHList) {
         if (access((std::string(path + "/code").c_str()), X_OK) != -1)

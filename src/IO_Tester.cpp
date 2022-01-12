@@ -1,7 +1,7 @@
+#include <iostream>
 #include "IO_Tester.hpp"
 #include "Parsing.hpp"
-#include "Utils.hpp"
-#include <iostream>
+#include "format.hpp"
 
 void IOTester::version() noexcept
 {
@@ -90,15 +90,15 @@ IOTester::IOTester(int ac, char **av)
         if (i != 0)
             std::cout << '\n';
         if (files.size() > 1)
-            std::cout << CYN << files[i] << "\n" << RESET << std::endl;
+            std::cout << format::cyan << files[i] << "\n" << format::reset << std::endl;
         m_file = Parsing::checkFile(files[i].data());
         apply();
         resetValues();
     }
     printFinalResults();
     if (m_details == DIFF and !checkVSCodeBin()) {
-        std::cerr << RED << "\nYou need to install Visual Studio Code to show diff" << std::endl;
-        std::cerr << "Use --details otherwise" << RESET << std::endl;
+        std::cerr << format::red << "\nYou need to install Visual Studio Code to show diff" << std::endl;
+        std::cerr << "Use --details otherwise" << format::reset << std::endl;
     }
     checkUpdate();
     std::cout << std::endl;
@@ -117,11 +117,11 @@ void IOTester::resetValues() noexcept
 
 void IOTester::printFinalResults() const noexcept
 {
-    std::cout << "\n> Tests: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
-    std::cout << " | Pass: " << GRN << m_passed << RESET;
-    std::cout << " | Fail: " << RED << m_failed << RESET;
-    std::cout << " | Crash: " << YEL << m_crashed << RESET;
-    std::cout << " | Timeout: " << MAG << m_timeout << RESET << std::endl;
+    std::cout << "\n> Tests: " << format::blue << m_crashed + m_passed + m_failed + m_timeout << format::reset;
+    std::cout << " | Pass: " << format::green << m_passed << format::reset;
+    std::cout << " | Fail: " << format::red << m_failed << format::reset;
+    std::cout << " | Crash: " << format::yellow << m_crashed << format::reset;
+    std::cout << " | Timeout: " << format::magenta << m_timeout << format::reset << std::endl;
 }
 
 void IOTester::apply()

@@ -1,48 +1,48 @@
 #include "IO_Tester.hpp"
-#include "Utils.hpp"
 #include <iostream>
 #include <dirent.h>
 #include <unistd.h>
 #include <string_view>
+#include "format.hpp"
 
 void IOTester::changelog() noexcept
 {
-    constexpr std::string_view changelog[] = {
-            BLU "(1.0)" RESET,
+    const std::string changelog[] = {
+            std::string(format::blue) + "(1.0)" + format::reset,
             "> [ADD] IO_Tester",
-            BLU "(1.1)" RESET,
+            std::string(format::blue) + "(1.1)" + format::reset,
             "> [FIX] segmentation fault now appears properly",
-            BLU "(1.2)" RESET,
+            std::string(format::blue) + "(1.2)" + format::reset,
             "> [ADD] Visual Studio Code diff (--diff)",
-            BLU "(1.3)" RESET,
+            std::string(format::blue) + "(1.3)" + format::reset,
             "> [ADD] updater (-u || --update)",
             "> [ADD] changelog (-c || --changelog)",
-            BLU "(1.4)" RESET,
+            std::string(format::blue) + "(1.4)" + format::reset,
             "> [FIX] optimised updater",
             "> [ADD] return value (0 when all tests succeed, 1 otherwise)",
-            BLU "(1.5)" RESET,
+            std::string(format::blue) + "(1.5)" + format::reset,
             "> [ADD] comments between tests in test files",
             "> [FIX] parsing errors",
             "> [FIX] updater now only works when IO_Tester is installed",
-            BLU "(1.6)" RESET,
+            std::string(format::blue) + "(1.6)" + format::reset,
             "> [ADD] stderr is now catch like stdout",
             "> [FIX] parsing errors",
-            BLU "(1.6.1)" RESET,
+            std::string(format::blue) + "(1.6.1)" + format::reset,
             "> [FIX] optimised file loading",
-            BLU "(1.6.2)" RESET,
+            std::string(format::blue) + "(1.6.2)" + format::reset,
             "> [ADD] now builds with C++17",
             "> [FIX] minor details",
-            BLU "(1.7.0)" RESET,
+            std::string(format::blue) + "(1.7.0)" + format::reset,
             "> [ADD] timeout",
             "> [ADD] expected return value",
-            BLU "(1.7.1)" RESET,
+            std::string(format::blue) + "(1.7.1)" + format::reset,
             "> [ADD] timeout value can be a float",
             "> [FIX] better error messages",
-            BLU "(1.7.2)" RESET,
+            std::string(format::blue) + "(1.7.2)" + format::reset,
             "> [ADD] better error messages",
             "> [ADD] throw and noexcept",
             "> [REM] removed '>' and '->' before return values",
-            BLU "(1.8.0)" RESET,
+            std::string(format::blue) + "(1.8.0)" + format::reset,
             "> [ADD] test parameters",
             "> [ADD] parameter: stdout",
             "> [ADD] parameter: stderr",
@@ -51,18 +51,18 @@ void IOTester::changelog() noexcept
             "> [ADD] details and diff limit",
             "> [FIX] args parser",
             "> [FIX] cleaner display",
-            BLU "(1.8.1)" RESET,
+            std::string(format::blue) + "(1.8.1)" + format::reset,
             "> [FIX] the test pid is killed only if process is not terminated",
             "> [FIX] no useless newline in --diff display",
             "> [FIX] missing display if --diff and Visual Studio Code not installed",
             "> [FIX] code is now in camelCase",
             "> [FIX] args parser",
-            BLU "(1.8.2)" RESET,
+            std::string(format::blue) + "(1.8.2)" + format::reset,
             "> [FIX] updater",
             "> [FIX] the test pid is not threaded anymore",
     };
-    std::cout << YEL << "[CHANGELOG]" << RESET << std::endl;
-    for (auto line : changelog)
+    std::cout << format::yellow << "[CHANGELOG]" << + format::reset << std::endl;
+    for (const auto &line : changelog)
         std::cout << line << std::endl;
     exit(0);
 }
@@ -84,27 +84,27 @@ void IOTester::checkUpdate() noexcept
         return;
     }
     if (system("diff /tmp/IO-TESTER/IO_Tester /usr/local/bin/IO_Tester > /dev/null 2>&1") != 0)
-        std::cout << std::endl << MAG << "[UPDATE]" << RESET << " A new version is available : sudo IO_Tester --update" << std::endl;
+        std::cout << std::endl << format::magenta << "[UPDATE]" << + format::reset << " A new version is available : sudo IO_Tester --update" << std::endl;
 }
 
 void IOTester::update() noexcept
 {
     if (access("/usr/local/bin/IO_Tester", X_OK) == -1) {
-        std::cerr << RED << "\nIO_Tester needs to be installed to be updated (sudo make install)\n" << RESET << std::endl;
+        std::cerr << format::red << "\nIO_Tester needs to be installed to be updated (sudo make install)\n" << + format::reset << std::endl;
         exit(84);
     }
     if (system("git --help > /dev/null 2>&1") != 0) {
-        std::cerr << RED << "\nYou need to install git to update\n" << RESET << std::endl;
+        std::cerr << format::red << "\nYou need to install git to update\n" << + format::reset << std::endl;
         exit(84);
     }
     if (access("/usr/local/bin", W_OK) == -1) {
-        std::cout << RED << "[FAILED] re-run with sudo" << RESET << std::endl;
+        std::cout << format::red << "[FAILED] re-run with sudo" << + format::reset << std::endl;
         exit(84);
     }
     DIR *dir = opendir("/tmp/IO-TESTER");
     if (!dir) {
         if (system("git clone https://github.com/martin-olivier/IO-TESTER.git /tmp/IO-TESTER > /dev/null 2>&1") != 0) {
-            std::cout << RED << "[FAILED] Download" << RESET << std::endl;
+            std::cout << format::red << "[FAILED] Download" << + format::reset << std::endl;
             exit(84);
         }
     }
@@ -113,7 +113,7 @@ void IOTester::update() noexcept
 
     if (access("/tmp/IO-TESTER/IO_Tester", X_OK) == -1) {
         if (system("make -C /tmp/IO-TESTER > /dev/null 2>&1") != 0) {
-            std::cerr << RED << "\n[FAILED] Build\n" << RESET << std::endl;
+            std::cerr << format::red << "\n[FAILED] Build\n" << + format::reset << std::endl;
             exit(84);
         }
     }
@@ -124,7 +124,7 @@ void IOTester::update() noexcept
 
     constexpr const char *args[] = {"cp", "/tmp/IO-TESTER/IO_Tester", "/usr/local/bin", nullptr};
 
-    std::cout << GRN << "[SUCCESS] Install" << RESET << " > run IO_Tester -c to see changelog" << std::endl;
+    std::cout << format::green << "[SUCCESS] IO_Tester has been updated" << + format::reset << " > run IO_Tester -c to see changelog" << std::endl;
     execvp("cp", const_cast<char *const *>(args));
     exit(0);
 }

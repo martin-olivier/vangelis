@@ -1,5 +1,5 @@
 #include "IO_Tester.hpp"
-#include "Utils.hpp"
+#include "tools.hpp"
 #include <iostream>
 #include <functional>
 #include <map>
@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <sys/wait.h>
+#include "format.hpp"
 
 void IOTester::display(Test test, const std::string &output, int returnValue, Details details)
 {
@@ -20,17 +21,17 @@ void IOTester::display(Test test, const std::string &output, int returnValue, De
         test.m_status = Test::PASS;
 
     if (test.m_status == Test::CRASH)
-        std::cout << YEL << "[!]" << RESET << ' ' << test.m_name << std::endl;
+        std::cout << format::yellow << "[!]" << format::reset << ' ' << test.m_name << std::endl;
     else if (test.m_output == output and test.m_return == WEXITSTATUS(returnValue))
-        std::cout << GRN << "[O]" << RESET << ' ' << test.m_name << std::endl;
+        std::cout << format::green << "[O]" << format::reset << ' ' << test.m_name << std::endl;
     else {
-        std::cout << RED << "[X]" << RESET << ' ' << test.m_name << std::endl;
+        std::cout << format::red << "[X]" << format::reset << ' ' << test.m_name << std::endl;
         test.m_status = Test::FAILED;
         if (details == IOTester::DETAILS) {
             if (test.m_output == output)
-                std::cout << BLU << "[GOT]\n" << RESET << "Return Value -> " << WEXITSTATUS(returnValue) << BLU << "\n[EXPECTED]\n" << RESET << "Return Value -> " << test.m_return << std::endl;
+                std::cout << format::blue << "[GOT]\n" << format::reset << "Return Value -> " << WEXITSTATUS(returnValue) << format::blue << "\n[EXPECTED]\n" << format::reset << "Return Value -> " << test.m_return << std::endl;
             else
-                std::cout << BLU << "[GOT]\n" << RESET << output << BLU << "\n[EXPECTED]\n" << RESET << test.m_output << std::endl;
+                std::cout << format::blue << "[GOT]\n" << format::reset << output << format::blue << "\n[EXPECTED]\n" << format::reset << test.m_output << std::endl;
         }
         else if (details == IOTester::DIFF) {
             std::string out = output;
@@ -119,7 +120,7 @@ void IOTester::comparator(const Test &test)
     else if (ret == Test::CRASH)
         m_crashed++;
     else if (ret == Test::TIMEOUT) {
-        std::cout << MAG << "[?]" << RESET << ' ' << test.m_name << std::endl;
+        std::cout << format::magenta << "[?]" << format::reset << ' ' << test.m_name << std::endl;
         m_timeout++;
     }
     else if (ret == Test::ERROR)
@@ -144,7 +145,7 @@ Test IOTester::getTestData()
     };
 
     while (m_file[m_position].find('[') != 0) {
-        auto tab = Utils::stringToVector(m_file[m_position], ' ');
+        auto tab = tools::string_to_vector(m_file[m_position], ' ');
         if (m_file[m_position].find("@default") == 0)
             defaultParamMap[tab[1]](tab[2]);
         else if (m_file[m_position].find('@') == 0)

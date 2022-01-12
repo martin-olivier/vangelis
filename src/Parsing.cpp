@@ -1,6 +1,6 @@
 #include "IO_Tester.hpp"
 #include "Parsing.hpp"
-#include "Utils.hpp"
+#include "tools.hpp"
 #include <algorithm>
 
 enum CheckStatus {Input, Output};
@@ -28,7 +28,7 @@ void Parsing::isInput(const std::string &line, size_t pos)
 
 void Parsing::isParam(const std::string &line, size_t pos)
 {
-    auto list = Utils::stringToVector(line, ' ');
+    auto list = tools::string_to_vector(line, ' ');
     if (list[0] == "@default" and list.size() == 3) {
         list.erase(list.begin());
         list.front() = '@' + list.front();
@@ -57,7 +57,7 @@ void Parsing::isParam(const std::string &line, size_t pos)
 
 std::vector<std::string> Parsing::checkFile(const char *path)
 {
-    auto file = Utils::stringToVector(Utils::getFileContent(path), '\n');
+    auto file = tools::string_to_vector(tools::get_file_content(path), '\n');
     CheckStatus status = Input;
     size_t pos = 0;
 
