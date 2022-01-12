@@ -1,24 +1,3 @@
-MAKEFLAGS	=	--no-print-directory
-
-CXX 		?=	g++
-
-RM			?=	rm -f
-
-CXXFLAGS	=	-std=c++17 -Wall -Wextra -Weffc++
-
-CPPFLAGS	=	-iquote include
-
-SRC			+=	src/Utils.cpp
-SRC			+=	src/IO_Tester.cpp
-SRC			+=	src/Parsing.cpp
-SRC			+=	src/Test.cpp
-SRC			+=	src/Diff.cpp
-SRC			+=	src/Updater.cpp
-
-OBJ			=	$(SRC:.cpp=.o)
-
-NAME		=	IO_Tester
-
 ifneq (,$(findstring xterm,${TERM}))
 GREEN       := $(shell tput -Txterm setaf 2)
 RED         := $(shell tput -Txterm setaf 1)
@@ -29,36 +8,28 @@ RED         := ""
 RESET       := ""
 endif
 
-%.o:	%.cpp
-	@$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $< && \
-	(echo "${GREEN}[OK]${RESET}" $<) || \
-	(echo "${RED}[BUILD ERROR]${RESET}" $<; false)
+all:
+	cmake . -B build/ -DCMAKE_BUILD_TYPE=Debug
+	cmake --build build/
 
-ifdef DEBUG
-	CXXFLAGS	+=	-ggdb3
-endif
-
-all:	$(NAME)
-
-$(NAME):	$(OBJ)
-	@$(CXX) -o $(NAME) $(OBJ) -lpthread
+tests:
+	cmake . -B build_tests/ -DCMAKE_BUILD_TYPE=Debug -DUNIT_TESTS=ON
+	cmake --build build_tests/
 
 install: all
-	@cp $(NAME) /usr/local/bin
-	@echo "${GREEN}[SUCCESS]${RESET} Install : IO_Tester => /usr/local/bin"
+	@cp IO_Tester /usr/local/bin
+	@echo "${GREEN}[SUCCESS]${RESET} IO_Tester has been installed at /usr/local/bin"
 
 uninstall:
 	@rm /usr/local/bin/IO_Tester
-	@echo "${GREEN}[SUCCESS]${RESET} Uninstall : IO_Tester"
+	@echo "${GREEN}[SUCCESS]${RESET} IO_Tester has been unistalled"
 
 clean:
-	@for f in $(OBJ); do if [ -f $$f ]; then echo "${RED}[RM]${RESET}" $$f; fi; done;
-	@$(RM) $(OBJ)
+	@rm -rf build
+	@rm -rf build_tests
 
 fclean:	clean
-	@if [ -f $(NAME) ]; then echo "${RED}[RM]${RESET}" $(NAME); fi;
-	@$(RM) $(NAME)
+	@rm -rf IO_Tester
+	@rm -rf unit_tests
 
-re: fclean all
-
-.PHONY: all clean fclean re
+.PHONY: all tests clean fclean install uninstall

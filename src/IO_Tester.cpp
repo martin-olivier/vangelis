@@ -140,19 +140,3 @@ void IOTester::apply()
         }
     }
 }
-
-int main(int ac, char **av)
-{
-    try {
-        IOTester app(ac, av);
-        return app.exitStatus();
-    }
-    catch (const std::exception &e) {
-        std::cerr << RED << "error: " << RESET << e.what() << std::endl;
-        return 84;
-    }
-    catch (...) {
-        std::cerr << RED << "error: " << RESET << "unknown exception caught" << std::endl;
-        return 84;
-    }
-}

@@ -1,12 +1,25 @@
-# Editor files and folders
+# Editor Files and Folders
 
 .idea/
 .vscode/
-*.DS_Store
+.DS_Store
 *~
 \#*#
 
-# Binary files
+# Build Files and Binaries
 
+*.log
 *.o
+*.so
+*.dll
+*.dylib
+cmake-build-*/
+*build/
+*build_tests/
 IO_Tester
+unit_tests
+
+# Documentation Generation Files
+
+doc/latex/
+doc/html/
