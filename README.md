@@ -11,8 +11,13 @@
 
 The goal of this software is to take files as parameter that contains lists of inputs and expected outputs and to tell the user if the tests succeed, failed or crashed.
 
-## ⚠️ Compatibility
-Works on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`
+## ⚠️ Requirements
+IO Tester works on `MacOS`, `Ubuntu`, `Fedora`, `ArchLinux`  
+
+To build the project you will need `cmake` with a version upper or equal to `3.17`
+```sh
+pip install cmake
+```
 
 ## 💻 Installation
 
