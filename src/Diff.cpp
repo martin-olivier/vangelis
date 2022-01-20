@@ -1,6 +1,7 @@
-#include "IO_Tester.hpp"
-#include "tools.hpp"
 #include <unistd.h>
+
+#include "io_tester.hpp"
+#include "tools.hpp"
 
 #ifdef __APPLE__
 const std::string VSCodePath = "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code";
@@ -8,7 +9,7 @@ const std::string VSCodePath = "/Applications/Visual Studio Code.app/Contents/Re
 const std::string VSCodePath = "code";
 #endif
 
-void IOTester::VSCodeDiff(const Test &test, const std::string &output)
+void io_tester::VSCodeDiff(const test &test, const std::string &output)
 {
     const std::string filename1 = "\"/tmp/GOT(" + test.m_name + ")\"";
     const std::string filename2 = "\"/tmp/EXPECTED(" + test.m_name + ")\"";
@@ -19,7 +20,7 @@ void IOTester::VSCodeDiff(const Test &test, const std::string &output)
     system(std::string("\"" + VSCodePath + "\" --diff " + filename1 + " " + filename2).c_str());
 }
 
-bool IOTester::checkVSCodeBin()
+bool io_tester::checkVSCodeBin()
 {
 #ifdef __APPLE__
     if (access(VSCodePath.c_str(), X_OK) != -1)

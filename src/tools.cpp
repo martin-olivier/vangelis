@@ -1,8 +1,9 @@
-#include "tools.hpp"
-#include "IO_Tester.hpp"
 #include <fstream>
 #include <dirent.h>
 #include <iostream>
+
+#include "io_tester.hpp"
+#include "tools.hpp"
 
 std::string tools::get_file_content(const std::string &path)
 {
@@ -10,9 +11,9 @@ std::string tools::get_file_content(const std::string &path)
     std::ifstream file_stream(path);
     DIR *dir = opendir(path.c_str());
     if (dir)
-        throw IOTester::exception("cannot open directory \"" + path + "\"");
+        throw io_tester::exception("cannot open directory \"" + path + "\"");
     if (!file_stream.is_open())
-        throw IOTester::exception("cannot open file \"" + path + "\"");
+        throw io_tester::exception("cannot open file \"" + path + "\"");
     std::getline(file_stream, file_content, '\0');
     return file_content;
 }

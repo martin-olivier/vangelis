@@ -1,5 +1,3 @@
-#include "IO_Tester.hpp"
-#include "tools.hpp"
 #include <iostream>
 #include <functional>
 #include <map>
@@ -9,44 +7,47 @@
 #include <cstdio>
 #include <unistd.h>
 #include <sys/wait.h>
-#include "format.hpp"
 
-void IOTester::display(Test test, const std::string &output, int returnValue, Details details)
+#include "io_tester.hpp"
+#include "format.hpp"
+#include "tools.hpp"
+
+void io_tester::display(test test, const std::string &output, int returnValue, details details)
 {
     if ((returnValue >= 8 and returnValue <= 11) or (returnValue >= 132 and returnValue <= 139))
-        test.m_status = Test::CRASH;
+        test.m_status = test::CRASH;
     else if ((WEXITSTATUS(returnValue) >= 8 and WEXITSTATUS(returnValue) <= 11) or (WEXITSTATUS(returnValue) >= 132 and WEXITSTATUS(returnValue) <= 139))
-        test.m_status = Test::CRASH;
+        test.m_status = test::CRASH;
     else
-        test.m_status = Test::PASS;
+        test.m_status = test::PASS;
 
-    if (test.m_status == Test::CRASH)
+    if (test.m_status == test::CRASH)
         std::cout << format::yellow << "[!]" << format::reset << ' ' << test.m_name << std::endl;
     else if (test.m_output == output and test.m_return == WEXITSTATUS(returnValue))
         std::cout << format::green << "[O]" << format::reset << ' ' << test.m_name << std::endl;
     else {
         std::cout << format::red << "[X]" << format::reset << ' ' << test.m_name << std::endl;
-        test.m_status = Test::FAILED;
-        if (details == IOTester::DETAILS) {
+        test.m_status = test::FAILED;
+        if (details == io_tester::DETAILS) {
             if (test.m_output == output)
                 std::cout << format::blue << "[GOT]\n" << format::reset << "Return Value -> " << WEXITSTATUS(returnValue) << format::blue << "\n[EXPECTED]\n" << format::reset << "Return Value -> " << test.m_return << std::endl;
             else
                 std::cout << format::blue << "[GOT]\n" << format::reset << output << format::blue << "\n[EXPECTED]\n" << format::reset << test.m_output << std::endl;
         }
-        else if (details == IOTester::DIFF) {
+        else if (details == io_tester::DIFF) {
             std::string out = output;
             if (test.m_output == output) {
                 test.m_output = "Return Value -> " + std::to_string(test.m_return);
                 out = "Return Value -> " + std::to_string(WEXITSTATUS(returnValue));
             }
-            if (IOTester::checkVSCodeBin())
-                IOTester::VSCodeDiff(test, out);
+            if (io_tester::checkVSCodeBin())
+                io_tester::VSCodeDiff(test, out);
         }
     }
     _exit(test.m_status);
 }
 
-std::string IOTester::getCMD(const Test &test)
+std::string io_tester::get_command(const test &test)
 {
     std::string cmd{};
     if (test.m_stdout and test.m_stderr)
@@ -60,19 +61,19 @@ std::string IOTester::getCMD(const Test &test)
     return cmd + test.m_cmd;
 }
 
-void IOTester::compute(const Test &test, pid_t pid, int &status, Details details)
+void io_tester::compute(const test &test, pid_t pid, int &status, details details)
 {
     char buffer[2048];
 
     if (pid == -1) {
-        status = Test::ERROR;
+        status = test::ERROR;
         return;
     } else if (pid == 0) {
         std::string output{};
         int return_value;
-        FILE *pipe = popen(getCMD(test).c_str(), "r");
+        FILE *pipe = popen(get_command(test).c_str(), "r");
         if (!pipe)
-            _exit(Test::ERROR);
+            _exit(test::ERROR);
         while (!feof(pipe)) {
             if (fgets(buffer, 2048, pipe))
                 output += buffer;
@@ -84,14 +85,14 @@ void IOTester::compute(const Test &test, pid_t pid, int &status, Details details
         waitpid(pid, &ret, WUNTRACED | WCONTINUED);
         status = WEXITSTATUS(ret);
         if (WIFSIGNALED(ret))
-            status = Test::TIMEOUT;
+            status = test::TIMEOUT;
     }
 }
 
-void IOTester::comparator(const Test &test)
+void io_tester::comparator(const test &test)
 {
-    int ret = Test::NIL;
-    Details det = m_details;
+    int ret = test::NIL;
+    details det = m_details;
 
     if (m_details_count == 0)
         det = NO;
@@ -105,39 +106,39 @@ void IOTester::comparator(const Test &test)
     while (true) {
         if (std::chrono::system_clock::now() >= deadline)
             break;
-        if (ret != Test::NIL)
+        if (ret != test::NIL)
             break;
     }
-    if (ret == Test::NIL)
+    if (ret == test::NIL)
         kill(pid, SIGKILL);
     proc.join();
-    if (ret == Test::PASS)
+    if (ret == test::PASS)
         m_passed++;
-    else if (ret == Test::FAILED) {
+    else if (ret == test::FAILED) {
         m_failed++;
         m_details_count -= 1;
     }
-    else if (ret == Test::CRASH)
+    else if (ret == test::CRASH)
         m_crashed++;
-    else if (ret == Test::TIMEOUT) {
+    else if (ret == test::TIMEOUT) {
         std::cout << format::magenta << "[?]" << format::reset << ' ' << test.m_name << std::endl;
         m_timeout++;
     }
-    else if (ret == Test::ERROR)
+    else if (ret == test::ERROR)
         throw exception("pipe failed");
 }
 
-Test IOTester::getTestData()
+test io_tester::get_test_data()
 {
-    Test test(m_default_stdout, m_default_stderr, m_default_return, m_default_timeout);
+    test test(m_default_stdout, m_default_stderr, m_default_return, m_default_timeout);
 
-    std::map<std::string_view, std::function<void(const std::string &)>> defaultParamMap {
+    const std::map<std::string_view, std::function<void(const std::string &)>> defaultParamMap {
         {"stdout", [&](const std::string &val) {test.m_stdout = m_default_stdout = (val == "true");}},
         {"stderr", [&](const std::string &val) {test.m_stderr = m_default_stderr = (val == "true");}},
         {"return", [&](const std::string &val) {test.m_return = m_default_return = std::stoi(val);}},
         {"timeout", [&](const std::string &val) {test.m_timeout = m_default_timeout = std::stof(val);}},
     };
-    std::map<std::string_view, std::function<void(const std::string &)>> testParamMap {
+    const std::map<std::string_view, std::function<void(const std::string &)>> testParamMap {
         {"@stdout", [&](const std::string &val) {test.m_stdout = (val == "true");}},
         {"@stderr", [&](const std::string &val) {test.m_stderr = (val == "true");}},
         {"@return", [&](const std::string &val) {test.m_return = std::stoi(val);}},
@@ -147,9 +148,9 @@ Test IOTester::getTestData()
     while (m_file[m_position].find('[') != 0) {
         auto tab = tools::string_to_vector(m_file[m_position], ' ');
         if (m_file[m_position].find("@default") == 0)
-            defaultParamMap[tab[1]](tab[2]);
+            defaultParamMap.at(tab[1])(tab[2]);
         else if (m_file[m_position].find('@') == 0)
-            testParamMap[tab[0]](tab[1]);
+            testParamMap.at(tab[0])(tab[1]);
         m_position += 1;
     }
     test.m_name = m_file[m_position].substr(1, m_file[m_position].find(']') - 1);

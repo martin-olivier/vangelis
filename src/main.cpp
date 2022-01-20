@@ -1,12 +1,13 @@
 #include <iostream>
-#include "IO_Tester.hpp"
+
+#include "io_tester.hpp"
 #include "format.hpp"
 
 int main(int ac, char **av)
 {
     try {
-        IOTester app(ac, av);
-        return app.exitStatus();
+        io_tester app(ac, av);
+        return app.exit_status();
     }
     catch (const std::exception &e) {
         std::cerr << format::red << "error: " << format::reset << e.what() << std::endl;

@@ -1,11 +1,12 @@
-#include "IO_Tester.hpp"
 #include <iostream>
 #include <dirent.h>
 #include <unistd.h>
 #include <string_view>
+
+#include "io_tester.hpp"
 #include "format.hpp"
 
-void IOTester::changelog() noexcept
+void io_tester::changelog() noexcept
 {
     const std::string changelog[] = {
             std::string(format::blue) + "(1.0)" + format::reset,
@@ -67,7 +68,7 @@ void IOTester::changelog() noexcept
     exit(0);
 }
 
-void IOTester::checkUpdate() noexcept
+void io_tester::checkUpdate() noexcept
 {
     if (access("/usr/local/bin/IO_Tester", X_OK) == -1)
         return;
@@ -87,7 +88,7 @@ void IOTester::checkUpdate() noexcept
         std::cout << std::endl << format::magenta << "[UPDATE]" << + format::reset << " A new version is available : sudo IO_Tester --update" << std::endl;
 }
 
-void IOTester::update() noexcept
+void io_tester::update() noexcept
 {
     if (access("/usr/local/bin/IO_Tester", X_OK) == -1) {
         std::cerr << format::red << "\nIO_Tester needs to be installed to be updated (sudo make install)\n" << + format::reset << std::endl;
