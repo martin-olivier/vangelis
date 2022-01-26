@@ -4,7 +4,7 @@
 #include "parsing.hpp"
 #include "tools.hpp"
 
-enum check_status {Input, Output};
+enum check_status {input, output};
 
 void parsing::is_empty(const std::vector<std::string> &file)
 {
@@ -59,7 +59,7 @@ void parsing::is_param(const std::string &line, size_t pos)
 std::vector<std::string> parsing::check_file(const char *path)
 {
     auto file = tools::string_to_vector(tools::get_file_content(path), '\n');
-    check_status status = Input;
+    check_status status = input;
     size_t pos = 0;
 
     is_empty(file);
@@ -67,18 +67,18 @@ std::vector<std::string> parsing::check_file(const char *path)
         pos += 1;
         if (line.empty())
             continue;
-        else if (status == Input and line[0] == '#')
+        else if (status == input and line[0] == '#')
             line.clear();
-        else if (status == Input and line[0] == '@')
+        else if (status == input and line[0] == '@')
             is_param(line, pos);
-        else if (status == Input) {
+        else if (status == input) {
             is_input(line, pos);
-            status = Output;
+            status = output;
         }
         else if (line == "[END]")
-            status = Input;
+            status = input;
     }
-    if (status == Output)
+    if (status == output)
         throw io_tester::exception("parsing error at the end of the file");
     return file;
 }

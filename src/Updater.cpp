@@ -68,7 +68,7 @@ void io_tester::changelog() noexcept
     exit(0);
 }
 
-void io_tester::checkUpdate() noexcept
+void io_tester::check_update() noexcept
 {
     if (access("/usr/local/bin/IO_Tester", X_OK) == -1)
         return;

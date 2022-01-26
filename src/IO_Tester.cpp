@@ -11,7 +11,7 @@ void io_tester::version() noexcept
     exit(0);
 }
 
-void io_tester::help(const char *bin, int returnValue) noexcept
+void io_tester::help(const char *bin, int return_value) noexcept
 {
     std::cout << "USAGE:\n";
     std::cout << "\t" << bin << " test.io [OPTIONS]\n\n";
@@ -33,7 +33,7 @@ void io_tester::help(const char *bin, int returnValue) noexcept
     std::cout << "\t84\t\tif IO_Tester failed to load a test file\n";
 
     std::cout << std::flush;
-    exit(returnValue);
+    exit(return_value);
 }
 
 std::vector<std::string_view> io_tester::parse_args(int ac, char **av)
@@ -51,12 +51,12 @@ std::vector<std::string_view> io_tester::parse_args(int ac, char **av)
             update();
         else if (arg == "-c" or arg == "--changelog")
             changelog();
-        else if (arg == "--details" and m_details == NO) {
-            m_details = DETAILS;
+        else if (arg == "--details" and m_details == no) {
+            m_details = shell;
             last_arg_diff = true;
         }
-        else if (arg == "--diff" and m_details == NO) {
-            m_details = DIFF;
+        else if (arg == "--diff" and m_details == no) {
+            m_details = vsdiff;
             last_arg_diff = true;
         }
         else if (arg == "--details" or arg == "--diff")
@@ -97,17 +97,17 @@ io_tester::io_tester(int ac, char **av)
         reset_values();
     }
     print_results();
-    if (m_details == DIFF and !checkVSCodeBin()) {
+    if (m_details == vsdiff and !check_vscode_bin()) {
         std::cerr << format::red << "\nYou need to install Visual Studio Code to show diff" << std::endl;
         std::cerr << "Use --details otherwise" << format::reset << std::endl;
     }
-    checkUpdate();
+    check_update();
     std::cout << std::endl;
 }
 
 void io_tester::reset_values() noexcept
 {
-    if (m_failed > 0 or m_crashed > 0 or m_timeout > 0)
+    if (m_fail > 0 or m_crash > 0 or m_timeout > 0)
         m_return = EXIT_FAILURE;
     m_position = 0;
     m_default_stdout = true;
@@ -118,10 +118,10 @@ void io_tester::reset_values() noexcept
 
 void io_tester::print_results() const noexcept
 {
-    std::cout << "\n> Tests: " << format::blue << m_crashed + m_passed + m_failed + m_timeout << format::reset;
-    std::cout << " | Pass: " << format::green << m_passed << format::reset;
-    std::cout << " | Fail: " << format::red << m_failed << format::reset;
-    std::cout << " | Crash: " << format::yellow << m_crashed << format::reset;
+    std::cout << "\n> Tests: " << format::blue << m_crash + m_pass + m_fail + m_timeout << format::reset;
+    std::cout << " | Pass: " << format::green << m_pass << format::reset;
+    std::cout << " | Fail: " << format::red << m_fail << format::reset;
+    std::cout << " | Crash: " << format::yellow << m_crash << format::reset;
     std::cout << " | Timeout: " << format::magenta << m_timeout << format::reset << std::endl;
 }
 

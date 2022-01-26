@@ -15,33 +15,33 @@
 void io_tester::display(test test, const std::string &output, int returnValue, details details)
 {
     if ((returnValue >= 8 and returnValue <= 11) or (returnValue >= 132 and returnValue <= 139))
-        test.m_status = test::CRASH;
+        test.m_status = test::crash;
     else if ((WEXITSTATUS(returnValue) >= 8 and WEXITSTATUS(returnValue) <= 11) or (WEXITSTATUS(returnValue) >= 132 and WEXITSTATUS(returnValue) <= 139))
-        test.m_status = test::CRASH;
+        test.m_status = test::crash;
     else
-        test.m_status = test::PASS;
+        test.m_status = test::pass;
 
-    if (test.m_status == test::CRASH)
+    if (test.m_status == test::crash)
         std::cout << format::yellow << "[!]" << format::reset << ' ' << test.m_name << std::endl;
     else if (test.m_output == output and test.m_return == WEXITSTATUS(returnValue))
         std::cout << format::green << "[O]" << format::reset << ' ' << test.m_name << std::endl;
     else {
         std::cout << format::red << "[X]" << format::reset << ' ' << test.m_name << std::endl;
-        test.m_status = test::FAILED;
-        if (details == io_tester::DETAILS) {
+        test.m_status = test::fail;
+        if (details == io_tester::shell) {
             if (test.m_output == output)
                 std::cout << format::blue << "[GOT]\n" << format::reset << "Return Value -> " << WEXITSTATUS(returnValue) << format::blue << "\n[EXPECTED]\n" << format::reset << "Return Value -> " << test.m_return << std::endl;
             else
                 std::cout << format::blue << "[GOT]\n" << format::reset << output << format::blue << "\n[EXPECTED]\n" << format::reset << test.m_output << std::endl;
         }
-        else if (details == io_tester::DIFF) {
+        else if (details == io_tester::vsdiff) {
             std::string out = output;
             if (test.m_output == output) {
                 test.m_output = "Return Value -> " + std::to_string(test.m_return);
                 out = "Return Value -> " + std::to_string(WEXITSTATUS(returnValue));
             }
-            if (io_tester::checkVSCodeBin())
-                io_tester::VSCodeDiff(test, out);
+            if (io_tester::check_vscode_bin())
+                io_tester::vscode_diff(test, out);
         }
     }
     _exit(test.m_status);
@@ -66,14 +66,14 @@ void io_tester::compute(const test &test, pid_t pid, int &status, details detail
     char buffer[2048];
 
     if (pid == -1) {
-        status = test::ERROR;
+        status = test::error;
         return;
     } else if (pid == 0) {
         std::string output{};
         int return_value;
         FILE *pipe = popen(get_command(test).c_str(), "r");
         if (!pipe)
-            _exit(test::ERROR);
+            _exit(test::error);
         while (!feof(pipe)) {
             if (fgets(buffer, 2048, pipe))
                 output += buffer;
@@ -85,17 +85,17 @@ void io_tester::compute(const test &test, pid_t pid, int &status, details detail
         waitpid(pid, &ret, WUNTRACED | WCONTINUED);
         status = WEXITSTATUS(ret);
         if (WIFSIGNALED(ret))
-            status = test::TIMEOUT;
+            status = test::timeout;
     }
 }
 
 void io_tester::comparator(const test &test)
 {
-    int ret = test::NIL;
+    int ret = test::nil;
     details det = m_details;
 
     if (m_details_count == 0)
-        det = NO;
+        det = no;
     pid_t pid = fork();
     if (pid == 0)
         compute(test, pid, ret, det);
@@ -106,25 +106,25 @@ void io_tester::comparator(const test &test)
     while (true) {
         if (std::chrono::system_clock::now() >= deadline)
             break;
-        if (ret != test::NIL)
+        if (ret != test::nil)
             break;
     }
-    if (ret == test::NIL)
+    if (ret == test::nil)
         kill(pid, SIGKILL);
     proc.join();
-    if (ret == test::PASS)
-        m_passed++;
-    else if (ret == test::FAILED) {
-        m_failed++;
+    if (ret == test::pass)
+        m_pass++;
+    else if (ret == test::fail) {
+        m_fail++;
         m_details_count -= 1;
     }
-    else if (ret == test::CRASH)
-        m_crashed++;
-    else if (ret == test::TIMEOUT) {
+    else if (ret == test::crash)
+        m_crash++;
+    else if (ret == test::timeout) {
         std::cout << format::magenta << "[?]" << format::reset << ' ' << test.m_name << std::endl;
         m_timeout++;
     }
-    else if (ret == test::ERROR)
+    else if (ret == test::error)
         throw exception("pipe failed");
 }
 

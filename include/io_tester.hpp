@@ -10,7 +10,7 @@
 class test final
 {
 public:
-    enum status {PASS, CRASH, FAILED, TIMEOUT, ERROR, NIL};
+    enum status {pass, crash, fail, timeout, error, nil};
 
     test(bool a_stdout, bool a_stderr, int a_return, float a_timeout)
         : m_stdout(a_stdout), m_stderr(a_stderr), m_return(a_return), m_timeout(a_timeout) {}
@@ -18,7 +18,7 @@ public:
     std::string m_name{};
     std::string m_cmd{};
     std::string m_output{};
-    status m_status = NIL;
+    status m_status = nil;
     bool m_stdout;
     bool m_stderr;
     int m_return;
@@ -28,7 +28,7 @@ public:
 class io_tester final
 {
 public:
-    enum details {NO, DETAILS, DIFF};
+    enum details {no, shell, vsdiff};
 
     class exception : public std::exception
     {
@@ -51,10 +51,10 @@ public:
     [[nodiscard]] inline bool exit_status() const noexcept {return m_return;}
 
     static void version() noexcept;
-    static void help(const char *bin, int returnValue) noexcept;
-    static void VSCodeDiff(const test &test, const std::string &output);
-    static bool checkVSCodeBin();
-    static void checkUpdate() noexcept;
+    static void help(const char *bin, int return_value) noexcept;
+    static void vscode_diff(const test &test, const std::string &output);
+    static bool check_vscode_bin();
+    static void check_update() noexcept;
     static void update() noexcept;
     static void changelog() noexcept;
 
@@ -68,13 +68,13 @@ public:
     float m_default_timeout = 3.0;
 
 private:
-    int m_passed = 0;
-    int m_failed = 0;
-    int m_crashed = 0;
+    int m_pass = 0;
+    int m_fail = 0;
+    int m_crash = 0;
     int m_timeout = 0;
     std::vector<std::string> m_file{};
     size_t m_position = 0;
-    details m_details = NO;
+    details m_details = no;
     size_t m_details_count = -1;
     bool m_return = EXIT_SUCCESS;
 };
