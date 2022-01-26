@@ -5,7 +5,7 @@
 #include "io_tester.hpp"
 #include "format.hpp"
 
-void io_tester::changelog() noexcept
+void io_tester::changelog()
 {
     const std::string changelog[] = {
             std::string(format::blue) + "(1.0)" + format::reset,
@@ -67,7 +67,7 @@ void io_tester::changelog() noexcept
     exit(0);
 }
 
-void io_tester::check_update() noexcept
+void io_tester::check_update()
 {
     if (access("/usr/local/bin/IO_Tester", X_OK) == -1)
         return;
@@ -82,44 +82,44 @@ void io_tester::check_update() noexcept
         return;
     }
     if (system("diff /tmp/IO-TESTER/IO_Tester /usr/local/bin/IO_Tester > /dev/null 2>&1") != 0)
-        std::cout << std::endl << format::magenta << "[UPDATE]" << + format::reset << " A new version is available : sudo IO_Tester --update" << std::endl;
+        std::cout << std::endl << format::magenta << "[UPDATE]" << format::reset << " A new version is available : sudo IO_Tester --update" << std::endl;
 }
 
-void io_tester::update() noexcept
+void io_tester::update()
 {
     if (access("/usr/local/bin/IO_Tester", X_OK) == -1) {
-        std::cerr << format::red << "\nIO_Tester needs to be installed to be updated (sudo make install)\n" << + format::reset << std::endl;
+        std::cerr << format::red << "[X] " << format::reset << "IO_Tester needs to be installed to be updated (sudo make install)" << std::endl;
         exit(84);
     }
     if (system("git --help > /dev/null 2>&1") != 0) {
-        std::cerr << format::red << "\nYou need to install git to update\n" << + format::reset << std::endl;
+        std::cerr << format::red << "[X] " << format::reset << "Git is not installed, could not update\n" << std::endl;
         exit(84);
     }
     if (access("/usr/local/bin", W_OK) == -1) {
-        std::cout << format::red << "[FAILED] re-run with sudo" << + format::reset << std::endl;
+        std::cerr << format::red << "[X] " << format::reset << "Insuffisant permissions, re-run with sudo" << std::endl;
         exit(84);
     }
     if (!std::filesystem::is_directory("/tmp/IO-TESTER")) {
         if (system("git clone https://github.com/martin-olivier/IO-TESTER.git /tmp/IO-TESTER > /dev/null 2>&1") != 0) {
-            std::cout << format::red << "[FAILED] Download" << + format::reset << std::endl;
+            std::cerr << format::red << "[X] " << format::reset << "Download failed, check your internet connection" << std::endl;
             exit(84);
         }
     }
 
     if (access("/tmp/IO-TESTER/IO_Tester", X_OK) == -1) {
         if (system("make -C /tmp/IO-TESTER > /dev/null 2>&1") != 0) {
-            std::cerr << format::red << "\n[FAILED] Build\n" << + format::reset << std::endl;
+            std::cerr << format::red << "[X] " << format::reset << "Build failed" << std::endl;
             exit(84);
         }
     }
     if (system("diff /tmp/IO-TESTER/IO_Tester /usr/local/bin/IO_Tester > /dev/null 2>&1") == 0) {
-        std::cout << "Already up-to-date : (" << IO_TESTER_VERSION << ")" << std::endl;
+        std::cout << format::green << "[O] " << format::reset << "Already up-to-date v." << IO_TESTER_VERSION << std::endl;
         exit(0);
     }
 
     constexpr const char *args[] = {"cp", "/tmp/IO-TESTER/IO_Tester", "/usr/local/bin", nullptr};
 
-    std::cout << format::green << "[SUCCESS] IO_Tester has been updated" << + format::reset << " > run IO_Tester -c to see changelog" << std::endl;
+    std::cout << format::green << "[O] " << format::reset << "IO_Tester has been updated! run IO_Tester -c to see changelog" << std::endl;
     execvp("cp", const_cast<char *const *>(args));
     exit(0);
 }

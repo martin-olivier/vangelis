@@ -10,7 +10,7 @@ constexpr auto IO_TESTER_VERSION = "1.9.0";
 class test final
 {
 public:
-    enum status {pass, crash, fail, timeout, error, nil};
+    enum status {nil, pass, crash, fail, timeout, error};
 
     test(bool a_stdout, bool a_stderr, int a_return, float a_timeout)
         : m_stdout(a_stdout), m_stderr(a_stderr), m_return(a_return), m_timeout(a_timeout) {}
@@ -54,9 +54,9 @@ public:
     static void help(const char *bin, int return_value) noexcept;
     static void vscode_diff(const test &test, const std::string &output);
     static bool check_vscode_bin();
-    static void check_update() noexcept;
-    static void update() noexcept;
-    static void changelog() noexcept;
+    static void check_update();
+    static void update();
+    static void changelog();
 
     static void display(test test, const std::string &output, int returnValue, details details);
     static void compute(const test &test, pid_t pid, int &status, details details);

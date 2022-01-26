@@ -1,8 +1,5 @@
 #pragma once
 
-/**
- *  This namespace contains every text format that you can apply on the shell
- */
 namespace format {
     constexpr auto red     =  "\x1B[31m";
     constexpr auto green   =  "\x1B[32m";

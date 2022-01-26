@@ -4,9 +4,9 @@
 #include "tools.hpp"
 
 #ifdef __APPLE__
-const std::string VSCodePath = "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code";
+const std::string vscode_path = "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code";
 #else
-const std::string VSCodePath = "code";
+const std::string vscode_path = "code";
 #endif
 
 void io_tester::vscode_diff(const test &test, const std::string &output)
@@ -17,22 +17,22 @@ void io_tester::vscode_diff(const test &test, const std::string &output)
     const std::string s2 = "printf \"" + test.m_output + "\" > " + filename2;
 
     system(std::string(s1 + " ; " + s2).c_str());
-    system(std::string("\"" + VSCodePath + "\" --diff " + filename1 + " " + filename2).c_str());
+    system(std::string("\"" + vscode_path + "\" --diff " + filename1 + " " + filename2).c_str());
 }
 
 bool io_tester::check_vscode_bin()
 {
 #ifdef __APPLE__
-    if (access(VSCodePath.c_str(), X_OK) != -1)
+    if (access(vscode_path.c_str(), X_OK) != -1)
         return true;
     return false;
 #else
     char* env_p = std::getenv("PATH");
     if (env_p == NULL)
         return false;
-    auto PATHList = tools::string_to_vector(env_p, ':');
+    auto path_list = tools::string_to_vector(env_p, ':');
 
-    for (auto &path : PATHList) {
+    for (auto &path : path_list) {
         if (access((std::string(path + "/code").c_str()), X_OK) != -1)
             return true;
     }
