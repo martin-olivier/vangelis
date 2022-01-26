@@ -5,7 +5,7 @@
 #include <exception>
 #include <string_view>
 
-#define VERSION "1.9.0"
+constexpr auto IO_TESTER_VERSION = "1.9.0";
 
 class test final
 {

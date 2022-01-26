@@ -1,5 +1,5 @@
+#include <filesystem>
 #include <fstream>
-#include <dirent.h>
 #include <iostream>
 
 #include "io_tester.hpp"
@@ -9,8 +9,7 @@ std::string tools::get_file_content(const std::string &path)
 {
     std::string file_content{};
     std::ifstream file_stream(path);
-    DIR *dir = opendir(path.c_str());
-    if (dir)
+    if (std::filesystem::is_directory(path))
         throw io_tester::exception("cannot open directory \"" + path + "\"");
     if (!file_stream.is_open())
         throw io_tester::exception("cannot open file \"" + path + "\"");

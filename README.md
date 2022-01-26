@@ -67,6 +67,7 @@ Let's create a test file:
 # test.io
 
 # set the default timeout of the tests to 1 sec:
+
 @default timeout 1
 
 [Simple Print] python3 printer test

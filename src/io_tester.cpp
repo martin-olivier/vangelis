@@ -6,7 +6,7 @@
 
 void io_tester::version() noexcept
 {
-    std::cout << "IO_Tester (" << VERSION << ")\n";
+    std::cout << "IO_Tester (" << IO_TESTER_VERSION << ")\n";
     std::cout << "Written by Martin OLIVIER, student at {EPITECH} Paris" << std::endl;
     exit(0);
 }

@@ -1,7 +1,6 @@
 #include <iostream>
-#include <dirent.h>
+#include <filesystem>
 #include <unistd.h>
-#include <string_view>
 
 #include "io_tester.hpp"
 #include "format.hpp"
@@ -72,14 +71,12 @@ void io_tester::check_update() noexcept
 {
     if (access("/usr/local/bin/IO_Tester", X_OK) == -1)
         return;
-    DIR *dir = opendir("/tmp/IO-TESTER");
-    if (!dir) {
+    if (std::filesystem::is_directory("/tmp/IO-TESTER")) {
         if (system("git --help > /dev/null 2>&1") != 0)
             return;
         system("git clone https://github.com/martin-olivier/IO-TESTER.git /tmp/IO-TESTER > /dev/null 2>&1 &");
         return;
     }
-    closedir(dir);
     if (access("/tmp/IO-TESTER/IO_Tester", X_OK) == -1) {
         system("make -C /tmp/IO-TESTER > /dev/null 2>&1 &");
         return;
@@ -102,15 +99,12 @@ void io_tester::update() noexcept
         std::cout << format::red << "[FAILED] re-run with sudo" << + format::reset << std::endl;
         exit(84);
     }
-    DIR *dir = opendir("/tmp/IO-TESTER");
-    if (!dir) {
+    if (!std::filesystem::is_directory("/tmp/IO-TESTER")) {
         if (system("git clone https://github.com/martin-olivier/IO-TESTER.git /tmp/IO-TESTER > /dev/null 2>&1") != 0) {
             std::cout << format::red << "[FAILED] Download" << + format::reset << std::endl;
             exit(84);
         }
     }
-    if (dir)
-        closedir(dir);
 
     if (access("/tmp/IO-TESTER/IO_Tester", X_OK) == -1) {
         if (system("make -C /tmp/IO-TESTER > /dev/null 2>&1") != 0) {
@@ -119,7 +113,7 @@ void io_tester::update() noexcept
         }
     }
     if (system("diff /tmp/IO-TESTER/IO_Tester /usr/local/bin/IO_Tester > /dev/null 2>&1") == 0) {
-        std::cout << "Already up-to-date : (" << VERSION << ")" << std::endl;
+        std::cout << "Already up-to-date : (" << IO_TESTER_VERSION << ")" << std::endl;
         exit(0);
     }
 
