@@ -36,12 +36,12 @@ endif()
 set(MAIN src/main.cpp)
 
 set(SOURCES
-    src/IO_Tester.cpp
+    src/io_tester.cpp
     src/tools.cpp
-    src/Parsing.cpp
-    src/Test.cpp
-    src/Diff.cpp
-    src/Updater.cpp
+    src/parsing.cpp
+    src/test.cpp
+    src/diff.cpp
+    src/updater.cpp
 )
 
 set(TEST_SOURCES
