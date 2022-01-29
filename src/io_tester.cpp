@@ -1,16 +1,17 @@
-#include "IO_Tester.hpp"
-#include "Parsing.hpp"
-#include "Utils.hpp"
 #include <iostream>
 
-void IOTester::version() noexcept
+#include "io_tester.hpp"
+#include "parsing.hpp"
+#include "format.hpp"
+
+void io_tester::version() noexcept
 {
-    std::cout << "IO_Tester (" << VERSION << ")\n";
+    std::cout << "IO_Tester (" << IO_TESTER_VERSION << ")\n";
     std::cout << "Written by Martin OLIVIER, student at {EPITECH} Paris" << std::endl;
     exit(0);
 }
 
-void IOTester::help(const char *bin, int returnValue) noexcept
+void io_tester::help(const char *bin, int return_value) noexcept
 {
     std::cout << "USAGE:\n";
     std::cout << "\t" << bin << " test.io [OPTIONS]\n\n";
@@ -32,10 +33,10 @@ void IOTester::help(const char *bin, int returnValue) noexcept
     std::cout << "\t84\t\tif IO_Tester failed to load a test file\n";
 
     std::cout << std::flush;
-    exit(returnValue);
+    exit(return_value);
 }
 
-std::vector<std::string_view> IOTester::parseArgs(int ac, char **av)
+std::vector<std::string_view> io_tester::parse_args(int ac, char **av)
 {
     std::vector<std::string_view> files{};
     bool last_arg_diff = false;
@@ -50,12 +51,12 @@ std::vector<std::string_view> IOTester::parseArgs(int ac, char **av)
             update();
         else if (arg == "-c" or arg == "--changelog")
             changelog();
-        else if (arg == "--details" and m_details == NO) {
-            m_details = DETAILS;
+        else if (arg == "--details" and m_details == no) {
+            m_details = shell;
             last_arg_diff = true;
         }
-        else if (arg == "--diff" and m_details == NO) {
-            m_details = DIFF;
+        else if (arg == "--diff" and m_details == no) {
+            m_details = vsdiff;
             last_arg_diff = true;
         }
         else if (arg == "--details" or arg == "--diff")
@@ -78,11 +79,11 @@ std::vector<std::string_view> IOTester::parseArgs(int ac, char **av)
     return files;
 }
 
-IOTester::IOTester(int ac, char **av)
+io_tester::io_tester(int ac, char **av)
 {
     if (ac < 2)
         help(av[0], 84);
-    auto files = parseArgs(ac, av);
+    auto files = parse_args(ac, av);
     if (files.empty())
         help(av[0], 84);
 
@@ -90,75 +91,53 @@ IOTester::IOTester(int ac, char **av)
         if (i != 0)
             std::cout << '\n';
         if (files.size() > 1)
-            std::cout << CYN << files[i] << ":\n" << RESET << std::endl;
-        m_file = Parsing::checkFile(files[i].data());
+            std::cout << format::cyan << files[i] << "\n" << format::reset << std::endl;
+        m_file = parsing::check_file(files[i].data());
         apply();
-        resetValues();
+        reset_values();
     }
-    if (m_details == DIFF and !checkVSCodeBin()) {
-        std::cerr << RED << "\nYou need to install Visual Studio Code to show diff" << std::endl;
-        std::cerr << "Use --details otherwise" << RESET << std::endl;
+    print_results();
+    if (m_details == vsdiff and !check_vscode_bin()) {
+        std::cerr << format::red << "\nYou need to install Visual Studio Code to show diff" << std::endl;
+        std::cerr << "Use --details otherwise" << format::reset << std::endl;
     }
-    checkUpdate();
+    check_update();
     std::cout << std::endl;
 }
 
-void IOTester::resetValues() noexcept
+void io_tester::reset_values() noexcept
 {
     if (m_failed > 0 or m_crashed > 0 or m_timeout > 0)
         m_return = EXIT_FAILURE;
     m_position = 0;
-    m_passed = 0;
-    m_failed = 0;
-    m_crashed = 0;
-    m_timeout = 0;
-
     m_default_stdout = true;
     m_default_stderr = true;
     m_default_return = 0;
     m_default_timeout = 3.0;
 }
 
-void IOTester::printFinalResults() const noexcept
+void io_tester::print_results() const noexcept
 {
-    std::cout << "\n> Tested: " << BLU << m_crashed + m_passed + m_failed + m_timeout << RESET;
-    std::cout << " | Pass: " << GRN << m_passed << RESET;
-    std::cout << " | Fail: " << RED << m_failed << RESET;
-    std::cout << " | Crash: " << YEL << m_crashed << RESET;
-    std::cout << " | Timeout: " << MAG << m_timeout << RESET << std::endl;
+    std::cout << "\n> Tests: " << format::blue << m_crashed + m_passed + m_failed + m_timeout << format::reset;
+    std::cout << " | Passed: " << format::green << m_passed << format::reset;
+    std::cout << " | Failed: " << format::red << m_failed << format::reset;
+    std::cout << " | Crashed: " << format::yellow << m_crashed << format::reset;
+    std::cout << " | Timeout: " << format::magenta << m_timeout << format::reset << std::endl;
 }
 
-void IOTester::apply()
+void io_tester::apply()
 {
     while (m_file[m_position].empty())
         m_position++;
     while (true) {
-        comparator(getTestData());
+        comparator(get_test_data());
         while (true) {
-            if (m_position >= m_file.size()) {
-                printFinalResults();
+            if (m_position >= m_file.size())
                 return;
-            }
             else if (m_file[m_position].empty())
                 m_position++;
             else
                 break;
         }
-    }
-}
-
-int main(int ac, char **av)
-{
-    try {
-        IOTester app(ac, av);
-        return app.exitStatus();
-    }
-    catch (const std::exception &e) {
-        std::cerr << RED << "error: " << RESET << e.what() << std::endl;
-        return 84;
-    }
-    catch (...) {
-        std::cerr << RED << "error: " << RESET << "unknown exception caught" << std::endl;
-        return 84;
     }
 }

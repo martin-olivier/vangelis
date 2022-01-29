@@ -1,0 +1,32 @@
+name: CI
+
+on: [push]
+
+defaults:
+    run:
+        shell: bash
+
+jobs:
+    build_and_test:
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+
+        name: ${{ matrix.os }}
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Build Project
+              run: make
+
+            - name: Build Unit Tests
+              run: make tests
+
+            - name: Run Unit Tests
+              run: ./unit_tests
+
+            - name: Cleanup
+              run: make fclean
