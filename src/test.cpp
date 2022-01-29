@@ -15,19 +15,19 @@
 void io_tester::display(test test, const std::string &output, int returnValue, details details)
 {
     if ((returnValue >= 8 and returnValue <= 11) or (returnValue >= 132 and returnValue <= 139))
-        test.m_status = test::crash;
+        test.m_status = test::crashed;
     else if ((WEXITSTATUS(returnValue) >= 8 and WEXITSTATUS(returnValue) <= 11) or (WEXITSTATUS(returnValue) >= 132 and WEXITSTATUS(returnValue) <= 139))
-        test.m_status = test::crash;
+        test.m_status = test::crashed;
     else
-        test.m_status = test::pass;
+        test.m_status = test::passed;
 
-    if (test.m_status == test::crash)
+    if (test.m_status == test::crashed)
         std::cout << format::yellow << "[!]" << format::reset << ' ' << test.m_name << std::endl;
     else if (test.m_output == output and test.m_return == WEXITSTATUS(returnValue))
         std::cout << format::green << "[O]" << format::reset << ' ' << test.m_name << std::endl;
     else {
         std::cout << format::red << "[X]" << format::reset << ' ' << test.m_name << std::endl;
-        test.m_status = test::fail;
+        test.m_status = test::failed;
         if (details == io_tester::shell) {
             if (test.m_output == output)
                 std::cout << format::blue << "[GOT]\n" << format::reset << "Return Value -> " << WEXITSTATUS(returnValue) << format::blue << "\n[EXPECTED]\n" << format::reset << "Return Value -> " << test.m_return << std::endl;
@@ -112,14 +112,14 @@ void io_tester::comparator(const test &test)
     if (ret == test::nil)
         kill(pid, SIGKILL);
     proc.join();
-    if (ret == test::pass)
-        m_pass++;
-    else if (ret == test::fail) {
-        m_fail++;
+    if (ret == test::passed)
+        m_passed++;
+    else if (ret == test::failed) {
+        m_failed++;
         m_details_count -= 1;
     }
-    else if (ret == test::crash)
-        m_crash++;
+    else if (ret == test::crashed)
+        m_crashed++;
     else if (ret == test::timeout) {
         std::cout << format::magenta << "[?]" << format::reset << ' ' << test.m_name << std::endl;
         m_timeout++;

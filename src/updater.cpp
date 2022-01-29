@@ -60,6 +60,11 @@ void io_tester::changelog()
             std::string(format::blue) + "(1.8.2)" + format::reset,
             "> [FIX] updater",
             "> [FIX] the test pid is not threaded anymore",
+            std::string(format::blue) + "(1.9.0)" + format::reset,
+            "> [ADD] New Design and cleaner output",
+            "> [ADD] CMake build",
+            "> [FIX] Cleaner documentation",
+            "> [FIX] Cleaner code",
     };
     std::cout << format::yellow << "[CHANGELOG]" << + format::reset << std::endl;
     for (const auto &line : changelog)

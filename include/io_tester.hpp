@@ -10,7 +10,7 @@ constexpr auto IO_TESTER_VERSION = "1.9.0";
 class test final
 {
 public:
-    enum status {nil, pass, crash, fail, timeout, error};
+    enum status {nil, passed, crashed, failed, timeout, error};
 
     test(bool a_stdout, bool a_stderr, int a_return, float a_timeout)
         : m_stdout(a_stdout), m_stderr(a_stderr), m_return(a_return), m_timeout(a_timeout) {}
@@ -68,9 +68,9 @@ public:
     float m_default_timeout = 3.0;
 
 private:
-    int m_pass = 0;
-    int m_fail = 0;
-    int m_crash = 0;
+    int m_passed = 0;
+    int m_failed = 0;
+    int m_crashed = 0;
     int m_timeout = 0;
     std::vector<std::string> m_file{};
     size_t m_position = 0;

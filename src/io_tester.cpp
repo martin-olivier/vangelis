@@ -107,7 +107,7 @@ io_tester::io_tester(int ac, char **av)
 
 void io_tester::reset_values() noexcept
 {
-    if (m_fail > 0 or m_crash > 0 or m_timeout > 0)
+    if (m_failed > 0 or m_crashed > 0 or m_timeout > 0)
         m_return = EXIT_FAILURE;
     m_position = 0;
     m_default_stdout = true;
@@ -118,10 +118,10 @@ void io_tester::reset_values() noexcept
 
 void io_tester::print_results() const noexcept
 {
-    std::cout << "\n> Tests: " << format::blue << m_crash + m_pass + m_fail + m_timeout << format::reset;
-    std::cout << " | Pass: " << format::green << m_pass << format::reset;
-    std::cout << " | Fail: " << format::red << m_fail << format::reset;
-    std::cout << " | Crash: " << format::yellow << m_crash << format::reset;
+    std::cout << "\n> Tests: " << format::blue << m_crashed + m_passed + m_failed + m_timeout << format::reset;
+    std::cout << " | Passed: " << format::green << m_passed << format::reset;
+    std::cout << " | Failed: " << format::red << m_failed << format::reset;
+    std::cout << " | Crashed: " << format::yellow << m_crashed << format::reset;
     std::cout << " | Timeout: " << format::magenta << m_timeout << format::reset << std::endl;
 }
 

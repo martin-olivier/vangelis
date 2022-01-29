@@ -45,7 +45,7 @@ set(SOURCES
 )
 
 set(TEST_SOURCES
-    tests/src/parser.cpp
+    tests/parser.cpp
 )
 
 if(UNIT_TESTS)
