@@ -6,20 +6,7 @@
 *~
 \#*#
 
-# Build Files and Binaries
+# Build Folder
 
-*.log
-*.o
-*.so
-*.dll
-*.dylib
-cmake-build-*/
-*build/
-*build_tests/
-IO_Tester
-unit_tests
-
-# Documentation Generation Files
-
-doc/latex/
-doc/html/
+/target
+Cargo.lock

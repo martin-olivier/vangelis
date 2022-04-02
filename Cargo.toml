@@ -1,0 +1,13 @@
+[package]
+
+name = "io_tester"
+version = "2.0.0"
+edition = "2021"
+
+[dependencies]
+
+indexmap = { version = "1.8.1", features = ["serde-1"] }
+term_size = "0.3.2"
+colored = "2.0.0"
+toml = "0.5.8"
+serde = { version = "1.0.104", features = ["derive"] }

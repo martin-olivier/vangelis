@@ -1,0 +1,54 @@
+[default]
+
+#runs_on = ["linux", "windows"]
+code = 0
+timeout = 5
+
+[test.SimplePrint]
+
+code = 0
+timeout = 5
+
+cmd = "python3 printer.py"
+stdin = "hey"
+stdout = """
+hey
+"""
+stderr = ""
+
+# disable stdout and stderr catch for this test:
+
+[test.ZZZzzz]
+
+timeout = 5
+
+cmd = "sleep 10"
+stdout = ""
+stderr = ""
+
+[test.crash]
+
+cmd = "./a.out"
+
+stdout = """
+test
+dz
+dzdz
+"""
+stderr = ""
+
+[test.stdin]
+
+cmd = "python3 printer.py"
+
+stdin = """
+hey
+brother
+"""
+stdout = """
+hey
+
+brother
+
+"""
+stderr = ""
