@@ -1,7 +1,5 @@
-use colored::Colorize;
 use std::io::Read;
-
-use crate::core;
+use crate::test::Test;
 
 #[derive(serde::Deserialize)]
 struct RawDefault {
@@ -27,16 +25,24 @@ struct RawTestFile {
     test: indexmap::IndexMap<String, RawTest>,
 }
 
-fn get_config_from_file(path: &String) -> RawTestFile {
+pub struct TestFile {
+    pub name: String,
+    pub tests: Vec<Test>,
+}
+
+fn get_config_from_file(path: &str) -> RawTestFile {
     let mut file = match std::fs::File::open(path) {
-        Ok(f) => f,
-        Err(_) => panic!("{} Could not load \"{}\"", "Missing test file:".red().bold(), path)
+        Ok(val) => val,
+        Err(err) => panic!("Could not read file \"{}\": {}", path, err)
     };
     let mut buff = String::new();
-    file.read_to_string(&mut buff).unwrap();
+    match file.read_to_string(&mut buff) {
+        Ok(_) => (),
+        Err(err) => panic!("Could not read file \"{}\": {}", path, err)
+    };
     match toml::from_str(&buff) {
         Ok(val) => val,
-        Err(err) => panic!("{} {} in test file \"{}\"", "Parsing error:".red().bold(), err, path)
+        Err(err) => panic!("Parsing error: {} in test file \"{}\"", err, path)
     }
 }
 
@@ -52,21 +58,21 @@ fn get_defaults(default: Option<RawDefault>) -> Default {
             Default {
                 runs_on: def.runs_on.unwrap_or(vec!["linux".to_owned(), "macos".to_owned(), "windows".to_owned()]),
                 code: def.code.unwrap_or(0),
-                timeout: def.timeout.unwrap_or(10.0)
+                timeout: def.timeout.unwrap_or(60.0)
             }
         },
         None => {
             Default {
                 runs_on: vec!["linux".to_owned(), "macos".to_owned(), "windows".to_owned()],
                 code: 0,
-                timeout: 10.0
+                timeout: 60.0
             }
         }
     }
 }
 
-fn parse_test(raw_test: (std::string::String, RawTest), default: &Default) -> core::Test {
-    core::Test {
+fn parse_test(raw_test: (std::string::String, RawTest), default: &Default) -> Test {
+    Test {
         name: raw_test.0,
         cmd: raw_test.1.cmd,
         stdin: raw_test.1.stdin,
@@ -78,8 +84,8 @@ fn parse_test(raw_test: (std::string::String, RawTest), default: &Default) -> co
     }
 }
 
-fn parse_config(raw_test_file: RawTestFile, path: &String) -> core::TestFile {
-    let mut test_file =  core::TestFile{name: path.to_owned(), tests: vec![]};
+fn parse_config(raw_test_file: RawTestFile, path: &str) -> TestFile {
+    let mut test_file =  TestFile{name: path.to_owned(), tests: vec![]};
     let default = get_defaults(raw_test_file.default);
     for test in raw_test_file.test.into_iter() {
         test_file.tests.push(parse_test(test, &default));
@@ -87,6 +93,8 @@ fn parse_config(raw_test_file: RawTestFile, path: &String) -> core::TestFile {
     test_file
 }
 
-pub fn get_test_file(path: &String) -> core::TestFile {
-    parse_config(get_config_from_file(path), path)
+impl TestFile {
+    pub fn new(path: &str) -> Self {
+        parse_config(get_config_from_file(path), path)
+    }
 }

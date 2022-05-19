@@ -1,15 +1,15 @@
 [default]
 
-#runs_on = ["linux", "windows"]
+runs_on = ["linux", "windows", "macos"]
 code = 0
-timeout = 5
+timeout = 15
 
 [test.SimplePrint]
 
 code = 0
 timeout = 5
 
-cmd = "python3 printer.py"
+cmd = "python3 printer_stdin.py"
 stdin = "hey"
 stdout = """
 hey
@@ -39,7 +39,7 @@ stderr = ""
 
 [test.stdin]
 
-cmd = "python3 printer.py"
+cmd = "python3 printer_stdin.py"
 
 stdin = """
 hey

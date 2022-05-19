@@ -10,4 +10,6 @@ indexmap = { version = "1.8.1", features = ["serde-1"] }
 term_size = "0.3.2"
 colored = "2.0.0"
 toml = "0.5.8"
+diff = "0.1.12"
+atty = "0.2.14"
 serde = { version = "1.0.104", features = ["derive"] }
