@@ -59,6 +59,8 @@ pub struct Test {
     pub code: i32,
     pub timeout: f32,
     pub runs_on: Vec<String>,
+    pub unix_shell: String,
+    pub windows_shell: String,
 }
 
 impl Test {
@@ -77,7 +79,7 @@ impl Test {
                         let date_formated = format!("{:.1}s", (std::time::Instant::now() - init_time).as_secs_f32());
                         let date_padding = format!("{}{}", tools::get_padding(self.name.as_str(), date_formated.as_str()), date_formated.blue());
                         if atty::is(atty::Stream::Stdout) {
-                            print!("\r{} {}{}\r", "[>]".bright_blue().bold(), self.name.bright_blue(), date_padding);
+                            print!("\r{} {}{}\r", "[>]".blue(), self.name.blue(), date_padding);
                             std::io::stdout().flush().unwrap();
                         }
                         std::thread::sleep(std::time::Duration::from_millis(10));
@@ -95,8 +97,15 @@ impl Test {
             }
         }
         process_result.exec_time = (std::time::Instant::now() - init_time).as_secs_f32();
-        child.stdout.unwrap().read_to_string(&mut process_result.stdout).unwrap();
-        child.stderr.unwrap().read_to_string(&mut process_result.stderr).unwrap();
+
+        let mut outbuf = vec![];
+        child.stdout.unwrap().read_to_end(&mut outbuf).unwrap();
+        process_result.stdout = String::from_utf8_lossy(&outbuf).to_string().replace("\r\n", "\n");
+
+        let mut errbuf = vec![];
+        child.stderr.unwrap().read_to_end(&mut errbuf).unwrap();
+        process_result.stderr = String::from_utf8_lossy(&errbuf).to_string().replace("\r\n", "\n");
+
         process_result
     }
 
@@ -110,7 +119,7 @@ impl Test {
         else if cfg!(target_os = "macos") && !self.runs_on.contains(&"macos".to_owned()) {
             return None;
         }
-        let mut child = std::process::Command::new(if cfg!(target_os = "windows") {"cmd"} else {"sh"})
+        let mut child = std::process::Command::new(if cfg!(target_os = "windows") {self.windows_shell.as_str()} else {self.unix_shell.as_str()})
             .args([if cfg!(target_os = "windows") {"/C"} else {"-c"}, self.cmd.as_str()])
             .stdin(if self.stdin.is_some() {std::process::Stdio::piped()} else {std::process::Stdio::null()})
             .stdout(std::process::Stdio::piped())
@@ -137,9 +146,9 @@ impl Test {
                             } else {
                                 result.status = Status::Failed;
                             }
-                            result.got.push_str(&("[EXIT CODE]\nvalue = ".to_owned() + code.to_string().as_str() + "\n\n"));
-                            result.expected.push_str(&("[EXIT CODE]\nvalue = ".to_owned() + self.code.to_string().as_str() + "\n\n"));
                         }
+                        result.got.push_str(&("[EXIT CODE]\nvalue = ".to_owned() + code.to_string().as_str() + "\n\n"));
+                        result.expected.push_str(&("[EXIT CODE]\nvalue = ".to_owned() + self.code.to_string().as_str() + "\n\n"));
                     }
                     None => result.status = Status::Crashed,
                 }
@@ -149,9 +158,9 @@ impl Test {
                             Status::Crashed => result.status,
                             _ => Status::Failed,
                         };
-                        result.got.push_str(&("[STDOUT]\n".to_owned() + val.stdout.as_str() + "\n\n"));
-                        result.expected.push_str(&("[STDOUT]\n".to_owned() + stdout.as_str() + "\n\n"));
                     }
+                    result.got.push_str(&("[STDOUT]\n".to_string() + val.stdout.as_str() + "\n\n"));
+                    result.expected.push_str(&("[STDOUT]\n".to_string() + stdout.as_str() + "\n\n"));
                 }
                 if let Some(ref stderr) = self.stderr {
                     if *stderr != val.stderr {
@@ -159,9 +168,15 @@ impl Test {
                             Status::Crashed => result.status,
                             _ => Status::Failed,
                         };
-                        result.got.push_str(&("[STDERR]\n".to_owned() + val.stderr.as_str() + "\n\n"));
-                        result.expected.push_str(&("[STDERR]\n".to_owned() + stderr.as_str() + "\n\n"));
                     }
+                    result.got.push_str(&("[STDERR]\n".to_owned() + val.stderr.as_str() + "\n\n"));
+                    result.expected.push_str(&("[STDERR]\n".to_owned() + stderr.as_str() + "\n\n"));
+                }
+                if result.got.ends_with("\n\n") && result.expected.ends_with("\n\n") {
+                    result.got.pop();
+                    result.got.pop();
+                    result.expected.pop();
+                    result.expected.pop();
                 }
                 if val.timeout { result.status = Status::Timeout };
             }

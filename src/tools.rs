@@ -18,14 +18,14 @@ pub fn set_panic_hook() {
 
 pub fn hide_cursor() {
     if atty::is(atty::Stream::Stdout) {
-        print!("{}", "\x1b[?25l");
+        print!("\x1b[?25l");
         std::io::stdout().flush().unwrap();
     }
 }
 
 pub fn show_cursor() {
     if atty::is(atty::Stream::Stdout) {
-        print!("{}", "\x1b[?25h");
+        print!("\x1b[?25h");
         std::io::stdout().flush().unwrap();
     }
 }
@@ -35,7 +35,7 @@ pub fn get_padding(name: &str, duration: &str) -> String {
         true => term_size::dimensions().unwrap_or((100, 20)).0,
         false => 100,
     };
-    std::iter::repeat(" ").take(termsize - (name.len() + 4 + duration.len())).collect::<String>()
+    std::iter::repeat(" ").take(termsize - (name.len() + 5 + duration.len())).collect::<String>()
 }
 
 pub fn get_vscode_bin() -> Option<String> {
@@ -45,14 +45,5 @@ pub fn get_vscode_bin() -> Option<String> {
             return Some(vscode_path.to_owned());
         }
     }
-    std::env::var_os("PATH").and_then(|paths| {
-        std::env::split_paths(&paths).filter_map(|dir| {
-            let full_path = dir.join("code");
-            if full_path.is_file() {
-                Some(full_path.to_str().unwrap().to_owned())
-            } else {
-                None
-            }
-        }).next()
-    })
+    Some("code".to_owned())
 }

@@ -96,34 +96,37 @@ impl Core {
             Status::Crashed => {self.tests += 1; self.crashed += 1},
         }
         match result.status {
-            Status::Passed => println!("{} {}{}", "[✓]".bright_green().bold(), name.bright_green(), date_padding),
-            Status::Failed => println!("{} {}{}", "[✗]".bright_red().bold(), name.bright_red(), date_padding),
-            Status::Crashed => println!("{} {}{}", "[!]".bright_yellow().bold(), name.bright_yellow(), date_padding),
-            Status::Timeout => println!("{} {}{}", "[?]".bright_magenta().bold(), name.bright_magenta(), date_padding),
-            Status::Skipped => println!("{} {}{}", "[>]".bright_white().bold(), name.bright_white(), date_padding),
+            Status::Passed => println!("{} {}{}", "[V]".green(), name.green(), date_padding),
+            Status::Failed => println!("{} {}{}", "[X]".red(), name.red(), date_padding),
+            Status::Crashed => println!("{} {}{}", "[!]".yellow(), name.yellow(), date_padding),
+            Status::Timeout => println!("{} {}{}", "[?]".magenta(), name.magenta(), date_padding),
+            Status::Skipped => println!("{} {}{}", "[>]".white(), name.white(), date_padding),
         }
         if result.got == result.expected {
             return;
         }
         match self.details {
             Details::Shell => {
+                println!("|^|");
                 for diff in diff::lines(result.got.as_str(), result.expected.as_str()) {
                     match diff {
-                        diff::Result::Left(l)    => println!("{} {}", "+".green(), l.green()),
-                        diff::Result::Both(l, _) => println!("{} {}", " ", l),
-                        diff::Result::Right(r)   => println!("{} {}", "-".red(), r.red()),
+                        diff::Result::Left(l)    => println!("|{}| {}", "+".green(), l.green()),
+                        diff::Result::Both(l, _) => println!("|{}| {}", " ", l),
+                        diff::Result::Right(r)   => println!("|{}| {}", "-".red(), r.red()),
                     }
                 }
+                println!("|_|");
             }
             Details::VSCode => {
-                let file_got = "/tmp/GOT(".to_owned() + name + ")";
+                let tmp_path = if cfg!(target_os = "windows") {"/Temp/"} else {"/tmp/"};
+                let file_got = tmp_path.to_owned() + "GOT(" + name + ")";
                 std::fs::File::create(&file_got).unwrap().write_fmt(format_args!("{}", result.got)).unwrap();
 
-                let file_expected = "/tmp/EXPECTED(".to_owned() + name + ")";
+                let file_expected = tmp_path.to_owned() + "EXPECTED(" + name + ")";
                 std::fs::File::create(&file_expected).unwrap().write_fmt(format_args!("{}", result.expected)).unwrap();
 
-                std::process::Command::new(tools::get_vscode_bin().unwrap().as_str())
-                    .args(["--diff", file_got.as_str(), file_expected.as_str()])
+                std::process::Command::new(if cfg!(target_os = "windows") {"cmd"} else {"sh"})
+                    .args([if cfg!(target_os = "windows") {"/C"} else {"-c"}, (tools::get_vscode_bin().unwrap() + " --diff " + file_got.as_str() + " " + file_expected.as_str()).as_str()])
                     .output()
                     .expect("failed to execute vscode");
             }
@@ -133,24 +136,21 @@ impl Core {
 
     pub fn run(&mut self) -> i32 {
         let test_files = self.parse();
-        let multiple_files = test_files.len() != 1;
 
         for test_file in test_files.into_iter() {
-            if multiple_files {
-                println!("{}\n", test_file.name.bold().blue());
-            }
+            println!("{}\n", test_file.name.bold().blue());
             for test in test_file.tests.into_iter() {
                 self.apply_result(test.name.as_str(), test.run());
             }
             println!("");
         }
         println!("> Tests: {} | Passed: {} | Failed: {} | Crashed: {} | Timeout: {} | Skipped: {}",
-            self.tests.to_string().bold().bright_blue(),
-            self.passed.to_string().bold().bright_green(),
-            self.failed.to_string().bold().bright_red(),
-            self.crashed.to_string().bold().bright_yellow(),
-            self.timeout.to_string().bold().bright_magenta(),
-            self.skipped.to_string().bold().bright_white(),
+            self.tests.to_string().bold().blue(),
+            self.passed.to_string().bold().green(),
+            self.failed.to_string().bold().red(),
+            self.crashed.to_string().bold().yellow(),
+            self.timeout.to_string().bold().magenta(),
+            self.skipped.to_string().bold().white(),
         );
         if self.tests == self.passed + self.skipped {0} else {1}
     }
