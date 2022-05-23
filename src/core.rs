@@ -137,6 +137,7 @@ impl Core {
     pub fn run(&mut self) -> i32 {
         let test_files = self.parse();
 
+        tools::hide_cursor();
         for test_file in test_files.into_iter() {
             println!("{}\n", test_file.name.bold().blue());
             for test in test_file.tests.into_iter() {
@@ -144,6 +145,7 @@ impl Core {
             }
             println!("");
         }
+        tools::show_cursor();
         println!("> Tests: {} | Passed: {} | Failed: {} | Crashed: {} | Timeout: {} | Skipped: {}",
             self.tests.to_string().bold().blue(),
             self.passed.to_string().bold().green(),
