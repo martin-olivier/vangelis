@@ -45,5 +45,14 @@ pub fn get_vscode_bin() -> Option<String> {
             return Some(vscode_path.to_owned());
         }
     }
-    Some("code".to_owned())
+    std::env::var_os("PATH").and_then(|paths| {
+        std::env::split_paths(&paths).filter_map(|dir| {
+            let full_path = dir.join("code");
+            if full_path.is_file() {
+                Some("code".to_owned())
+            } else {
+                None
+            }
+        }).next()
+    })
 }

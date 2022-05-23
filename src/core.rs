@@ -118,7 +118,7 @@ impl Core {
                 println!("|_|");
             }
             Details::VSCode => {
-                let tmp_path = if cfg!(target_os = "windows") {"/Temp/"} else {"/tmp/"};
+                let tmp_path = if cfg!(target_os = "windows") {std::env::var("Temp").unwrap() + "/"} else {"/tmp/".to_string()};
                 let file_got = tmp_path.to_owned() + "GOT(" + name + ")";
                 std::fs::File::create(&file_got).unwrap().write_fmt(format_args!("{}", result.got)).unwrap();
 
@@ -147,12 +147,12 @@ impl Core {
         }
         tools::show_cursor();
         println!("> Tests: {} | Passed: {} | Failed: {} | Crashed: {} | Timeout: {} | Skipped: {}",
-            self.tests.to_string().bold().blue(),
-            self.passed.to_string().bold().green(),
-            self.failed.to_string().bold().red(),
-            self.crashed.to_string().bold().yellow(),
-            self.timeout.to_string().bold().magenta(),
-            self.skipped.to_string().bold().white(),
+            self.tests.to_string().blue(),
+            self.passed.to_string().green(),
+            self.failed.to_string().red(),
+            self.crashed.to_string().yellow(),
+            self.timeout.to_string().magenta(),
+            self.skipped.to_string().white(),
         );
         if self.tests == self.passed + self.skipped {0} else {1}
     }
