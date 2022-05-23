@@ -1,5 +1,6 @@
-use std::io::Read;
 use crate::test::Test;
+use std::io::Read;
+use indexmap::IndexMap;
 
 #[derive(serde::Deserialize)]
 struct RawDefault {
@@ -26,7 +27,7 @@ struct RawTest {
 #[derive(serde::Deserialize)]
 struct RawTestFile {
     default: Option<RawDefault>,
-    test: indexmap::IndexMap<String, RawTest>,
+    test: IndexMap<String, RawTest>,
 }
 
 pub struct TestFile {
@@ -34,19 +35,9 @@ pub struct TestFile {
     pub tests: Vec<Test>,
 }
 
-fn get_config_from_file(path: &str) -> RawTestFile {
-    let mut file = match std::fs::File::open(path) {
-        Ok(val) => val,
-        Err(err) => panic!("Could not read file \"{}\": {}", path, err)
-    };
-    let mut buff = String::new();
-    match file.read_to_string(&mut buff) {
-        Ok(_) => (),
-        Err(err) => panic!("Could not read file \"{}\": {}", path, err)
-    };
-    match toml::from_str(&buff) {
-        Ok(val) => val,
-        Err(err) => panic!("Parsing error: {} in test file \"{}\"", err, path)
+impl TestFile {
+    pub fn new(path: &str) -> Self {
+        parse_config(get_config(path), path)
     }
 }
 
@@ -58,26 +49,52 @@ struct Default {
     windows_shell: String,
 }
 
-fn get_defaults(default: Option<RawDefault>) -> Default {
-    match default {
-        Some(def) => {
-            Default {
-                runs_on: def.runs_on.unwrap_or(vec!["linux".to_owned(), "macos".to_owned(), "windows".to_owned()]),
-                code: def.code.unwrap_or(0),
-                timeout: def.timeout.unwrap_or(60.0),
-                unix_shell: def.unix_shell.unwrap_or("sh".to_owned()),
-                windows_shell: def.windows_shell.unwrap_or("cmd".to_owned()),
-            }
-        },
-        None => {
-            Default {
-                runs_on: vec!["linux".to_owned(), "macos".to_owned(), "windows".to_owned()],
-                code: 0,
-                timeout: 60.0,
-                unix_shell: "sh".to_owned(),
-                windows_shell: "cmd".to_owned(),
-            }
+impl Default {
+    pub fn new(default: Option<RawDefault>) -> Self {
+        let mut this = Default {
+            runs_on: vec!["linux".to_owned(), "macos".to_owned(), "windows".to_owned()],
+            code: 0,
+            timeout: 60.0,
+            unix_shell: "sh".to_owned(),
+            windows_shell: "cmd".to_owned(),
+        };
+        match default {
+            Some(def) => {
+                if let Some(runs_on) = def.runs_on {
+                    this.runs_on = runs_on;
+                }
+                if let Some(code) = def.code {
+                    this.code = code;
+                }
+                if let Some(timeout) = def.timeout {
+                    this.timeout = timeout;
+                }
+                if let Some(unix_shell) = def.unix_shell {
+                    this.unix_shell = unix_shell;
+                }
+                if let Some(windows_shell) = def.windows_shell {
+                    this.windows_shell = windows_shell;
+                }
+                this
+            },
+            None => this
         }
+    }
+}
+
+fn get_config(path: &str) -> RawTestFile {
+    let mut buff = String::new();
+    let mut file = match std::fs::File::open(path) {
+        Ok(val) => val,
+        Err(err) => panic!("Could not read file \"{}\": {}", path, err)
+    };
+    match file.read_to_string(&mut buff) {
+        Ok(_) => (),
+        Err(err) => panic!("Could not read file \"{}\": {}", path, err)
+    };
+    match toml::from_str(&buff) {
+        Ok(val) => val,
+        Err(err) => panic!("Parsing error: {} in test file \"{}\"", err, path)
     }
 }
 
@@ -98,15 +115,9 @@ fn parse_test(raw_test: (std::string::String, RawTest), default: &Default) -> Te
 
 fn parse_config(raw_test_file: RawTestFile, path: &str) -> TestFile {
     let mut test_file =  TestFile{name: path.to_owned(), tests: vec![]};
-    let default = get_defaults(raw_test_file.default);
+    let default = Default::new(raw_test_file.default);
     for test in raw_test_file.test.into_iter() {
         test_file.tests.push(parse_test(test, &default));
     }
     test_file
-}
-
-impl TestFile {
-    pub fn new(path: &str) -> Self {
-        parse_config(get_config_from_file(path), path)
-    }
 }

@@ -1,10 +1,9 @@
 use colored::Colorize;
 use std::io::Write;
-use crate::tools;
 
 pub fn set_panic_hook() {
     std::panic::set_hook(Box::new(|err| {
-        tools::show_cursor();
+        show_cursor();
         if let Some(msg) = err.payload().downcast_ref::<&str>() {
             println!("{}", msg.bold().red());
         } else if let Some(msg) = err.payload().downcast_ref::<String>() {

@@ -1,7 +1,7 @@
-use crate::menu;
-use crate::tools;
 use crate::test::{TestResult, Status};
 use crate::testfile::{TestFile};
+use crate::menu;
+use crate::tools;
 
 use colored::Colorize;
 use std::io::Write;
@@ -35,8 +35,8 @@ impl Core {
         }
     }
 
-    fn parse_args(&mut self) -> Vec<String> {
-        let mut files: Vec<String> = vec![];
+    fn parse(&mut self) -> Vec<TestFile> {
+        let mut files: Vec<TestFile> = vec![];
         let mut verbose = false;
         let mut diff = false;
 
@@ -51,7 +51,7 @@ impl Core {
                     if arg.starts_with("-") {
                         panic!("bad option: {}", arg.as_str())
                     } else {
-                        files.push(arg.to_string());
+                        files.push(TestFile::new(arg.as_str()));
                     }
                 }
             }
@@ -70,19 +70,6 @@ impl Core {
             self.details = Details::VSCode;
         }
         files
-    }
-
-    fn parse_files(&mut self, files_list: Vec<String>) -> Vec<TestFile> {
-        let mut test_files: Vec<TestFile> = vec![];
-        for file in files_list.into_iter() {
-            test_files.push(TestFile::new(&file));
-        }
-        test_files
-    }
-
-    fn parse(&mut self) -> Vec<TestFile> {
-        let files_list = self.parse_args();
-        self.parse_files(files_list)
     }
 
     fn apply_result(&mut self, name: &str, result: TestResult) {
@@ -119,16 +106,19 @@ impl Core {
             }
             Details::VSCode => {
                 let tmp_path = if cfg!(target_os = "windows") {std::env::var("Temp").unwrap() + "/"} else {"/tmp/".to_string()};
+
                 let file_got = tmp_path.to_owned() + "GOT(" + name + ")";
                 std::fs::File::create(&file_got).unwrap().write_fmt(format_args!("{}", result.got)).unwrap();
 
                 let file_expected = tmp_path.to_owned() + "EXPECTED(" + name + ")";
                 std::fs::File::create(&file_expected).unwrap().write_fmt(format_args!("{}", result.expected)).unwrap();
 
+                let cmd = "\"".to_owned() + tools::get_vscode_bin().unwrap().as_str() + "\" --diff \"" + file_got.as_str() + "\" \"" + file_expected.as_str() + "\"";
+
                 std::process::Command::new(if cfg!(target_os = "windows") {"cmd"} else {"sh"})
-                    .args([if cfg!(target_os = "windows") {"/C"} else {"-c"}, (tools::get_vscode_bin().unwrap() + " --diff " + file_got.as_str() + " " + file_expected.as_str()).as_str()])
+                    .args([if cfg!(target_os = "windows") {"/C"} else {"-c"}, cmd.as_str()])
                     .output()
-                    .expect("failed to execute vscode");
+                    .expect("failed to execute vscode process");
             }
             _ => {}
         }
