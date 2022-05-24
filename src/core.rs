@@ -133,10 +133,9 @@ impl Core {
             for test in test_file.tests.into_iter() {
                 self.apply_result(test.name.as_str(), test.run());
             }
-            println!("");
         }
         tools::show_cursor();
-        println!("> Tests: {} | Passed: {} | Failed: {} | Crashed: {} | Timeout: {} | Skipped: {}",
+        println!("\n> Tests: {} | Passed: {} | Failed: {} | Crashed: {} | Timeout: {} | Skipped: {}",
             self.tests.to_string().blue(),
             self.passed.to_string().green(),
             self.failed.to_string().red(),

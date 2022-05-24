@@ -37,7 +37,36 @@ pub struct TestFile {
 
 impl TestFile {
     pub fn new(path: &str) -> Self {
-        parse_config(get_config(path), path)
+        let mut test_file = TestFile{name: path.to_owned(), tests: vec![]};
+        let mut buff = String::new();
+        let mut file = match std::fs::File::open(path) {
+            Ok(val) => val,
+            Err(err) => panic!("Could not read file \"{}\": {}", path, err)
+        };
+        match file.read_to_string(&mut buff) {
+            Ok(_) => (),
+            Err(err) => panic!("Could not read file \"{}\": {}", path, err)
+        };
+        let raw_test_file: RawTestFile = match toml::from_str(&buff) {
+            Ok(val) => val,
+            Err(err) => panic!("Parsing error: {} in test file \"{}\"", err, path)
+        };
+        let default = Default::new(raw_test_file.default);
+        for test in raw_test_file.test.into_iter() {
+            test_file.tests.push(Test{
+                name: test.0,
+                cmd: test.1.cmd,
+                stdin: test.1.stdin,
+                stdout: test.1.stdout,
+                stderr: test.1.stderr,
+                code: test.1.code.unwrap_or(default.code),
+                timeout: test.1.timeout.unwrap_or(default.timeout),
+                runs_on: test.1.runs_on.unwrap_or(default.runs_on.clone()),
+                unix_shell: test.1.unix_shell.unwrap_or(default.unix_shell.clone()),
+                windows_shell: test.1.windows_shell.unwrap_or(default.windows_shell.clone()),
+            });
+        }
+        test_file
     }
 }
 
@@ -80,44 +109,4 @@ impl Default {
             None => this
         }
     }
-}
-
-fn get_config(path: &str) -> RawTestFile {
-    let mut buff = String::new();
-    let mut file = match std::fs::File::open(path) {
-        Ok(val) => val,
-        Err(err) => panic!("Could not read file \"{}\": {}", path, err)
-    };
-    match file.read_to_string(&mut buff) {
-        Ok(_) => (),
-        Err(err) => panic!("Could not read file \"{}\": {}", path, err)
-    };
-    match toml::from_str(&buff) {
-        Ok(val) => val,
-        Err(err) => panic!("Parsing error: {} in test file \"{}\"", err, path)
-    }
-}
-
-fn parse_test(raw_test: (std::string::String, RawTest), default: &Default) -> Test {
-    Test {
-        name: raw_test.0,
-        cmd: raw_test.1.cmd,
-        stdin: raw_test.1.stdin,
-        stdout: raw_test.1.stdout,
-        stderr: raw_test.1.stderr,
-        code: raw_test.1.code.unwrap_or(default.code),
-        timeout: raw_test.1.timeout.unwrap_or(default.timeout),
-        runs_on: raw_test.1.runs_on.unwrap_or(default.runs_on.clone()),
-        unix_shell: raw_test.1.unix_shell.unwrap_or(default.unix_shell.clone()),
-        windows_shell: raw_test.1.windows_shell.unwrap_or(default.windows_shell.clone()),
-    }
-}
-
-fn parse_config(raw_test_file: RawTestFile, path: &str) -> TestFile {
-    let mut test_file =  TestFile{name: path.to_owned(), tests: vec![]};
-    let default = Default::new(raw_test_file.default);
-    for test in raw_test_file.test.into_iter() {
-        test_file.tests.push(parse_test(test, &default));
-    }
-    test_file
 }
