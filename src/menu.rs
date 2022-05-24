@@ -1,6 +1,6 @@
 pub fn help(return_value: i32) {
     println!("USAGE:");
-    println!("\t{} test.toml [OPTIONS]\n", std::env::args().nth(0).unwrap().as_str());
+    println!("\t{} test.toml [OPTIONS]\n", std::env::args().nth(0).unwrap_or("io_tester".to_string()));
 
     println!("DESCRIPTION:");
     println!("\ttest.toml\t\tfile that contains functional tests\n");

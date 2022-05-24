@@ -138,6 +138,7 @@ impl Core {
             }
         }
         tools::show_cursor();
+
         println!("\n> Tests: {} | Passed: {} | Failed: {} | Crashed: {} | Timeout: {} | Skipped: {}",
             self.tests.to_string().blue(),
             self.passed.to_string().green(),
