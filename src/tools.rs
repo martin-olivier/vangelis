@@ -1,6 +1,8 @@
 use colored::Colorize;
 use std::io::Write;
 
+static mut TERMSIZE: Option<usize> = None;
+
 pub fn set_panic_hook() {
     std::panic::set_hook(Box::new(|err| {
         show_cursor();
@@ -30,11 +32,15 @@ pub fn show_cursor() {
 }
 
 pub fn get_padding(name: &str, duration: &str) -> String {
-    let termsize: usize = match atty::is(atty::Stream::Stdout) {
-        true => term_size::dimensions().unwrap_or((100, 20)).0,
-        false => 100,
-    };
-    std::iter::repeat(" ").take(termsize - (name.len() + 5 + duration.len())).collect::<String>()
+unsafe {
+    if TERMSIZE.is_none() {
+        TERMSIZE = match atty::is(atty::Stream::Stdout) {
+            true => Some(term_size::dimensions().unwrap_or((100, 20)).0),
+            false => Some(100),
+        };
+    }
+    std::iter::repeat(" ").take(TERMSIZE.unwrap() - (name.len() + 5 + duration.len())).collect::<String>()
+}
 }
 
 pub fn get_vscode_bin() -> Option<String> {
