@@ -35,41 +35,6 @@ pub struct TestFile {
     pub tests: Vec<Test>,
 }
 
-impl TestFile {
-    pub fn new(path: &str) -> Self {
-        let mut test_file = TestFile{name: path.to_owned(), tests: vec![]};
-        let mut buff = String::new();
-        let mut file = match std::fs::File::open(path) {
-            Ok(val) => val,
-            Err(err) => panic!("Could not read file \"{}\": {}", path, err)
-        };
-        match file.read_to_string(&mut buff) {
-            Ok(_) => (),
-            Err(err) => panic!("Could not read file \"{}\": {}", path, err)
-        };
-        let raw_test_file: RawTestFile = match toml::from_str(&buff) {
-            Ok(val) => val,
-            Err(err) => panic!("Parsing error: {} in test file \"{}\"", err, path)
-        };
-        let default = Default::new(raw_test_file.default);
-        for test in raw_test_file.test.into_iter() {
-            test_file.tests.push(Test{
-                name: test.0,
-                cmd: test.1.cmd,
-                stdin: test.1.stdin,
-                stdout: test.1.stdout,
-                stderr: test.1.stderr,
-                code: test.1.code.unwrap_or(default.code),
-                timeout: test.1.timeout.unwrap_or(default.timeout),
-                runs_on: test.1.runs_on.unwrap_or(default.runs_on.clone()),
-                unix_shell: test.1.unix_shell.unwrap_or(default.unix_shell.clone()),
-                windows_shell: test.1.windows_shell.unwrap_or(default.windows_shell.clone()),
-            });
-        }
-        test_file
-    }
-}
-
 struct Default {
     runs_on: Vec<String>,
     code: i32,
@@ -108,5 +73,45 @@ impl Default {
             },
             None => this
         }
+    }
+}
+
+impl TestFile {
+    pub fn new(path: &str) -> Self {
+        let mut test_file = TestFile {
+            name: path.to_owned(),
+            tests: vec![]
+        };
+        let mut buff = String::new();
+        let mut file = match std::fs::File::open(path) {
+            Ok(val) => val,
+            Err(err) => panic!("Could not read \"{}\": {}", path, err)
+        };
+        match file.read_to_string(&mut buff) {
+            Ok(_) => (),
+            Err(err) => panic!("Could not read \"{}\": {}", path, err)
+        };
+        let raw_test_file: RawTestFile = match toml::from_str(&buff) {
+            Ok(val) => val,
+            Err(err) => panic!("Parsing error: {} in test file \"{}\"", err, path)
+        };
+        let default = Default::new(raw_test_file.default);
+        for test in raw_test_file.test.into_iter() {
+            test_file.tests.push(
+                Test {
+                    name: test.0,
+                    cmd: test.1.cmd,
+                    stdin: test.1.stdin,
+                    stdout: test.1.stdout,
+                    stderr: test.1.stderr,
+                    code: test.1.code.unwrap_or(default.code),
+                    timeout: test.1.timeout.unwrap_or(default.timeout),
+                    runs_on: test.1.runs_on.unwrap_or(default.runs_on.clone()),
+                    unix_shell: test.1.unix_shell.unwrap_or(default.unix_shell.clone()),
+                    windows_shell: test.1.windows_shell.unwrap_or(default.windows_shell.clone()),
+                }
+            );
+        }
+        test_file
     }
 }

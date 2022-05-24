@@ -64,7 +64,7 @@ pub struct Test {
 }
 
 impl Test {
-    fn get_exit_code(&self, mut child: std::process::Child) -> ProcessResult {
+    fn wait(&self, mut child: std::process::Child) -> ProcessResult {
         let mut process_result = ProcessResult::new();
         let limit = std::time::Instant::now() + std::time::Duration::from_millis((self.timeout * 1000.0) as u64);
         let init_time = std::time::Instant::now();
@@ -130,7 +130,7 @@ impl Test {
         if let Some(ref stdin) = self.stdin {
             child.stdin.take().unwrap().write_all(stdin.as_bytes()).unwrap();
         }
-        Some(self.get_exit_code(child))
+        Some(self.wait(child))
     }
 
     pub fn run(&self) -> TestResult {

@@ -1,5 +1,5 @@
 use crate::test::{TestResult, Status};
-use crate::testfile::{TestFile};
+use crate::config::{TestFile};
 use crate::menu;
 use crate::tools;
 
@@ -75,15 +75,15 @@ impl Core {
     fn show_diff(&self, name: &str, result: TestResult) {
         match self.details {
             Details::Shell => {
-                println!("|^|");
+                println!("");
                 for diff in diff::lines(result.got.as_str(), result.expected.as_str()) {
                     match diff {
-                        diff::Result::Left(l)    => println!("|{}| {}", "+".green(), l.green()),
-                        diff::Result::Both(l, _) => println!("|{}| {}", " ", l),
-                        diff::Result::Right(r)   => println!("|{}| {}", "-".red(), r.red()),
+                        diff::Result::Left(l)    => println!("{} {}", " + ".bold().white().on_green(), l.green()),
+                        diff::Result::Both(l, _) => println!("{} {}", "   ".on_white(), l),
+                        diff::Result::Right(r)   => println!("{} {}", " - ".bold().white().on_red(), r.red()),
                     }
                 }
-                println!("|_|");
+                println!("");
             }
             Details::VSCode => {
                 let tmp_path = if cfg!(target_os = "windows") {std::env::var("Temp").unwrap() + "/"} else {"/tmp/".to_string()};

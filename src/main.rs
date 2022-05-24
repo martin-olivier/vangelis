@@ -1,7 +1,7 @@
 mod core;
 mod menu;
 mod test;
-mod testfile;
+mod config;
 mod tools;
 
 fn main() {

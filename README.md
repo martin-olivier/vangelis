@@ -1,7 +1,7 @@
 # IO Tester
-[![Version](https://img.shields.io/badge/IO_Tester-v1.9.0-blue.svg)](https://github.com/martin-olivier/IO-TESTER/releases/tag/v1.9.0)
-[![MIT license](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/martin-olivier/IO-TESTER/blob/main/LICENSE)
-[![CPP Version](https://img.shields.io/badge/C++-17-darkgreen.svg)](https://isocpp.org/)
+[![Version](https://img.shields.io/badge/IO_Tester-v2.0.0-blue.svg)](https://github.com/martin-olivier/IO-TESTER/releases/tag/v2.0.0)
+[![MIT license](https://img.shields.io/badge/License-MIT-darkgreen.svg)](https://github.com/martin-olivier/IO-TESTER/blob/main/LICENSE)
+[![Language](https://img.shields.io/badge/Language-Rust-orange.svg)](https://www.rust-lang.org/)
 
 [![GitHub watchers](https://img.shields.io/github/watchers/martin-olivier/IO-TESTER?style=social)](https://github.com/martin-olivier/IO-TESTER/watchers/)
 [![GitHub forks](https://img.shields.io/github/forks/martin-olivier/IO-TESTER?style=social)](https://github.com/martin-olivier/IO-TESTER/network/members/)
