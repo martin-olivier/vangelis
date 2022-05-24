@@ -72,26 +72,7 @@ impl Core {
         files
     }
 
-    fn apply_result(&mut self, name: &str, result: TestResult) {
-        let date_formated = format!("{:.1}s", result.exec_time);
-        let date_padding = format!("{}{}", tools::get_padding(name, date_formated.as_str()), date_formated.blue());
-        match result.status {
-            Status::Passed => {self.tests += 1; self.passed += 1},
-            Status::Failed => {self.tests += 1; self.failed += 1},
-            Status::Timeout => {self.tests += 1; self.timeout += 1},
-            Status::Skipped => {self.tests += 1; self.skipped += 1},
-            Status::Crashed => {self.tests += 1; self.crashed += 1},
-        }
-        match result.status {
-            Status::Passed => println!("{} {}{}", "[V]".green(), name.green(), date_padding),
-            Status::Failed => println!("{} {}{}", "[X]".red(), name.red(), date_padding),
-            Status::Crashed => println!("{} {}{}", "[!]".yellow(), name.yellow(), date_padding),
-            Status::Timeout => println!("{} {}{}", "[?]".magenta(), name.magenta(), date_padding),
-            Status::Skipped => println!("{} {}{}", "[>]".white(), name.white(), date_padding),
-        }
-        if result.got == result.expected {
-            return;
-        }
+    fn show_diff(&self, name: &str, result: TestResult) {
         match self.details {
             Details::Shell => {
                 println!("|^|");
@@ -120,7 +101,29 @@ impl Core {
                     .output()
                     .expect("failed to execute vscode process");
             }
-            _ => {}
+            Details::No => {}
+        }
+    }
+
+    fn apply_result(&mut self, name: &str, result: TestResult) {
+        let date_formated = format!("{:.1}s", result.exec_time);
+        let date_padding = format!("{}{}", tools::get_padding(name, date_formated.as_str()), date_formated.blue());
+        match result.status {
+            Status::Passed => {self.tests += 1; self.passed += 1},
+            Status::Failed => {self.tests += 1; self.failed += 1},
+            Status::Timeout => {self.tests += 1; self.timeout += 1},
+            Status::Skipped => {self.tests += 1; self.skipped += 1},
+            Status::Crashed => {self.tests += 1; self.crashed += 1},
+        }
+        match result.status {
+            Status::Passed => println!("{} {}{}", "[V]".green(), name.green(), date_padding),
+            Status::Failed => println!("{} {}{}", "[X]".red(), name.red(), date_padding),
+            Status::Crashed => println!("{} {}{}", "[!]".yellow(), name.yellow(), date_padding),
+            Status::Timeout => println!("{} {}{}", "[?]".magenta(), name.magenta(), date_padding),
+            Status::Skipped => println!("{} {}{}", "[>]".white(), name.white(), date_padding),
+        }
+        if result.got != result.expected {
+            self.show_diff(name, result);
         }
     }
 
