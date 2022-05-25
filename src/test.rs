@@ -4,6 +4,7 @@ use std::io::Read;
 use std::io::Write;
 use colored::Colorize;
 
+#[derive(PartialEq)]
 pub enum Status {
     Passed,
     Crashed,
@@ -15,17 +16,25 @@ pub enum Status {
 pub struct TestResult {
     pub status: Status,
     pub exec_time: f32,
-    pub got: String,
-    pub expected: String,
+    pub got_code: Option<i32>,
+    pub got_stdout: String,
+    pub got_stderr: String,
+    pub expected_code: i32,
+    pub expected_stdout: Option<String>,
+    pub expected_stderr: Option<String>,
 }
 
 impl TestResult {
     pub fn new() -> Self {
         TestResult {
-            status: Status::Passed,
+            status: Status::Skipped,
             exec_time: 0.0,
-            got: "".to_owned(),
-            expected: "".to_owned()
+            got_code: None,
+            got_stdout: "".to_owned(),
+            got_stderr: "".to_owned(),
+            expected_code: 0,
+            expected_stdout: None,
+            expected_stderr: None,
         }
     }
 }
@@ -133,55 +142,52 @@ impl Test {
         Some(self.wait(child))
     }
 
-    pub fn run(&self) -> TestResult {
-        let mut result = TestResult::new();
-        match self.run_command() {
-            Some(val) => {
-                result.exec_time = val.exec_time;
-                match val.code {
-                    Some(code) => {
-                        if code != self.code {
-                            if code >= 132 && code <= 139 {
-                                result.status = Status::Crashed;
-                            } else {
-                                result.status = Status::Failed;
-                            }
-                        }
-                        result.got.push_str(&("[EXIT CODE]\nvalue = ".to_owned() + code.to_string().as_str() + "\n\n"));
-                        result.expected.push_str(&("[EXIT CODE]\nvalue = ".to_owned() + self.code.to_string().as_str() + "\n\n"));
+    fn parse_result(&self, process_result: ProcessResult) -> TestResult {
+        let mut test_result = TestResult::new();
+        test_result.status = Status::Passed;
+        test_result.exec_time = process_result.exec_time;
+        test_result.expected_code = self.code;
+        match process_result.code {
+            Some(code) => {
+                if code != self.code {
+                    if code >= 132 && code <= 139 {
+                        test_result.status = Status::Crashed;
+                    } else {
+                        test_result.status = Status::Failed;
                     }
-                    None => result.status = Status::Crashed,
                 }
-                if let Some(ref stdout) = self.stdout {
-                    if *stdout != val.stdout {
-                        result.status = match result.status {
-                            Status::Crashed => result.status,
-                            _ => Status::Failed,
-                        };
-                    }
-                    result.got.push_str(&("[STDOUT]\n".to_string() + val.stdout.as_str() + "\n\n"));
-                    result.expected.push_str(&("[STDOUT]\n".to_string() + stdout.as_str() + "\n\n"));
-                }
-                if let Some(ref stderr) = self.stderr {
-                    if *stderr != val.stderr {
-                        result.status = match result.status {
-                            Status::Crashed => result.status,
-                            _ => Status::Failed,
-                        };
-                    }
-                    result.got.push_str(&("[STDERR]\n".to_owned() + val.stderr.as_str() + "\n\n"));
-                    result.expected.push_str(&("[STDERR]\n".to_owned() + stderr.as_str() + "\n\n"));
-                }
-                if result.got.ends_with("\n\n") && result.expected.ends_with("\n\n") {
-                    result.got.pop();
-                    result.got.pop();
-                    result.expected.pop();
-                    result.expected.pop();
-                }
-                if val.timeout { result.status = Status::Timeout };
+                test_result.got_code = Some(code);
             }
-            None => result.status = Status::Skipped,
+            None => test_result.status = Status::Crashed,
         }
-        result
+        if let Some(ref stdout) = self.stdout {
+            if *stdout != process_result.stdout {
+                test_result.status = match test_result.status {
+                    Status::Crashed => test_result.status,
+                    _ => Status::Failed,
+                };
+            }
+            test_result.got_stdout = process_result.stdout;
+            test_result.expected_stdout = Some(stdout.to_owned());
+        }
+        if let Some(ref stderr) = self.stderr {
+            if *stderr != process_result.stderr {
+                test_result.status = match test_result.status {
+                    Status::Crashed => test_result.status,
+                    _ => Status::Failed,
+                };
+            }
+            test_result.got_stderr = process_result.stderr;
+            test_result.expected_stderr = Some(stderr.to_owned());
+        }
+        if process_result.timeout { test_result.status = Status::Timeout };
+        test_result
+    }
+
+    pub fn run(&self) -> TestResult {
+        match self.run_command() {
+            Some(res) => self.parse_result(res),
+            None => TestResult::new()
+        }
     }
 }

@@ -31,16 +31,24 @@ pub fn show_cursor() {
     }
 }
 
-pub fn get_padding(name: &str, duration: &str) -> String {
+pub fn get_termsize() -> usize {
 unsafe {
     if TERMSIZE.is_none() {
         TERMSIZE = match atty::is(atty::Stream::Stdout) {
-            true => Some(term_size::dimensions().unwrap_or((100, 20)).0),
+            true  => Some(term_size::dimensions().unwrap_or((100, 20)).0),
             false => Some(100),
         };
     }
-    std::iter::repeat(" ").take(TERMSIZE.unwrap() - (name.len() + 5 + duration.len())).collect::<String>()
+    TERMSIZE.unwrap()
 }
+}
+
+pub fn center(text: String) -> String {
+    format!("{}{}", std::iter::repeat(" ").take((get_termsize() - text.len()) / 2).collect::<String>(), text)
+}
+
+pub fn get_padding(name: &str, duration: &str) -> String {
+    std::iter::repeat(" ").take(get_termsize() - (name.len() + 5 + duration.len())).collect::<String>()
 }
 
 pub fn get_vscode_bin() -> Option<String> {
@@ -52,8 +60,7 @@ pub fn get_vscode_bin() -> Option<String> {
     }
     std::env::var_os("PATH").and_then(|paths| {
         std::env::split_paths(&paths).filter_map(|dir| {
-            let full_path = dir.join("code");
-            if full_path.is_file() {
+            if dir.join("code").is_file() {
                 Some("code".to_owned())
             } else {
                 None
