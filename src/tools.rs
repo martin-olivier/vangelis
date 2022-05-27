@@ -1,9 +1,14 @@
 use colored::Colorize;
 use std::io::Write;
 
-static mut TERMSIZE: Option<usize> = None;
+static mut SHELL_SIZE: Option<usize> = None;
 
-pub fn set_panic_hook() {
+pub fn set_hooks() {
+    ctrlc::set_handler(move || {
+        show_cursor();
+        std::process::exit(84);
+    }).ok();
+
     std::panic::set_hook(Box::new(|err| {
         show_cursor();
         if let Some(msg) = err.payload().downcast_ref::<&str>() {
@@ -31,24 +36,24 @@ pub fn show_cursor() {
     }
 }
 
-pub fn get_termsize() -> usize {
+pub fn get_shell_size() -> usize {
 unsafe {
-    if TERMSIZE.is_none() {
-        TERMSIZE = match atty::is(atty::Stream::Stdout) {
+    if SHELL_SIZE.is_none() {
+        SHELL_SIZE = match atty::is(atty::Stream::Stdout) {
             true  => Some(term_size::dimensions().unwrap_or((100, 20)).0),
             false => Some(100),
         };
     }
-    TERMSIZE.unwrap()
+    SHELL_SIZE.unwrap()
 }
 }
 
 pub fn center(text: String) -> String {
-    format!("{}{}", std::iter::repeat(" ").take((get_termsize() - text.len()) / 2).collect::<String>(), text)
+    format!("{}{}", std::iter::repeat(" ").take((get_shell_size() - text.len()) / 2).collect::<String>(), text)
 }
 
 pub fn get_padding(name: &str, duration: &str) -> String {
-    std::iter::repeat(" ").take(get_termsize() - (name.len() + 5 + duration.len())).collect::<String>()
+    std::iter::repeat(" ").take(get_shell_size() - (name.len() + 5 + duration.len())).collect::<String>()
 }
 
 pub fn get_vscode_bin() -> Option<String> {

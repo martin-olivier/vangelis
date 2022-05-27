@@ -3,14 +3,15 @@ pub fn help(return_value: i32) {
     println!("\t{} test.toml [OPTIONS]\n", std::env::args().nth(0).unwrap_or("io_tester".to_string()));
 
     println!("DESCRIPTION:");
-    println!("\ttest.toml\t\tfile that contains functional tests\n");
+    println!("\ttest.toml\tfile that contains functional tests\n");
 
     println!("OPTIONS:");
-    println!("\t--help\tDisplay this help menu");
+    println!("\t--help\t\tDisplay this help menu");
     println!("\t--version\tDisplay the current version");
     println!("\t--changelog\tDisplay the changelog");
     println!("\t--verbose\tDisplay the output difference in the shell");
-    println!("\t--diff\t\tDisplay the output difference in Visual Studio Code\n");
+    println!("\t--diff\t\tDisplay the output difference in Visual Studio Code");
+    println!("\t--stop_on_fail\tStop the execution if a test didn't succeed\n");
 
     println!("RETURN VALUE:");
     println!("\t0\t\tif all tests succeed");

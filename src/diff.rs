@@ -18,36 +18,36 @@ fn print_diff(got: String, expected: String) {
 pub fn shell(_name: &str, result: TestResult) {
     if result.status == Status::Passed || result.status == Status::Skipped {return}
 
-    println!("");
-    println!("{} {}", " > ".white().on_blue(), "[EXIT CODE]".blue());
+    println!("{}", " ^ ".bold().white());
+    println!("{} {}\n{}", " > ".white().on_blue(), "[code]".blue(), "   ".on_white());
     print_diff(format!("value = {}", result.got_code.unwrap_or(-1)), format!("value = {}", result.expected_code));
 
     if let Some(expected_stdout) = result.expected_stdout {
-        println!("\n{} {}", " > ".white().on_blue(), "[STDOUT]".blue());
+        println!("{}\n{} {}\n{}", "   ".on_white(), " > ".white().on_blue(), "[stdout]".blue(), "   ".on_white());
         print_diff(result.got_stdout, expected_stdout);
     }
     if let Some(expected_stderr) = result.expected_stderr {
-        println!("\n{} {}", " > ".white().on_blue(), "[STDERR]".blue());
+        println!("{}\n{} {}\n{}", "   ".on_white(), " > ".white().on_blue(), "[stderr]".blue(), "   ".on_white());
         print_diff(result.got_stderr, expected_stderr);
     }
-    println!("");
+    println!();
 }
 
 pub fn vscode(name: &str, result: TestResult) {
     if result.status == Status::Passed || result.status == Status::Skipped {return}
 
-    let got = format!("[EXIT CODE]\nvalue = {}{}{}{}{}",
+    let got = format!("[code]\n\nvalue = {}{}{}{}{}",
         result.got_code.unwrap_or(-1),
-        if result.expected_stdout.is_some() {"\n\n[STDOUT]\n"} else {""},
+        if result.expected_stdout.is_some() {"\n\n[stdout]\n\n"} else {""},
         if result.expected_stdout.is_some() {result.got_stdout} else {"".to_string()},
-        if result.expected_stderr.is_some() {"\n\n[STDERR]\n"} else {""},
+        if result.expected_stderr.is_some() {"\n\n[stderr]\n\n"} else {""},
         if result.expected_stderr.is_some() {result.got_stderr} else {"".to_string()},
     );
-    let expected = format!("[EXIT CODE]\nvalue = {}{}{}{}{}",
+    let expected = format!("[code]\n\nvalue = {}{}{}{}{}",
         result.expected_code,
-        if result.expected_stdout.is_some() {"\n\n[STDOUT]\n"} else {""},
+        if result.expected_stdout.is_some() {"\n\n[stdout]\n\n"} else {""},
         if let Some(expected_stdout) = result.expected_stdout {expected_stdout} else {"".to_string()},
-        if result.expected_stderr.is_some() {"\n\n[STDERR]\n"} else {""},
+        if result.expected_stderr.is_some() {"\n\n[stderr]\n\n"} else {""},
         if let Some(expected_stderr) = result.expected_stderr {expected_stderr} else {"".to_string()},
     );
 

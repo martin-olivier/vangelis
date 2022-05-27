@@ -20,6 +20,7 @@ pub struct Core {
     timeout: u32,
     skipped: u32,
     details: Details,
+    stop_on_fail: bool,
 }
 
 impl Core {
@@ -32,6 +33,7 @@ impl Core {
             timeout: 0,
             skipped: 0,
             details: Details::No,
+            stop_on_fail: false,
         }
     }
 
@@ -47,6 +49,7 @@ impl Core {
                 "--changelog" => menu::changelog(),
                 "--verbose" => verbose = true,
                 "--diff" => diff = true,
+                "--stop_on_fail" => self.stop_on_fail = true,
                 _ => {
                     if arg.starts_with("-") {
                         panic!("Unknown option: {}", arg.as_str())
@@ -73,8 +76,8 @@ impl Core {
     }
 
     fn apply_result(&mut self, name: &str, result: TestResult) {
-        let date_formated = format!("{:.1}s", result.exec_time);
-        let date_padding = format!("{}{}", tools::get_padding(name, date_formated.as_str()), date_formated.blue());
+        let date_format = format!("{:.1}s", result.exec_time);
+        let date_padding = format!("{}{}", tools::get_padding(name, date_format.as_str()), date_format.blue());
 
         match result.status {
             Status::Passed  => {self.tests += 1; self.passed  += 1},
@@ -102,9 +105,12 @@ impl Core {
 
         tools::hide_cursor();
         for test_file in test_files.into_iter() {
-            println!("\n{}\n", tools::center(format!("[{}]", test_file.name.bold().blue().to_string())));
+            println!("\n{}\n", tools::center(format!("{}", test_file.name.bold().blue().to_string())));
             for test in test_file.tests.into_iter() {
                 self.apply_result(test.name.as_str(), test.run());
+                if self.stop_on_fail && self.tests != self.passed + self.skipped {
+                    break
+                }
             }
         }
         tools::show_cursor();

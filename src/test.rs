@@ -85,8 +85,8 @@ impl Test {
                 }
                 Ok(None) => {
                     if std::time::Instant::now() < limit {
-                        let date_formated = format!("{:.1}s", (std::time::Instant::now() - init_time).as_secs_f32());
-                        let date_padding = format!("{}{}", tools::get_padding(self.name.as_str(), date_formated.as_str()), date_formated.blue());
+                        let date_format = format!("{:.1}s", (std::time::Instant::now() - init_time).as_secs_f32());
+                        let date_padding = format!("{}{}", tools::get_padding(self.name.as_str(), date_format.as_str()), date_format.blue());
                         if atty::is(atty::Stream::Stdout) {
                             print!("\r{} {}{}\r", "[>]".blue(), self.name.blue(), date_padding);
                             std::io::stdout().flush().unwrap();

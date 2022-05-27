@@ -6,6 +6,6 @@ mod diff;
 mod tools;
 
 fn main() {
-    tools::set_panic_hook();
+    tools::set_hooks();
     std::process::exit(core::Core::new().run());
 }
