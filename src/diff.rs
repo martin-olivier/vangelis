@@ -8,9 +8,9 @@ use colored::Colorize;
 fn print_diff(got: String, expected: String) {
     for diff in diff::lines(got.as_str(), expected.as_str()) {
         match diff {
-            diff::Result::Left(l)    => println!("{} {}", " + ".bold().white().on_green(), l.green()),
-            diff::Result::Both(l, _) => println!("{} {}", "   ".on_white(), l),
-            diff::Result::Right(r)   => println!("{} {}", " - ".bold().white().on_red(), r.red()),
+            diff::Result::Left(l)    => println!("{}  {}", " + ".bold().white().on_green(), l.green()),
+            diff::Result::Both(l, _) => println!("{}  {}", "   ".on_white(), l),
+            diff::Result::Right(r)   => println!("{}  {}", " - ".bold().white().on_red(), r.red()),
         }
     }
 }
@@ -20,8 +20,10 @@ pub fn shell(_name: &str, result: TestResult) {
 
     println!("{}", " ^ ".bold().white());
     println!("{} {}\n{}", " > ".white().on_blue(), "[code]".blue(), "   ".on_white());
-    print_diff(format!("value = {}", result.got_code.unwrap_or(-1)), format!("value = {}", result.expected_code));
-
+    print_diff(
+        format!("value = {}", if let Some(code) = result.got_code {code.to_string()} else {"None".to_string()}),
+        format!("value = {}", result.expected_code)
+    );
     if let Some(expected_stdout) = result.expected_stdout {
         println!("{}\n{} {}\n{}", "   ".on_white(), " > ".white().on_blue(), "[stdout]".blue(), "   ".on_white());
         print_diff(result.got_stdout, expected_stdout);
@@ -37,7 +39,10 @@ pub fn vscode(name: &str, result: TestResult) {
     if result.status == Status::Passed || result.status == Status::Skipped {return}
 
     let got = format!("[code]\n\nvalue = {}{}{}{}{}",
-        result.got_code.unwrap_or(-1),
+        match result.got_code {
+            Some(code) => code.to_string(),
+            None       => "None".to_string(),
+        },
         if result.expected_stdout.is_some() {"\n\n[stdout]\n\n"} else {""},
         if result.expected_stdout.is_some() {result.got_stdout} else {"".to_string()},
         if result.expected_stderr.is_some() {"\n\n[stderr]\n\n"} else {""},

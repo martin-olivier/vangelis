@@ -105,7 +105,7 @@ impl Core {
 
         tools::hide_cursor();
         for test_file in test_files.into_iter() {
-            println!("\n{}\n", tools::center(format!("{}", test_file.name.bold().blue().to_string())));
+            println!("\n{}\n", tools::center(test_file.name.bold().blue().to_string()));
             for test in test_file.tests.into_iter() {
                 self.apply_result(test.name.as_str(), test.run());
                 if self.stop_on_fail && self.tests != self.passed + self.skipped {

@@ -147,6 +147,7 @@ impl Test {
         test_result.status = Status::Passed;
         test_result.exec_time = process_result.exec_time;
         test_result.expected_code = self.code;
+
         match process_result.code {
             Some(code) => {
                 if code != self.code {
@@ -180,7 +181,9 @@ impl Test {
             test_result.got_stderr = process_result.stderr;
             test_result.expected_stderr = Some(stderr.to_owned());
         }
-        if process_result.timeout { test_result.status = Status::Timeout };
+        if process_result.timeout {
+            test_result.status = Status::Timeout
+        };
         test_result
     }
 

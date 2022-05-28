@@ -49,7 +49,7 @@ unsafe {
 }
 
 pub fn center(text: String) -> String {
-    format!("{}{}", std::iter::repeat(" ").take((get_shell_size() - text.len()) / 2).collect::<String>(), text)
+    format!("{}[{}]", std::iter::repeat(" ").take((get_shell_size() - text.len()) / 2).collect::<String>(), text)
 }
 
 pub fn get_padding(name: &str, duration: &str) -> String {
