@@ -18,18 +18,18 @@ fn print_diff(got: String, expected: String) {
 pub fn shell(_name: &str, result: TestResult) {
     if result.status == Status::Passed || result.status == Status::Skipped {return}
 
-    println!("{}", " ^ ".bold().white());
-    println!("{} {}\n{}", " > ".white().on_blue(), "[code]".blue(), "   ".on_white());
+    println!("{}", " ^ ".bold().blue());
+    println!("{}\n{} {}\n{}", "   ".on_blue(), " > ".white().on_blue(), "[exit status]".blue(), "   ".on_blue());
     print_diff(
-        format!("value = {}", if let Some(code) = result.got_code {code.to_string()} else {"None".to_string()}),
-        format!("value = {}", result.expected_code)
+        format!("value = {}", if let Some(exit_status) = result.got_exit_status {exit_status.to_string()} else {"None".to_string()}),
+        format!("value = {}", result.expected_exit_status)
     );
     if let Some(expected_stdout) = result.expected_stdout {
-        println!("{}\n{} {}\n{}", "   ".on_white(), " > ".white().on_blue(), "[stdout]".blue(), "   ".on_white());
+        println!("{}\n{} {}\n{}", "   ".on_blue(), " > ".white().on_blue(), "[stdout]".blue(), "   ".on_blue());
         print_diff(result.got_stdout, expected_stdout);
     }
     if let Some(expected_stderr) = result.expected_stderr {
-        println!("{}\n{} {}\n{}", "   ".on_white(), " > ".white().on_blue(), "[stderr]".blue(), "   ".on_white());
+        println!("{}\n{} {}\n{}", "   ".on_blue(), " > ".white().on_blue(), "[stderr]".blue(), "   ".on_blue());
         print_diff(result.got_stderr, expected_stderr);
     }
     println!();
@@ -38,18 +38,18 @@ pub fn shell(_name: &str, result: TestResult) {
 pub fn vscode(name: &str, result: TestResult) {
     if result.status == Status::Passed || result.status == Status::Skipped {return}
 
-    let got = format!("[code]\n\nvalue = {}{}{}{}{}",
-        match result.got_code {
-            Some(code) => code.to_string(),
-            None       => "None".to_string(),
+    let got = format!("[exit status]\n\nvalue = {}{}{}{}{}",
+        match result.got_exit_status {
+            Some(exit_status) => exit_status.to_string(),
+            None              => "None".to_string(),
         },
         if result.expected_stdout.is_some() {"\n\n[stdout]\n\n"} else {""},
-        if result.expected_stdout.is_some() {result.got_stdout} else {"".to_string()},
+        if result.expected_stdout.is_some() {result.got_stdout}  else {"".to_string()},
         if result.expected_stderr.is_some() {"\n\n[stderr]\n\n"} else {""},
-        if result.expected_stderr.is_some() {result.got_stderr} else {"".to_string()},
+        if result.expected_stderr.is_some() {result.got_stderr}  else {"".to_string()},
     );
-    let expected = format!("[code]\n\nvalue = {}{}{}{}{}",
-        result.expected_code,
+    let expected = format!("[exit status]\n\nvalue = {}{}{}{}{}",
+        result.expected_exit_status,
         if result.expected_stdout.is_some() {"\n\n[stdout]\n\n"} else {""},
         if let Some(expected_stdout) = result.expected_stdout {expected_stdout} else {"".to_string()},
         if result.expected_stderr.is_some() {"\n\n[stderr]\n\n"} else {""},

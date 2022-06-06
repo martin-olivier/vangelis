@@ -6,6 +6,7 @@ use crate::diff;
 
 use colored::Colorize;
 
+#[derive(PartialEq)]
 enum Details {
     No,
     Shell,
@@ -115,7 +116,8 @@ impl Core {
         }
         tools::show_cursor();
 
-        println!("\n> Tests: {} | Passed: {} | Failed: {} | Crashed: {} | Timeout: {} | Skipped: {}",
+        println!("{}> Tests: {} | Passed: {} | Failed: {} | Crashed: {} | Timeout: {} | Skipped: {}",
+            if self.details == Details::Shell {""} else {"\n"},
             self.tests.to_string().blue(),
             self.passed.to_string().green(),
             self.failed.to_string().red(),

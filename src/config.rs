@@ -1,12 +1,14 @@
 use crate::test::Test;
 use std::io::Read;
 use indexmap::IndexMap;
+use std::path::PathBuf;
 
 #[derive(serde::Deserialize)]
 struct RawDefault {
     runs_on: Option<Vec<String>>,
-    code: Option<i32>,
+    exit_status: Option<i32>,
     timeout: Option<f32>,
+    working_directory: Option<String>,
     unix_shell: Option<String>,
     windows_shell: Option<String>,
 }
@@ -16,8 +18,9 @@ struct RawTest {
     runs_on: Option<Vec<String>>,
     unix_shell: Option<String>,
     windows_shell: Option<String>,
-    code: Option<i32>,
+    exit_status: Option<i32>,
     timeout: Option<f32>,
+    working_directory: Option<String>,
     cmd: String,
     stdin: Option<String>,
     stdout: Option<String>,
@@ -37,8 +40,9 @@ pub struct TestFile {
 
 struct Default {
     runs_on: Vec<String>,
-    code: i32,
+    exit_status: i32,
     timeout: f32,
+    working_directory: String,
     unix_shell: String,
     windows_shell: String,
 }
@@ -47,8 +51,9 @@ impl Default {
     pub fn new(default: Option<RawDefault>) -> Self {
         let mut this = Default {
             runs_on: vec!["linux".to_owned(), "macos".to_owned(), "windows".to_owned()],
-            code: 0,
+            exit_status: 0,
             timeout: 60.0,
+            working_directory: ".".to_owned(),
             unix_shell: "sh".to_owned(),
             windows_shell: "cmd".to_owned(),
         };
@@ -57,11 +62,14 @@ impl Default {
                 if let Some(runs_on) = def.runs_on {
                     this.runs_on = runs_on;
                 }
-                if let Some(code) = def.code {
-                    this.code = code;
+                if let Some(exit_status) = def.exit_status {
+                    this.exit_status = exit_status;
                 }
                 if let Some(timeout) = def.timeout {
                     this.timeout = timeout;
+                }
+                if let Some(working_directory) = def.working_directory {
+                    this.working_directory = working_directory;
                 }
                 if let Some(unix_shell) = def.unix_shell {
                     this.unix_shell = unix_shell;
@@ -84,19 +92,23 @@ impl TestFile {
         };
         let mut buff = String::new();
         let mut file = match std::fs::File::open(path) {
-            Ok(val) => val,
+            Ok(val)  => val,
             Err(err) => panic!("Could not read \"{}\": {}", path, err)
         };
         match file.read_to_string(&mut buff) {
-            Ok(_) => (),
+            Ok(_)    => (),
             Err(err) => panic!("Could not read \"{}\": {}", path, err)
         };
         let raw_test_file: RawTestFile = match toml::from_str(&buff) {
-            Ok(val) => val,
+            Ok(val)  => val,
             Err(err) => panic!("Parsing error: {} in test file \"{}\"", err, path)
         };
         let default = Default::new(raw_test_file.default);
         for test in raw_test_file.test.into_iter() {
+            let working_dir = PathBuf::from(path).parent().unwrap().join(test.1.working_directory.unwrap_or(default.working_directory.clone()));
+            if !working_dir.exists() {
+                panic!("Working directory \"{}\" does not exist", working_dir.to_str().unwrap());
+            }
             test_file.tests.push(
                 Test {
                     name: test.0,
@@ -104,8 +116,9 @@ impl TestFile {
                     stdin: test.1.stdin,
                     stdout: test.1.stdout,
                     stderr: test.1.stderr,
-                    code: test.1.code.unwrap_or(default.code),
+                    exit_status: test.1.exit_status.unwrap_or(default.exit_status),
                     timeout: test.1.timeout.unwrap_or(default.timeout),
+                    working_directory: working_dir,
                     runs_on: test.1.runs_on.unwrap_or(default.runs_on.clone()),
                     unix_shell: test.1.unix_shell.unwrap_or(default.unix_shell.clone()),
                     windows_shell: test.1.windows_shell.unwrap_or(default.windows_shell.clone()),

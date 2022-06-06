@@ -1,5 +1,6 @@
 use crate::tools;
 
+use std::path::PathBuf;
 use std::io::Read;
 use std::io::Write;
 use colored::Colorize;
@@ -16,10 +17,10 @@ pub enum Status {
 pub struct TestResult {
     pub status: Status,
     pub exec_time: f32,
-    pub got_code: Option<i32>,
+    pub got_exit_status: Option<i32>,
     pub got_stdout: String,
     pub got_stderr: String,
-    pub expected_code: i32,
+    pub expected_exit_status: i32,
     pub expected_stdout: Option<String>,
     pub expected_stderr: Option<String>,
 }
@@ -29,10 +30,10 @@ impl TestResult {
         TestResult {
             status: Status::Skipped,
             exec_time: 0.0,
-            got_code: None,
+            got_exit_status: None,
             got_stdout: "".to_owned(),
             got_stderr: "".to_owned(),
-            expected_code: 0,
+            expected_exit_status: 0,
             expected_stdout: None,
             expected_stderr: None,
         }
@@ -42,7 +43,7 @@ impl TestResult {
 struct ProcessResult {
     timeout: bool,
     exec_time: f32,
-    code: Option<i32>,
+    exit_status: Option<i32>,
     stdout: String,
     stderr: String,
 }
@@ -52,7 +53,7 @@ impl ProcessResult {
         ProcessResult {
             timeout: false,
             exec_time: 0.0,
-            code: None,
+            exit_status: None,
             stdout: "".to_owned(),
             stderr: "".to_owned(),
         }
@@ -65,8 +66,9 @@ pub struct Test {
     pub stdin: Option<String>,
     pub stdout: Option<String>,
     pub stderr: Option<String>,
-    pub code: i32,
+    pub exit_status: i32,
     pub timeout: f32,
+    pub working_directory: PathBuf,
     pub runs_on: Vec<String>,
     pub unix_shell: String,
     pub windows_shell: String,
@@ -79,8 +81,8 @@ impl Test {
         let init_time = std::time::Instant::now();
         loop {
             match child.try_wait() {
-                Ok(Some(code)) => {
-                    process_result.code = code.code();
+                Ok(Some(exit_status)) => {
+                    process_result.exit_status = exit_status.code();
                     break;
                 }
                 Ok(None) => {
@@ -96,7 +98,7 @@ impl Test {
                     else {
                         child.kill().unwrap();
                         process_result.timeout = true;
-                        process_result.code = child.wait().unwrap().code();
+                        process_result.exit_status = child.wait().unwrap().code();
                         break;
                     }
                 },
@@ -119,16 +121,11 @@ impl Test {
     }
 
     fn run_command(&self) -> Option<ProcessResult> {
-        if cfg!(target_os = "windows") && !self.runs_on.contains(&"windows".to_owned()) {
-            return None;
-        }
-        else if cfg!(target_os = "linux") && !self.runs_on.contains(&"linux".to_owned()) {
-            return None;
-        }
-        else if cfg!(target_os = "macos") && !self.runs_on.contains(&"macos".to_owned()) {
+        if !self.runs_on.contains(&std::env::consts::OS.to_string()) {
             return None;
         }
         let mut child = std::process::Command::new(if cfg!(target_os = "windows") {self.windows_shell.as_str()} else {self.unix_shell.as_str()})
+            .current_dir(&self.working_directory)
             .args([if cfg!(target_os = "windows") {"/C"} else {"-c"}, self.cmd.as_str()])
             .stdin(if self.stdin.is_some() {std::process::Stdio::piped()} else {std::process::Stdio::null()})
             .stdout(std::process::Stdio::piped())
@@ -146,18 +143,18 @@ impl Test {
         let mut test_result = TestResult::new();
         test_result.status = Status::Passed;
         test_result.exec_time = process_result.exec_time;
-        test_result.expected_code = self.code;
+        test_result.expected_exit_status = self.exit_status;
 
-        match process_result.code {
-            Some(code) => {
-                if code != self.code {
-                    if code >= 132 && code <= 139 {
+        match process_result.exit_status {
+            Some(exit_status) => {
+                if exit_status != self.exit_status {
+                    if exit_status >= 132 && exit_status <= 139 {
                         test_result.status = Status::Crashed;
                     } else {
                         test_result.status = Status::Failed;
                     }
                 }
-                test_result.got_code = Some(code);
+                test_result.got_exit_status = Some(exit_status);
             }
             None => test_result.status = Status::Crashed,
         }
@@ -183,14 +180,14 @@ impl Test {
         }
         if process_result.timeout {
             test_result.status = Status::Timeout
-        };
+        }
         test_result
     }
 
     pub fn run(&self) -> TestResult {
         match self.run_command() {
             Some(res) => self.parse_result(res),
-            None => TestResult::new()
+            None      => TestResult::new()
         }
     }
 }
