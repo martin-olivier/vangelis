@@ -26,4 +26,4 @@ jobs:
               run: cargo install --path .
 
             - name: Check Install
-              run: io_tester --help
+              run: vangelis --help

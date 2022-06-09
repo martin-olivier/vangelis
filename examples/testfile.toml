@@ -1,0 +1,50 @@
+[default]
+
+windows_shell = "powershell"
+timeout = 5
+
+[test.echo]
+
+cmd = "echo hello"
+stdout = "hello\n"
+
+[test.power]
+
+runs_on = ["linux", "macos"]
+
+cmd = "whoami"
+stdout = "root\n"
+
+[test.sleep]
+
+timeout = 5
+
+cmd = "sleep 10"
+stdout = ""
+stderr = ""
+
+[test."print args"]
+
+cmd = "python3 print_args.py hey brother"
+
+stdout = """
+hey
+brother
+"""
+stderr = ""
+
+[test."print stdin"]
+
+cmd = "python3 print_stdin.py"
+
+stdin = """
+hey
+brother
+"""
+stdout = """
+hey
+
+brother
+
+"""
+stderr = ""

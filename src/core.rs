@@ -21,7 +21,7 @@ pub struct Core {
     timeout: u32,
     skipped: u32,
     details: Details,
-    stop_on_fail: bool,
+    stop_on_failure: bool,
 }
 
 impl Core {
@@ -34,7 +34,7 @@ impl Core {
             timeout: 0,
             skipped: 0,
             details: Details::No,
-            stop_on_fail: false,
+            stop_on_failure: false,
         }
     }
 
@@ -45,12 +45,13 @@ impl Core {
 
         for ref arg in std::env::args().skip(1) {
             match arg.as_str() {
-                "--help" => menu::help(0),
-                "--version" => menu::version(),
-                "--changelog" => menu::changelog(),
-                "--verbose" => verbose = true,
-                "--diff" => diff = true,
-                "--stop_on_fail" => self.stop_on_fail = true,
+                "--help"            => menu::help(0),
+                "--version"         => menu::version(),
+                "--changelog"       => menu::changelog(),
+                "--tears"           => menu::tears(),
+                "--verbose"         => verbose = true,
+                "--diff"            => diff = true,
+                "--stop_on_failure" => self.stop_on_failure = true,
                 _ => {
                     if arg.starts_with("-") {
                         panic!("Unknown option: {}", arg.as_str())
@@ -109,7 +110,7 @@ impl Core {
             println!("\n{}\n", tools::center(test_file.name.bold().blue().to_string()));
             for test in test_file.tests.into_iter() {
                 self.apply_result(test.name.as_str(), test.run());
-                if self.stop_on_fail && self.tests != self.passed + self.skipped {
+                if self.stop_on_failure && self.tests != self.passed + self.skipped {
                     break
                 }
             }
