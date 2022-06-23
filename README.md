@@ -35,17 +35,17 @@ TESTFILES:
         path to one or multiple test files
 
 OPTIONS:
-        --help          Display this help menu
-        --version       Display the current version
-        --changelog     Display the changelog
-        --verbose       Display the output difference in the shell
-        --diff          Display the output difference in Visual Studio Code
+        --help                  Display this help menu
+        --version               Display the current version
+        --changelog             Display the changelog
+        --verbose               Display the output difference in the shell
+        --diff                  Display the output difference in Visual Studio Code
         --stop_on_failure       Stop the execution if a test didn't succeed
 
 RETURN VALUE:
-        0               if all tests succeed
-        1               if one or more tests failed or crashed
-        84              if a critical error occured
+        0                       if all tests succeed
+        1                       if one or more tests failed or crashed
+        84                      if a critical error occured
 ```
 
 ## 🗂 Test File

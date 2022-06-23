@@ -123,7 +123,7 @@ impl Core {
         tools::show_cursor();
 
         println!("{}> Tests: {} | Passed: {} | Failed: {} | Crashed: {} | Timeout: {} | Skipped: {}",
-            if self.details == Details::Shell {""} else {"\n"},
+            if self.details == Details::Shell && self.stop_on_failure && self.tests != self.passed + self.skipped {""} else {"\n"},
             self.tests.to_string().blue(),
             self.passed.to_string().green(),
             self.failed.to_string().red(),

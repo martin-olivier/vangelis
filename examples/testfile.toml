@@ -1,7 +1,6 @@
 [default]
 
 windows_shell = "powershell"
-timeout = 5
 
 [test.echo]
 
