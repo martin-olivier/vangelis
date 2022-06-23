@@ -1,6 +1,6 @@
 pub fn help(return_value: i32) {
     println!("USAGE:");
-    println!("\t{} [TESTFILES] [OPTIONS]\n", std::env::args().nth(0).unwrap_or("vangelis".to_string()));
+    println!("\t{} [TESTFILES] [OPTIONS]\n", std::env::args().next().unwrap_or_else(|| "vangelis".to_string()));
 
     println!("TESTFILES:");
     println!("\tpath to one or multiple test files\n");

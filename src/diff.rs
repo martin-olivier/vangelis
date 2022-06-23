@@ -2,8 +2,8 @@ use crate::test::Status;
 use crate::test::TestResult;
 use crate::tools;
 
-use std::io::Write;
 use colored::Colorize;
+use std::io::Write;
 
 fn print_diff(got: String, expected: String) {
     for diff in diff::lines(got.as_str(), expected.as_str()) {
@@ -16,7 +16,9 @@ fn print_diff(got: String, expected: String) {
 }
 
 pub fn shell(_name: &str, result: TestResult) {
-    if result.status == Status::Passed || result.status == Status::Skipped {return}
+    if result.status == Status::Passed || result.status == Status::Skipped {
+        return;
+    }
 
     println!("{}", " ^ ".bold().blue());
     println!("{}\n{} {}\n{}", "   ".on_blue(), " > ".white().on_blue(), "[exit status]".blue(), "   ".on_blue());
@@ -36,7 +38,9 @@ pub fn shell(_name: &str, result: TestResult) {
 }
 
 pub fn vscode(name: &str, result: TestResult) {
-    if result.status == Status::Passed || result.status == Status::Skipped {return}
+    if result.status == Status::Passed || result.status == Status::Skipped {
+        return;
+    }
 
     let got = format!("[exit status]\n\nvalue = {}{}{}{}{}",
         match result.got_exit_status {

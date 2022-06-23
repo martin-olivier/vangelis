@@ -1,8 +1,8 @@
+mod config;
 mod core;
+mod diff;
 mod menu;
 mod test;
-mod config;
-mod diff;
 mod tools;
 
 fn main() {

@@ -1,9 +1,9 @@
 use crate::tools;
 
-use std::path::PathBuf;
+use colored::Colorize;
 use std::io::Read;
 use std::io::Write;
-use colored::Colorize;
+use std::path::PathBuf;
 
 #[derive(PartialEq)]
 pub enum Status {
@@ -88,20 +88,26 @@ impl Test {
                 Ok(None) => {
                     if std::time::Instant::now() < limit {
                         let date_format = format!("{:.1}s", (std::time::Instant::now() - init_time).as_secs_f32());
-                        let date_padding = format!("{}{}", tools::get_padding(self.name.as_str(), date_format.as_str()), date_format.blue());
+                        let date_padding = format!(
+                            "{}{}",
+                            tools::get_padding(
+                                self.name.as_str(),
+                                date_format.as_str()
+                            ),
+                            date_format.blue(),
+                        );
                         if atty::is(atty::Stream::Stdout) {
                             print!("\r{} {}{}\r", "[>]".blue(), self.name.blue(), date_padding);
                             std::io::stdout().flush().unwrap();
                         }
                         std::thread::sleep(std::time::Duration::from_millis(10));
-                    }
-                    else {
+                    } else {
                         child.kill().unwrap();
                         process_result.timeout = true;
                         process_result.exit_status = child.wait().unwrap().code();
                         break;
                     }
-                },
+                }
                 Err(_) => {
                     panic!("Child process is not responding");
                 }
@@ -111,11 +117,15 @@ impl Test {
 
         let mut outbuf = vec![];
         child.stdout.unwrap().read_to_end(&mut outbuf).unwrap();
-        process_result.stdout = String::from_utf8_lossy(&outbuf).to_string().replace("\r\n", "\n");
+        process_result.stdout = String::from_utf8_lossy(&outbuf)
+            .to_string()
+            .replace("\r\n", "\n");
 
         let mut errbuf = vec![];
         child.stderr.unwrap().read_to_end(&mut errbuf).unwrap();
-        process_result.stderr = String::from_utf8_lossy(&errbuf).to_string().replace("\r\n", "\n");
+        process_result.stderr = String::from_utf8_lossy(&errbuf)
+            .to_string()
+            .replace("\r\n", "\n");
 
         process_result
     }
@@ -148,7 +158,7 @@ impl Test {
         match process_result.exit_status {
             Some(exit_status) => {
                 if exit_status != self.exit_status {
-                    if exit_status >= 132 && exit_status <= 139 {
+                    if (132..=139).contains(&exit_status) {
                         test_result.status = Status::Crashed;
                     } else {
                         test_result.status = Status::Failed;

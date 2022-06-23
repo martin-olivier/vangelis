@@ -1,6 +1,6 @@
 use crate::test::Test;
-use std::io::Read;
 use indexmap::IndexMap;
+use std::io::Read;
 use std::path::PathBuf;
 
 #[derive(serde::Deserialize)]
@@ -78,8 +78,8 @@ impl Default {
                     this.windows_shell = windows_shell;
                 }
                 this
-            },
-            None => this
+            }
+            None => this,
         }
     }
 }
@@ -88,7 +88,7 @@ impl TestFile {
     pub fn new(path: &str) -> Self {
         let mut test_file = TestFile {
             name: path.to_owned(),
-            tests: vec![]
+            tests: vec![],
         };
         let mut buff = String::new();
         let mut file = match std::fs::File::open(path) {
@@ -105,7 +105,10 @@ impl TestFile {
         };
         let default = Default::new(raw_test_file.default);
         for test in raw_test_file.test.into_iter() {
-            let working_dir = PathBuf::from(path).parent().unwrap().join(test.1.working_directory.unwrap_or(default.working_directory.clone()));
+            let working_dir = PathBuf::from(path)
+                .parent()
+                .unwrap()
+                .join(test.1.working_directory.unwrap_or_else(|| default.working_directory.clone()));
             if !working_dir.exists() {
                 panic!("Working directory \"{}\" does not exist", working_dir.to_str().unwrap());
             }
@@ -119,9 +122,9 @@ impl TestFile {
                     exit_status: test.1.exit_status.unwrap_or(default.exit_status),
                     timeout: test.1.timeout.unwrap_or(default.timeout),
                     working_directory: working_dir,
-                    runs_on: test.1.runs_on.unwrap_or(default.runs_on.clone()),
-                    unix_shell: test.1.unix_shell.unwrap_or(default.unix_shell.clone()),
-                    windows_shell: test.1.windows_shell.unwrap_or(default.windows_shell.clone()),
+                    runs_on: test.1.runs_on.unwrap_or_else(|| default.runs_on.clone()),
+                    unix_shell: test.1.unix_shell.unwrap_or_else(|| default.unix_shell.clone()),
+                    windows_shell: test.1.windows_shell.unwrap_or_else(|| default.windows_shell.clone()),
                 }
             );
         }

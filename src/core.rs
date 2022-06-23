@@ -1,8 +1,8 @@
-use crate::test::{TestResult, Status};
-use crate::config::{TestFile};
-use crate::menu;
-use crate::tools;
+use crate::config::TestFile;
 use crate::diff;
+use crate::menu;
+use crate::test::{Status, TestResult};
+use crate::tools;
 
 use colored::Colorize;
 
@@ -53,7 +53,7 @@ impl Core {
                 "--diff"            => diff = true,
                 "--stop_on_failure" => self.stop_on_failure = true,
                 _ => {
-                    if arg.starts_with("-") {
+                    if arg.starts_with('-') {
                         panic!("Unknown option: {}", arg.as_str())
                     } else {
                         files.push(TestFile::new(arg.as_str()));
@@ -79,14 +79,19 @@ impl Core {
 
     fn apply_result(&mut self, name: &str, result: TestResult) {
         let date_format = format!("{:.1}s", result.exec_time);
-        let date_padding = format!("{}{}", tools::get_padding(name, date_format.as_str()), date_format.blue());
+        let date_padding = format!(
+            "{}{}",
+            tools::get_padding(name, date_format.as_str()),
+            date_format.blue()
+        );
 
+        self.tests += 1;
         match result.status {
-            Status::Passed  => {self.tests += 1; self.passed  += 1},
-            Status::Failed  => {self.tests += 1; self.failed  += 1},
-            Status::Timeout => {self.tests += 1; self.timeout += 1},
-            Status::Skipped => {self.tests += 1; self.skipped += 1},
-            Status::Crashed => {self.tests += 1; self.crashed += 1},
+            Status::Passed  => self.passed  += 1,
+            Status::Failed  => self.failed  += 1,
+            Status::Timeout => self.timeout += 1,
+            Status::Skipped => self.skipped += 1,
+            Status::Crashed => self.crashed += 1,
         }
         match result.status {
             Status::Passed  => println!("{} {}{}", "[V]".green(), name.green(), date_padding),
@@ -96,7 +101,7 @@ impl Core {
             Status::Skipped => println!("{} {}{}", "[>]".white(), name.white(), date_padding),
         }
         match self.details {
-            Details::No     => {},
+            Details::No     => {}
             Details::Shell  => diff::shell(name, result),
             Details::VSCode => diff::vscode(name, result),
         }
@@ -111,7 +116,7 @@ impl Core {
             for test in test_file.tests.into_iter() {
                 self.apply_result(test.name.as_str(), test.run());
                 if self.stop_on_failure && self.tests != self.passed + self.skipped {
-                    break
+                    break;
                 }
             }
         }
