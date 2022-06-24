@@ -94,8 +94,8 @@ impl Core {
             Status::Crashed => self.crashed += 1,
         }
         match result.status {
-            Status::Passed  => println!("{} {}{}", "[V]".green(), name.green(), date_padding),
-            Status::Failed  => println!("{} {}{}", "[X]".red(), name.red(), date_padding),
+            Status::Passed  => println!("{} {}{}", "[✓]".green(), name.green(), date_padding),
+            Status::Failed  => println!("{} {}{}", "[✗]".red(), name.red(), date_padding),
             Status::Crashed => println!("{} {}{}", "[!]".yellow(), name.yellow(), date_padding),
             Status::Timeout => println!("{} {}{}", "[?]".magenta(), name.magenta(), date_padding),
             Status::Skipped => println!("{} {}{}", "[>]".white(), name.white(), date_padding),
@@ -112,25 +112,19 @@ impl Core {
 
         tools::hide_cursor();
         for test_file in test_files.into_iter() {
-            println!("\n{}\n", tools::center(test_file.name.bold().blue().to_string()));
+            println!("\n{}\n", tools::center(test_file.name.to_string()).bold().cyan());
             for test in test_file.tests.into_iter() {
                 self.apply_result(test.name.as_str(), test.run());
                 if self.stop_on_failure && self.tests != self.passed + self.skipped {
                     break;
                 }
             }
+            if self.stop_on_failure && self.tests != self.passed + self.skipped {
+                break;
+            }
         }
         tools::show_cursor();
-
-        println!("{}> Tests: {} | Passed: {} | Failed: {} | Crashed: {} | Timeout: {} | Skipped: {}",
-            if self.details == Details::Shell && self.stop_on_failure && self.tests != self.passed + self.skipped {""} else {"\n"},
-            self.tests.to_string().blue(),
-            self.passed.to_string().green(),
-            self.failed.to_string().red(),
-            self.crashed.to_string().yellow(),
-            self.timeout.to_string().magenta(),
-            self.skipped.to_string().white(),
-        );
+        println!();
         if self.tests == self.passed + self.skipped {0} else {1}
     }
 }

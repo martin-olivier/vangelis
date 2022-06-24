@@ -58,7 +58,7 @@ Default {
     windows_shell: Option<String>,
     exit_status: Option<Integer>,
     timeout: Option<Float>,
-    working_directory: Option<String>,
+    working_dir: Option<String>,
 }
 
 Test {
@@ -67,7 +67,7 @@ Test {
     windows_shell: Option<String>,
     exit_status: Option<Integer>,
     timeout: Option<Float>,
-    working_directory: Option<String>,
+    working_dir: Option<String>,
     cmd: String,
     stdin: Option<String>,
     stdout: Option<String>,
@@ -216,23 +216,23 @@ cmd = "reload"
 ```
 
 ```toml
-[working_directory]
+[working_dir]
 
 # Set the working directory of a test
 # by default, the path is set where the testfile is located
-# working_directory value can be relative or a full path
+# working_dir value can be relative or a full path
 
 # Default value
-working_directory = "."
+working_dir = "."
 
 # Example
 
 # The working directory of the command to root folder
-working_directory = "/"
+working_dir = "/"
 cmd = "ls"
 
 # The working directory of the parent folder of the folder where the testfile is located
-working_directory = ".."
+working_dir = ".."
 cmd = "ls"
 ```
 

@@ -8,9 +8,9 @@ use std::io::Write;
 fn print_diff(got: String, expected: String) {
     for diff in diff::lines(got.as_str(), expected.as_str()) {
         match diff {
-            diff::Result::Left(l)    => println!("{}  {}", " + ".bold().white().on_green(), l.green()),
-            diff::Result::Both(l, _) => println!("{}  {}", "   ".on_white(), l),
-            diff::Result::Right(r)   => println!("{}  {}", " - ".bold().white().on_red(), r.red()),
+            diff::Result::Left(l)    => println!("{} {}", " + ".bold().white().on_green(), l.green()),
+            diff::Result::Both(l, _) => println!("{} {}", "   ".on_white(), l),
+            diff::Result::Right(r)   => println!("{} {}", " - ".bold().white().on_red(), r.red()),
         }
     }
 }
@@ -66,10 +66,16 @@ pub fn vscode(name: &str, result: TestResult) {
     };
 
     let file_got = format!("{}GOT({})", tmp_path, name);
-    std::fs::File::create(&file_got).unwrap().write_fmt(format_args!("{}", got)).unwrap();
+    std::fs::File::create(&file_got)
+        .unwrap()
+        .write_fmt(format_args!("{}", got))
+        .unwrap();
 
     let file_expected = format!("{}EXPECTED({})", tmp_path, name);
-    std::fs::File::create(&file_expected).unwrap().write_fmt(format_args!("{}", expected)).unwrap();
+    std::fs::File::create(&file_expected)
+        .unwrap()
+        .write_fmt(format_args!("{}", expected))
+        .unwrap();
 
     let cmd = format!("\"{}\" --diff \"{}\" \"{}\"", tools::get_vscode_bin().unwrap(), file_got, file_expected);
 

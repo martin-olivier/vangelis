@@ -8,7 +8,7 @@ struct RawDefault {
     runs_on: Option<Vec<String>>,
     exit_status: Option<i32>,
     timeout: Option<f32>,
-    working_directory: Option<String>,
+    working_dir: Option<String>,
     unix_shell: Option<String>,
     windows_shell: Option<String>,
 }
@@ -20,7 +20,7 @@ struct RawTest {
     windows_shell: Option<String>,
     exit_status: Option<i32>,
     timeout: Option<f32>,
-    working_directory: Option<String>,
+    working_dir: Option<String>,
     cmd: String,
     stdin: Option<String>,
     stdout: Option<String>,
@@ -42,7 +42,7 @@ struct Default {
     runs_on: Vec<String>,
     exit_status: i32,
     timeout: f32,
-    working_directory: String,
+    working_dir: String,
     unix_shell: String,
     windows_shell: String,
 }
@@ -53,7 +53,7 @@ impl Default {
             runs_on: vec!["linux".to_owned(), "macos".to_owned(), "windows".to_owned()],
             exit_status: 0,
             timeout: 60.0,
-            working_directory: ".".to_owned(),
+            working_dir: ".".to_owned(),
             unix_shell: "sh".to_owned(),
             windows_shell: "cmd".to_owned(),
         };
@@ -68,8 +68,8 @@ impl Default {
                 if let Some(timeout) = def.timeout {
                     this.timeout = timeout;
                 }
-                if let Some(working_directory) = def.working_directory {
-                    this.working_directory = working_directory;
+                if let Some(working_dir) = def.working_dir {
+                    this.working_dir = working_dir;
                 }
                 if let Some(unix_shell) = def.unix_shell {
                     this.unix_shell = unix_shell;
@@ -105,12 +105,12 @@ impl TestFile {
         };
         let default = Default::new(raw_test_file.default);
         for test in raw_test_file.test.into_iter() {
-            let working_dir = PathBuf::from(path)
+            let working_directory = PathBuf::from(path)
                 .parent()
                 .unwrap()
-                .join(test.1.working_directory.unwrap_or_else(|| default.working_directory.clone()));
-            if !working_dir.exists() {
-                panic!("Working directory \"{}\" does not exist", working_dir.to_str().unwrap());
+                .join(test.1.working_dir.unwrap_or_else(|| default.working_dir.clone()));
+            if !working_directory.exists() {
+                panic!("Working directory \"{}\" does not exist", working_directory.to_str().unwrap());
             }
             test_file.tests.push(
                 Test {
@@ -121,7 +121,7 @@ impl TestFile {
                     stderr: test.1.stderr,
                     exit_status: test.1.exit_status.unwrap_or(default.exit_status),
                     timeout: test.1.timeout.unwrap_or(default.timeout),
-                    working_directory: working_dir,
+                    working_dir: working_directory,
                     runs_on: test.1.runs_on.unwrap_or_else(|| default.runs_on.clone()),
                     unix_shell: test.1.unix_shell.unwrap_or_else(|| default.unix_shell.clone()),
                     windows_shell: test.1.windows_shell.unwrap_or_else(|| default.windows_shell.clone()),

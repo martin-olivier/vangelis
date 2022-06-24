@@ -15,7 +15,7 @@ pub fn help(return_value: i32) {
 
     println!("RETURN VALUE:");
     println!("\t0\t\t\tif all tests succeed");
-    println!("\t1\t\t\tif one or more tests failed or crashed");
+    println!("\t1\t\t\tif one or more tests failed");
     println!("\t84\t\t\tif a critical error occured");
 
     std::process::exit(return_value);

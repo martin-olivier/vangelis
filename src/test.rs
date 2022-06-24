@@ -68,7 +68,7 @@ pub struct Test {
     pub stderr: Option<String>,
     pub exit_status: i32,
     pub timeout: f32,
-    pub working_directory: PathBuf,
+    pub working_dir: PathBuf,
     pub runs_on: Vec<String>,
     pub unix_shell: String,
     pub windows_shell: String,
@@ -104,7 +104,7 @@ impl Test {
                     } else {
                         child.kill().unwrap();
                         process_result.timeout = true;
-                        process_result.exit_status = child.wait().unwrap().code();
+                        process_result.exit_status = None;
                         break;
                     }
                 }
@@ -135,7 +135,7 @@ impl Test {
             return None;
         }
         let mut child = std::process::Command::new(if cfg!(target_os = "windows") {self.windows_shell.as_str()} else {self.unix_shell.as_str()})
-            .current_dir(&self.working_directory)
+            .current_dir(&self.working_dir)
             .args([if cfg!(target_os = "windows") {"/C"} else {"-c"}, self.cmd.as_str()])
             .stdin(if self.stdin.is_some() {std::process::Stdio::piped()} else {std::process::Stdio::null()})
             .stdout(std::process::Stdio::piped())
