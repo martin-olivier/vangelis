@@ -21,7 +21,7 @@ pub struct Core {
     timeout: u32,
     skipped: u32,
     details: Details,
-    stop_on_failure: bool,
+    ci: bool,
 }
 
 impl Core {
@@ -34,7 +34,7 @@ impl Core {
             timeout: 0,
             skipped: 0,
             details: Details::No,
-            stop_on_failure: false,
+            ci: false,
         }
     }
 
@@ -42,6 +42,7 @@ impl Core {
         let mut files: Vec<TestFile> = vec![];
         let mut verbose = false;
         let mut diff = false;
+        let mut ci = false;
 
         for ref arg in std::env::args().skip(1) {
             match arg.as_str() {
@@ -51,7 +52,7 @@ impl Core {
                 "--tears"           => menu::tears(),
                 "--verbose"         => verbose = true,
                 "--diff"            => diff = true,
-                "--stop_on_failure" => self.stop_on_failure = true,
+                "--ci"              => ci = true,
                 _ => {
                     if arg.starts_with('-') {
                         panic!("Unknown option: {}", arg.as_str())
@@ -67,7 +68,16 @@ impl Core {
         if verbose && diff {
             panic!("Please choose between --verbose and --diff");
         }
-        if verbose {
+        if ci && diff {
+            panic!("Please choose between --ci and --diff");
+        }
+        if ci && verbose {
+            panic!("--verbose argument is useless when using --ci");
+        }
+        if ci {
+            self.ci = true;
+        }
+        if verbose || ci {
             self.details = Details::Shell;
         }
         if diff {
@@ -111,20 +121,20 @@ impl Core {
         let test_files = self.parse();
 
         tools::hide_cursor();
-        for test_file in test_files.into_iter() {
+
+        'main_loop: for test_file in test_files.into_iter() {
             println!("\n{}\n", tools::center(test_file.name.to_string()).bold().cyan());
             for test in test_file.tests.into_iter() {
                 self.apply_result(test.name.as_str(), test.run());
-                if self.stop_on_failure && self.tests != self.passed + self.skipped {
-                    break;
+                if self.ci && self.tests != self.passed + self.skipped {
+                    break 'main_loop;
                 }
             }
-            if self.stop_on_failure && self.tests != self.passed + self.skipped {
-                break;
-            }
         }
-        tools::show_cursor();
         println!();
+
+        tools::show_cursor();
+
         if self.tests == self.passed + self.skipped {0} else {1}
     }
 }

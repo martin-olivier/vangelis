@@ -6,17 +6,17 @@ pub fn help(return_value: i32) {
     println!("\tpath to one or multiple test files\n");
 
     println!("OPTIONS:");
-    println!("\t--help\t\t\tDisplay this help menu");
-    println!("\t--version\t\tDisplay the current version");
-    println!("\t--changelog\t\tDisplay the changelog");
-    println!("\t--verbose\t\tDisplay the output difference in the shell");
-    println!("\t--diff\t\t\tDisplay the output difference in Visual Studio Code");
-    println!("\t--stop_on_failure\tStop the execution if a test didn't succeed\n");
+    println!("\t--help\t\tDisplay this help menu");
+    println!("\t--version\tDisplay the current version");
+    println!("\t--changelog\tDisplay the changelog");
+    println!("\t--verbose\tDisplay the output difference in the shell");
+    println!("\t--diff\t\tDisplay the output difference in Visual Studio Code");
+    println!("\t--ci\t\tStop the execution if a test didn't succeed\n");
 
     println!("RETURN VALUE:");
-    println!("\t0\t\t\tif all tests succeed");
-    println!("\t1\t\t\tif one or more tests failed");
-    println!("\t84\t\t\tif a critical error occured");
+    println!("\t0\t\tif all tests succeed");
+    println!("\t1\t\tif one or more tests failed");
+    println!("\t84\t\tif a critical error occured");
 
     std::process::exit(return_value);
 }

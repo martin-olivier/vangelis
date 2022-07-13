@@ -40,11 +40,11 @@ OPTIONS:
         --changelog             Display the changelog
         --verbose               Display the output difference in the shell
         --diff                  Display the output difference in Visual Studio Code
-        --stop_on_failure       Stop the execution if a test didn't succeed
+        --ci                    Stop the execution if a test didn't succeed and display the diff in the shell
 
 RETURN VALUE:
         0                       if all tests succeed
-        1                       if one or more tests failed or crashed
+        1                       if one or more tests didn't succeed
         84                      if a critical error occured
 ```
 

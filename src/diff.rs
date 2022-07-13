@@ -34,7 +34,6 @@ pub fn shell(_name: &str, result: TestResult) {
         println!("{}\n{} {}\n{}", "   ".on_blue(), " > ".white().on_blue(), "[stderr]".blue(), "   ".on_blue());
         print_diff(result.got_stderr, expected_stderr);
     }
-    println!();
 }
 
 pub fn vscode(name: &str, result: TestResult) {
