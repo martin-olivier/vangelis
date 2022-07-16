@@ -1,15 +1,22 @@
-# Vangelis
-[![Version](https://img.shields.io/badge/Vangelis-v2.0.0-blue.svg)](https://github.com/martin-olivier/Vangelis/releases/tag/v2.0.0)
-[![MIT license](https://img.shields.io/badge/License-MIT-darkgreen.svg)](https://github.com/martin-olivier/Vangelis/blob/main/LICENSE)
-[![Language](https://img.shields.io/badge/Language-Rust-orange.svg)](https://www.rust-lang.org/)
+<h1 align="center">
+  Vangelis
+</h1>
+<p align="center">
+  <a href="https://github.com/martin-olivier/Vangelis/releases/tag/v2.0.0">
+    <img src="https://img.shields.io/badge/Version-2.0.0-blue.svg" alt="version"/>
+  </a>
+  <a href="https://github.com/martin-olivier/Vangelis/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-darkgreen.svg" alt="license"/>
+  </a>
+  <a href="https://www.rust-lang.org/">
+    <img src="https://img.shields.io/badge/Language-Rust-orange.svg" alt="cppversion"/>
+  </a>
+  <a href="https://github.com/martin-olivier/Vangelis/actions/workflows/CI.yml">
+    <img src="https://github.com/martin-olivier/Vangelis/actions/workflows/CI.yml/badge.svg" alt="ci"/>
+  </a>
+</p>
 
-[![GitHub watchers](https://img.shields.io/github/watchers/martin-olivier/Vangelis?style=social)](https://github.com/martin-olivier/Vangelis/watchers/)
-[![GitHub forks](https://img.shields.io/github/forks/martin-olivier/Vangelis?style=social)](https://github.com/martin-olivier/Vangelis/network/members/)
-[![GitHub stars](https://img.shields.io/github/stars/martin-olivier/Vangelis?style=social)](https://github.com/martin-olivier/Vangelis/stargazers/)
-
-[![workflow](https://github.com/martin-olivier/Vangelis/actions/workflows/CI.yml/badge.svg)](https://github.com/martin-olivier/Vangelis/actions/workflows/CI.yml)
-
-This software takes test files as parameter that contains lists of commands to be run and to tell the user if the tests succeed, failed or crashed.
+This software takes test files as parameter that contains lists of commands to be run and expected stdout / stderr / exit status, and tell the user if the tests succeed, failed or crashed.
 
 `⭐ Don't forget to put a star if you like the project!`
 
@@ -35,23 +42,25 @@ TESTFILES:
         path to one or multiple test files
 
 OPTIONS:
-        --help                  Display this help menu
-        --version               Display the current version
-        --changelog             Display the changelog
-        --verbose               Display the output difference in the shell
-        --diff                  Display the output difference in Visual Studio Code
-        --ci                    Stop the execution if a test didn't succeed and display the diff in the shell
+        --help          Display this help menu
+        --version       Display the current version
+        --changelog     Display the changelog
+        --verbose       Display the output difference in the shell
+        --diff          Display the output difference in Visual Studio Code
+        --ci            Stop the execution if a test didn't succeed
 
 RETURN VALUE:
-        0                       if all tests succeed
-        1                       if one or more tests didn't succeed
-        84                      if a critical error occured
+        0               if all tests succeed
+        1               if one or more tests failed
+        84              if a critical error occured
 ```
 
 ## 🗂 Test File
 
-Test files must follow the following pattern in [toml](https://toml.io/en/)
+Test files must have the following pattern in [toml](https://toml.io/en/)
 ```
+# definitions
+
 Default {
     runs_on: Option<Array<String>>,
     unix_shell: Option<String>,
@@ -74,6 +83,8 @@ Test {
     stderr: Option<String>,
 }
 
+# test file content
+
 TestFile {
     default: Option<Default>,
     test: Map<String, Test>,
@@ -86,34 +97,28 @@ TestFile {
 # testfile.toml
 
 [default]
-
+# use powershell as default shell on windows
 windows_shell = "powershell"
-timeout = 5
 
 [test.echo]
-
 cmd = "echo hello"
 stdout = "hello\n"
 
 [test.power]
-
+# this test can only run under unix systems
 runs_on = ["linux", "macos"]
-
 cmd = "whoami"
 stdout = "root\n"
 
 [test.sleep]
-
+# this test will timeout
 timeout = 5
-
 cmd = "sleep 10"
 stdout = ""
 stderr = ""
 
 [test."print args"]
-
 cmd = "python3 print_args.py hey brother"
-
 stdout = """
 hey
 brother
@@ -121,9 +126,7 @@ brother
 stderr = ""
 
 [test."print stdin"]
-
 cmd = "python3 print_stdin.py"
-
 stdin = """
 hey
 brother
@@ -137,52 +140,58 @@ brother
 stderr = ""
 ```
 
-```
+```sh
+# to run this example, enter the following command:
 vangelis examples/testfile.toml
 ```
 
 ## ⚙️ Parameters
 
 ```toml
-[runs_on]
+[cmd]
 
-# An array of strings that defines on witch os the test is allowed to run
+# Command to run (mandatory value)
 
-# Default value
-runs_on = ["linux", "windows", "macos"]
-
-# Example
-
-# The test will only run under linux
-runs_on = ["linux"]
+# Example:
+# Build a software and ensure the build takes less that 300 seconds:
+cmd = "make"
+timeout = 300
 ```
 
 ```toml
-[unix_shell]
+[stdout]
 
-# Set the shell to use to run commands under unix systems
+# Expected stdout of the command
 
-# Default value
-unix_shell = "sh"
-
-# Example
-
-# The command will run under "zsh" instead of "sh" under linux
-unix_shell = "zsh"
+# Example:
+# I want to check if I have root privileges:
+cmd = "whoami"
+stdout = "root\n"
 ```
 
 ```toml
-[windows_shell]
+[stderr]
 
-# Set the shell to use to run commands under windows
+# Expected stderr of the command
 
-# Default value
-windows_shell = "cmd"
+# Example:
+# I Expect this error message for the following command:
+cmd = "ls /root"
+# expected stderr
+stderr = "ls: cannot open directory '/root': Permission denied\n"
+```
 
-# Example
+```toml
+[stdin]
 
-# The command will run under "powershell" instead of "cmd" under windows
-windows_shell = "powershell"
+# stdin content to be forwarded to the command
+
+# Example:
+cmd = "cat"
+# stdin content
+stdin = "hello"
+# expected stdout
+stdout = "hello"
 ```
 
 ```toml
@@ -190,11 +199,10 @@ windows_shell = "powershell"
 
 # Set the expected exit status of a command
 
-# Default value
+# Default value:
 exit_status = 0
 
-# Example
-
+# Example:
 # The test will expect a return value of 1
 exit_status = 1
 cmd = "git"
@@ -205,14 +213,52 @@ cmd = "git"
 
 # Set the timeout of a command (in seconds)
 
-# Default value
+# Default value:
 timeout = 60
 
-# Example
-
+# Example:
 # The command must not exceed 5 seconds
 timeout = 5
-cmd = "reload"
+cmd = "sleep 10"
+```
+
+```toml
+[runs_on]
+
+# An array of strings that defines on witch os the test is allowed to run
+
+# Default value:
+runs_on = ["linux", "windows", "macos"]
+
+# Example:
+# The test will only run under linux
+runs_on = ["linux"]
+```
+
+```toml
+[unix_shell]
+
+# Set the shell to use to run commands under unix systems
+
+# Default value:
+unix_shell = "sh"
+
+# Example:
+# The command will run under "zsh" instead of "sh" under linux
+unix_shell = "zsh"
+```
+
+```toml
+[windows_shell]
+
+# Set the shell to use to run commands under windows
+
+# Default value:
+windows_shell = "cmd"
+
+# Example:
+# The command will run under "powershell" instead of "cmd" under windows
+windows_shell = "powershell"
 ```
 
 ```toml
@@ -220,76 +266,18 @@ cmd = "reload"
 
 # Set the working directory of a test
 # by default, the path is set where the testfile is located
-# working_dir value can be relative or a full path
+# working_dir value can be a relative or a full path
 
 # Default value
 working_dir = "."
 
-# Example
-
-# The working directory of the command to root folder
-working_dir = "/"
+# Examples:
+# Set the working directory of the command to "/tmp"
+working_dir = "/tmp"
 cmd = "ls"
-
-# The working directory of the parent folder of the folder where the testfile is located
+# Set the working directory of the command to the parent folder of the testfile
 working_dir = ".."
 cmd = "ls"
-```
-
-```toml
-[cmd]
-
-# Command to run (Mandatory value)
-
-# Example
-
-# Build a software
-
-cmd = "make"
-```
-
-```toml
-[stdin]
-
-# stdin content to be forwarded to the command
-
-# Example
-
-# Build a software
-
-cmd = "print_stdin.py"
-stdin = "hey"
-
-# expected stdout
-stdout = "hey\n"
-```
-
-```toml
-[stdout]
-
-# stdin content to be forwarded to the command
-
-# Example
-
-# Build a software
-
-cmd = "whoami"
-# expected stdout
-stdout = "root"
-```
-
-```toml
-[stderr]
-
-# stdin content to be forwarded to the command
-
-# Example
-
-# Build a software
-
-cmd = "whoami"
-# expected stderr
-stderr = "root"
 ```
 
 ## 💡 Build Tips

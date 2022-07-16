@@ -1,31 +1,26 @@
 [default]
-
+# use powershell as default shell on windows
 windows_shell = "powershell"
 
 [test.echo]
-
 cmd = "echo hello"
 stdout = "hello\n"
 
 [test.power]
-
+# this test can only run under unix systems
 runs_on = ["linux", "macos"]
-
 cmd = "whoami"
 stdout = "root\n"
 
 [test.sleep]
-
+# this test will timeout
 timeout = 5
-
 cmd = "sleep 10"
 stdout = ""
 stderr = ""
 
 [test."print args"]
-
 cmd = "python3 print_args.py hey brother"
-
 stdout = """
 hey
 brother
@@ -33,9 +28,7 @@ brother
 stderr = ""
 
 [test."print stdin"]
-
 cmd = "python3 print_stdin.py"
-
 stdin = """
 hey
 brother

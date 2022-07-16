@@ -41,7 +41,8 @@ pub fn vscode(name: &str, result: TestResult) {
         return;
     }
 
-    let got = format!("[exit status]\n\nvalue = {}{}{}{}{}",
+    let got = format!(
+        "[exit status]\n\nvalue = {}{}{}{}{}",
         match result.got_exit_status {
             Some(exit_status) => exit_status.to_string(),
             None              => "None".to_string(),
@@ -51,7 +52,8 @@ pub fn vscode(name: &str, result: TestResult) {
         if result.expected_stderr.is_some() {"\n\n[stderr]\n\n"} else {""},
         if result.expected_stderr.is_some() {result.got_stderr}  else {"".to_string()},
     );
-    let expected = format!("[exit status]\n\nvalue = {}{}{}{}{}",
+    let expected = format!(
+        "[exit status]\n\nvalue = {}{}{}{}{}",
         result.expected_exit_status,
         if result.expected_stdout.is_some() {"\n\n[stdout]\n\n"} else {""},
         if let Some(expected_stdout) = result.expected_stdout {expected_stdout} else {"".to_string()},
@@ -76,7 +78,12 @@ pub fn vscode(name: &str, result: TestResult) {
         .write_fmt(format_args!("{}", expected))
         .unwrap();
 
-    let cmd = format!("\"{}\" --diff \"{}\" \"{}\"", tools::get_vscode_bin().unwrap(), file_got, file_expected);
+    let cmd = format!(
+        "\"{}\" --diff \"{}\" \"{}\"",
+        tools::get_vscode_bin().unwrap(),
+        file_got,
+        file_expected
+    );
 
     std::process::Command::new(if cfg!(target_os = "windows") {"cmd"} else {"sh"})
         .args([if cfg!(target_os = "windows") {"/C"} else {"-c"}, cmd.as_str()])
