@@ -16,7 +16,9 @@
   </a>
 </p>
 
-This software takes test files as parameter that contains lists of commands to be run and expected stdout / stderr / exit status, and tell the user if the tests succeed, failed or crashed.
+![example](.github/example.gif)  
+
+This software takes test files as parameter that contains lists of commands to be run and expected stdout, stderr, exit status, and tell the user if the tests succeed, failed or crashed.
 
 `⭐ Don't forget to put a star if you like the project!`
 
@@ -28,8 +30,8 @@ To build and install the project, you will need [cargo](https://www.rust-lang.or
 ## 💻 Installation
 
 ```
-git clone https://github.com/martin-olivier/Vangelis
-cargo install --path Vangelis
+git clone https://github.com/martin-olivier/vangelis
+cargo install --path vangelis
 ```
 
 ## 📒 Manual
@@ -59,31 +61,31 @@ RETURN VALUE:
 
 Test files must have the following pattern in [toml](https://toml.io/en/)
 ```
-# definitions
+# Definitions
 
 Default {
-    runs_on: Option<Array<String>>,
-    unix_shell: Option<String>,
-    windows_shell: Option<String>,
     exit_status: Option<Integer>,
     timeout: Option<Float>,
     working_dir: Option<String>,
+    runs_on: Option<Array<String>>,
+    unix_shell: Option<String>,
+    windows_shell: Option<String>,
 }
 
 Test {
-    runs_on: Option<Array<String>>,
-    unix_shell: Option<String>,
-    windows_shell: Option<String>,
-    exit_status: Option<Integer>,
-    timeout: Option<Float>,
-    working_dir: Option<String>,
     cmd: String,
     stdin: Option<String>,
     stdout: Option<String>,
     stderr: Option<String>,
+    exit_status: Option<Integer>,
+    timeout: Option<Float>,
+    working_dir: Option<String>,
+    runs_on: Option<Array<String>>,
+    unix_shell: Option<String>,
+    windows_shell: Option<String>,
 }
 
-# test file content
+# Test file content
 
 TestFile {
     default: Option<Default>,
@@ -140,8 +142,8 @@ brother
 stderr = ""
 ```
 
+To run this example, enter the following command:
 ```sh
-# to run this example, enter the following command:
 vangelis examples/testfile.toml
 ```
 
