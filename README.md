@@ -15,8 +15,9 @@
     <img src="https://github.com/martin-olivier/Vangelis/actions/workflows/CI.yml/badge.svg" alt="ci"/>
   </a>
 </p>
-
-![example](.github/example.gif)  
+<p align="center">
+  <img src=".github/example.gif">
+</p>
 
 This software takes test files as parameter that contains lists of commands to be run and expected stdout, stderr, exit status, and tell the user if the tests succeed, failed or crashed.
 
