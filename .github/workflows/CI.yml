@@ -3,30 +3,37 @@ name: CI
 on: [push, pull_request]
 
 defaults:
-    run:
-        shell: bash
+  run:
+    shell: bash
 
 jobs:
-    build_and_test:
-        strategy:
-            fail-fast: false
-            matrix:
-                os: [ubuntu-latest, macos-latest]
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
 
-        name: ${{ matrix.os }}
-        runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
-        steps:
-            - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-            - name: Build Project
-              run: make
+      - name: Build project
+        run: cargo build
 
-            - name: Build Unit Tests
-              run: make tests
+      - name: Install project
+        run: cargo install --path .
 
-            - name: Run Unit Tests
-              run: ./unit_tests
+      - name: Check install
+        run: vangelis --help
 
-            - name: Cleanup
-              run: make fclean
+  linter:
+    name: linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Clippy
+        run: cargo clippy --all --all-features -- -D warnings

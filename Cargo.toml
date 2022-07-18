@@ -1,0 +1,25 @@
+[package]
+
+name = "vangelis"
+version = "2.0.0"
+edition = "2021"
+authors = ["Martin Olivier <martin.olivier@live.fr>"]
+license = "MIT"
+description = "A functional test framework"
+homepage = "https://github.com/martin-olivier/Vangelis"
+repository = "https://github.com/martin-olivier/Vangelis"
+documentation = "https://github.com/martin-olivier/Vangelis"
+keywords = ["testing", "test", "config", "command", "process"]
+categories = ["development-tools", "command-line-utilities"]
+readme = "README.md"
+
+[dependencies]
+
+serde = { version = "1.0.104", features = ["derive"] }
+indexmap = { version = "1.8.1", features = ["serde-1"] }
+term_size = "0.3.2"
+colored = "2.0.0"
+toml = "0.5.8"
+diff = "0.1.12"
+atty = "0.2.14"
+ctrlc = "3.2.2"
