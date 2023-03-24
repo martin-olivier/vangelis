@@ -54,10 +54,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build project
+      - name: Build project (debug)
         run: cargo build
 
-      - name: Install project
+      - name: Install project (release)
         run: cargo install --path .
 
       - name: Check install
