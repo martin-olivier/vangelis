@@ -7,7 +7,8 @@ pub fn set_hooks() {
     ctrlc::set_handler(move || {
         show_cursor();
         std::process::exit(84);
-    }).ok();
+    })
+    .ok();
 
     std::panic::set_hook(Box::new(|err| {
         show_cursor();
@@ -37,19 +38,23 @@ pub fn show_cursor() {
 }
 
 pub fn get_shell_size() -> usize {
-unsafe {
-    if SHELL_SIZE.is_none() {
-        SHELL_SIZE = match atty::is(atty::Stream::Stdout) {
-            true  => Some(term_size::dimensions().unwrap_or((100, 20)).0),
-            false => Some(100),
-        };
+    unsafe {
+        if SHELL_SIZE.is_none() {
+            SHELL_SIZE = match atty::is(atty::Stream::Stdout) {
+                true => Some(term_size::dimensions().unwrap_or((100, 20)).0),
+                false => Some(100),
+            };
+        }
+        SHELL_SIZE.unwrap()
     }
-    SHELL_SIZE.unwrap()
-}
 }
 
 pub fn center(text: String) -> String {
-    format!("{}[{}]", " ".repeat((get_shell_size() - text.len()) / 2), text)
+    format!(
+        "{}[{}]",
+        " ".repeat((get_shell_size() - text.len()) / 2),
+        text
+    )
 }
 
 pub fn get_padding(name: &str, duration: &str) -> String {
@@ -64,12 +69,12 @@ pub fn get_vscode_bin() -> Option<String> {
         }
     }
     std::env::var_os("PATH").and_then(|paths| {
-        std::env::split_paths(&paths).filter_map(|dir| {
+        std::env::split_paths(&paths).find_map(|dir| {
             if dir.join("code").is_file() {
                 Some("code".to_owned())
             } else {
                 None
             }
-        }).next()
+        })
     })
 }

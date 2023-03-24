@@ -1,13 +1,48 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/*
+      - .github/workflows/CI.yml
+      - Cargo.toml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/*
+      - .github/workflows/CI.yml
+      - Cargo.toml
 
 defaults:
   run:
     shell: bash
 
 jobs:
+  conventional_commits:
+    name: conventional commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: webiny/action-conventional-commits@v1.0.5
+
+  linter:
+    name: linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Clippy
+        run: cargo clippy --all --all-features -- -D warnings
+
+      - name: Format
+        run: cargo fmt --all -- --check
+
   build:
+    needs: linter
     strategy:
       fail-fast: false
       matrix:
@@ -27,13 +62,3 @@ jobs:
 
       - name: Check install
         run: vangelis --help
-
-  linter:
-    name: linter
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Clippy
-        run: cargo clippy --all --all-features -- -D warnings

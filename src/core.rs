@@ -46,13 +46,13 @@ impl Core {
 
         for ref arg in std::env::args().skip(1) {
             match arg.as_str() {
-                "--help"            => menu::help(0),
-                "--version"         => menu::version(),
-                "--changelog"       => menu::changelog(),
-                "--tears"           => menu::tears(),
-                "--verbose"         => verbose = true,
-                "--diff"            => diff = true,
-                "--ci"              => ci = true,
+                "--help" => menu::help(0),
+                "--version" => menu::version(),
+                "--changelog" => menu::changelog(),
+                "--tears" => menu::tears(),
+                "--verbose" => verbose = true,
+                "--diff" => diff = true,
+                "--ci" => ci = true,
                 _ => {
                     if arg.starts_with('-') {
                         panic!("Unknown option: {}", arg.as_str())
@@ -81,7 +81,8 @@ impl Core {
             self.details = Details::Shell;
         }
         if diff {
-            tools::get_vscode_bin().expect("Visual Studio Code is not installed, could not use --diff");
+            tools::get_vscode_bin()
+                .expect("Visual Studio Code is not installed, could not use --diff");
             self.details = Details::VSCode;
         }
         files
@@ -97,22 +98,22 @@ impl Core {
 
         self.tests += 1;
         match result.status {
-            Status::Passed  => self.passed  += 1,
-            Status::Failed  => self.failed  += 1,
+            Status::Passed => self.passed += 1,
+            Status::Failed => self.failed += 1,
             Status::Timeout => self.timeout += 1,
             Status::Skipped => self.skipped += 1,
             Status::Crashed => self.crashed += 1,
         }
         match result.status {
-            Status::Passed  => println!("{} {}{}", "[✓]".green(), name.green(), date_padding),
-            Status::Failed  => println!("{} {}{}", "[✗]".red(), name.red(), date_padding),
+            Status::Passed => println!("{} {}{}", "[✓]".green(), name.green(), date_padding),
+            Status::Failed => println!("{} {}{}", "[✗]".red(), name.red(), date_padding),
             Status::Crashed => println!("{} {}{}", "[!]".yellow(), name.yellow(), date_padding),
             Status::Timeout => println!("{} {}{}", "[?]".magenta(), name.magenta(), date_padding),
             Status::Skipped => println!("{} {}{}", "[>]".white(), name.white(), date_padding),
         }
         match self.details {
-            Details::No     => {}
-            Details::Shell  => diff::shell(name, result),
+            Details::No => {}
+            Details::Shell => diff::shell(name, result),
             Details::VSCode => diff::vscode(name, result),
         }
     }
@@ -123,7 +124,10 @@ impl Core {
         tools::hide_cursor();
 
         'main_loop: for test_file in test_files.into_iter() {
-            println!("\n{}\n", tools::center(test_file.name.to_string()).bold().cyan());
+            println!(
+                "\n{}\n",
+                tools::center(test_file.name.to_string()).bold().cyan()
+            );
             for test in test_file.tests.into_iter() {
                 self.apply_result(test.name.as_str(), test.run());
                 if self.ci && self.tests != self.passed + self.skipped {
@@ -135,6 +139,10 @@ impl Core {
 
         tools::show_cursor();
 
-        if self.tests == self.passed + self.skipped {0} else {1}
+        if self.tests == self.passed + self.skipped {
+            0
+        } else {
+            1
+        }
     }
 }

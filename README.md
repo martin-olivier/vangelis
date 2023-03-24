@@ -2,17 +2,17 @@
   Vangelis
 </h1>
 <p align="center">
-  <a href="https://github.com/martin-olivier/Vangelis/releases/tag/v2.0.0">
+  <a href="https://github.com/martin-olivier/vangelis/releases/tag/v2.0.0">
     <img src="https://img.shields.io/badge/Version-2.0.0-blue.svg" alt="version"/>
   </a>
-  <a href="https://github.com/martin-olivier/Vangelis/blob/main/LICENSE">
+  <a href="https://github.com/martin-olivier/vangelis/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-darkgreen.svg" alt="license"/>
   </a>
   <a href="https://www.rust-lang.org/">
     <img src="https://img.shields.io/badge/Language-Rust-orange.svg" alt="cppversion"/>
   </a>
-  <a href="https://github.com/martin-olivier/Vangelis/actions/workflows/CI.yml">
-    <img src="https://github.com/martin-olivier/Vangelis/actions/workflows/CI.yml/badge.svg" alt="ci"/>
+  <a href="https://github.com/martin-olivier/vangelis/actions/workflows/CI.yml">
+    <img src="https://github.com/martin-olivier/vangelis/actions/workflows/CI.yml/badge.svg" alt="ci"/>
   </a>
 </p>
 <p align="center">
@@ -24,7 +24,8 @@ This software takes test files as parameter that contains lists of commands to b
 `⭐ Don't forget to put a star if you like the project!`
 
 ## ⚠️ Requirements
-This software works on `Linux`, `MacOS`, and `Windows` 
+
+This software works on `Linux`, `MacOS`, and `Windows`
 
 To build and install the project, you will need [cargo](https://www.rust-lang.org/tools/install)
 
@@ -61,6 +62,7 @@ RETURN VALUE:
 ## 🗂 Test File
 
 Test files must have the following pattern in [toml](https://toml.io/en/)
+
 ```
 # Definitions
 
@@ -144,6 +146,7 @@ stderr = ""
 ```
 
 To run this example, enter the following command:
+
 ```sh
 vangelis examples/testfile.toml
 ```
@@ -283,9 +286,10 @@ working_dir = ".."
 cmd = "ls"
 ```
 
-## 💡 Build Tips
-If you want to uninstall Vangelis:  
-`cargo uninstall`  
+## License
 
-If you just want to get the binary without installing:  
-`cargo build`  
+This project is released under [MIT](LICENSE) license.
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

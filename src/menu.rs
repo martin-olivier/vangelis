@@ -1,6 +1,10 @@
 pub fn help(return_value: i32) {
+    let bin = std::env::args()
+        .next()
+        .unwrap_or_else(|| "vangelis".to_string());
+
     println!("USAGE:");
-    println!("\t{} [TESTFILES] [OPTIONS]\n", std::env::args().next().unwrap_or_else(|| "vangelis".to_string()));
+    println!("\t{} [TESTFILES] [OPTIONS]\n", bin);
 
     println!("TESTFILES:");
     println!("\tpath to one or multiple test files\n");
@@ -22,15 +26,15 @@ pub fn help(return_value: i32) {
 }
 
 pub fn version() {
-    println!("Vangelis v2.0.0");
+    println!("vangelis v2.0.0");
     println!("Copyright (c) 2022 Martin Olivier");
-    println!("Repository link: https://github.com/martin-olivier/Vangelis");
+    println!("Repository link: https://github.com/martin-olivier/vangelis");
 
     std::process::exit(0);
 }
 
 pub fn changelog() {
-    println!("Changelog: https://github.com/martin-olivier/Vangelis/releases");
+    println!("Changelog: https://github.com/martin-olivier/vangelis/releases");
 
     std::process::exit(0);
 }

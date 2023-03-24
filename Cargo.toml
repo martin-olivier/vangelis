@@ -3,23 +3,37 @@
 name = "vangelis"
 version = "2.0.0"
 edition = "2021"
-authors = ["Martin Olivier <martin.olivier@live.fr>"]
 license = "MIT"
 description = "A functional testing framework"
-homepage = "https://github.com/martin-olivier/Vangelis"
-repository = "https://github.com/martin-olivier/Vangelis"
-documentation = "https://github.com/martin-olivier/Vangelis"
+authors = ["Martin Olivier <martin.olivier@live.fr>"]
+homepage = "https://github.com/martin-olivier/vangelis"
+repository = "https://github.com/martin-olivier/vangelis"
+documentation = "https://github.com/martin-olivier/vangelis"
 keywords = ["testing", "test", "config", "command", "process"]
 categories = ["development-tools", "command-line-utilities"]
+exclude = ["/.github", "/examples"]
 readme = "README.md"
 
 [dependencies]
 
-serde = { version = "1.0.104", features = ["derive"] }
-indexmap = { version = "1.8.1", features = ["serde-1"] }
+serde = { version = "1.0.158", features = ["derive"] }
+indexmap = { version = "1.9.2", features = ["serde-1"] }
 term_size = "0.3.2"
+lazy_static = "1.4.0"
 colored = "2.0.0"
-toml = "0.5.8"
-diff = "0.1.12"
+toml = "0.7.3"
+diff = "0.1.13"
 atty = "0.2.14"
-ctrlc = "3.2.2"
+ctrlc = "3.2.5"
+
+[package.metadata.deb]
+copyright = "2022, Martin Olivier"
+maintainer = "Martin Olivier <martin.olivier@live.fr>"
+license-file = ["LICENSE"]
+extended-description = "A functional testing framework"
+priority = "optional"
+section = "utility"
+assets = [
+    ["target/release/vangelis", "/usr/bin/vangelis", "755"],
+    ["README.md", "/usr/share/doc/vangelis/README", "644"],
+]

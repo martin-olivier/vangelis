@@ -77,7 +77,8 @@ pub struct Test {
 impl Test {
     fn wait(&self, mut child: std::process::Child) -> ProcessResult {
         let mut process_result = ProcessResult::new();
-        let limit = std::time::Instant::now() + std::time::Duration::from_millis((self.timeout * 1000.0) as u64);
+        let limit = std::time::Instant::now()
+            + std::time::Duration::from_millis((self.timeout * 1000.0) as u64);
         let init_time = std::time::Instant::now();
         loop {
             match child.try_wait() {
@@ -87,13 +88,13 @@ impl Test {
                 }
                 Ok(None) => {
                     if std::time::Instant::now() < limit {
-                        let date_format = format!("{:.1}s", (std::time::Instant::now() - init_time).as_secs_f32());
+                        let date_format = format!(
+                            "{:.1}s",
+                            (std::time::Instant::now() - init_time).as_secs_f32()
+                        );
                         let date_padding = format!(
                             "{}{}",
-                            tools::get_padding(
-                                self.name.as_str(),
-                                date_format.as_str()
-                            ),
+                            tools::get_padding(self.name.as_str(), date_format.as_str()),
                             date_format.blue(),
                         );
                         if atty::is(atty::Stream::Stdout) {
@@ -134,17 +135,37 @@ impl Test {
         if !self.runs_on.contains(&std::env::consts::OS.to_string()) {
             return None;
         }
-        let mut child = std::process::Command::new(if cfg!(target_os = "windows") {self.windows_shell.as_str()} else {self.unix_shell.as_str()})
-            .current_dir(&self.working_dir)
-            .args([if cfg!(target_os = "windows") {"/C"} else {"-c"}, self.cmd.as_str()])
-            .stdin(if self.stdin.is_some() {std::process::Stdio::piped()} else {std::process::Stdio::null()})
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn()
-            .expect("failed to execute process");
-    
+        let mut child = std::process::Command::new(if cfg!(target_os = "windows") {
+            self.windows_shell.as_str()
+        } else {
+            self.unix_shell.as_str()
+        })
+        .current_dir(&self.working_dir)
+        .args([
+            if cfg!(target_os = "windows") {
+                "/C"
+            } else {
+                "-c"
+            },
+            self.cmd.as_str(),
+        ])
+        .stdin(if self.stdin.is_some() {
+            std::process::Stdio::piped()
+        } else {
+            std::process::Stdio::null()
+        })
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
+        .expect("failed to execute process");
+
         if let Some(ref stdin) = self.stdin {
-            child.stdin.take().unwrap().write_all(stdin.as_bytes()).unwrap();
+            child
+                .stdin
+                .take()
+                .unwrap()
+                .write_all(stdin.as_bytes())
+                .unwrap();
         }
         Some(self.wait(child))
     }
@@ -197,7 +218,7 @@ impl Test {
     pub fn run(&self) -> TestResult {
         match self.run_command() {
             Some(res) => self.parse_result(res),
-            None      => TestResult::new()
+            None => TestResult::new(),
         }
     }
 }
