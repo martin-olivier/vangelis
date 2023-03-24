@@ -54,8 +54,7 @@ OPTIONS:
         --help          Display this help menu
         --version       Display the current version
         --changelog     Display the changelog
-        --verbose       Display the output difference in the shell
-        --diff          Display the output difference in Visual Studio Code
+        --diff          Display the output difference in the shell
         --ci            Stop the execution if a test didn't succeed
 
 RETURN VALUE:

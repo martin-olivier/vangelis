@@ -27,7 +27,7 @@ atty = "0.2.14"
 ctrlc = "3.2.5"
 
 [package.metadata.deb]
-copyright = "2022, Martin Olivier"
+copyright = "2023, Martin Olivier"
 maintainer = "Martin Olivier <martin.olivier@live.fr>"
 license-file = ["LICENSE"]
 extended-description = "A functional testing framework"

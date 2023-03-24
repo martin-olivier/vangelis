@@ -60,21 +60,3 @@ pub fn center(text: String) -> String {
 pub fn get_padding(name: &str, duration: &str) -> String {
     " ".repeat(get_shell_size() - (name.len() + 5 + duration.len()))
 }
-
-pub fn get_vscode_bin() -> Option<String> {
-    if cfg!(target_os = "macos") {
-        let vscode_path = "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code";
-        if std::path::Path::new(vscode_path).is_file() {
-            return Some(vscode_path.to_owned());
-        }
-    }
-    std::env::var_os("PATH").and_then(|paths| {
-        std::env::split_paths(&paths).find_map(|dir| {
-            if dir.join("code").is_file() {
-                Some("code".to_owned())
-            } else {
-                None
-            }
-        })
-    })
-}

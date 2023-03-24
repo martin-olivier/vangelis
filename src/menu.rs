@@ -13,8 +13,7 @@ pub fn help(return_value: i32) {
     println!("\t--help\t\tDisplay this help menu");
     println!("\t--version\tDisplay the current version");
     println!("\t--changelog\tDisplay the changelog");
-    println!("\t--verbose\tDisplay the output difference in the shell");
-    println!("\t--diff\t\tDisplay the output difference in Visual Studio Code");
+    println!("\t--diff\t\tDisplay the output difference in the shell");
     println!("\t--ci\t\tStop the execution if a test didn't succeed\n");
 
     println!("RETURN VALUE:");
@@ -27,7 +26,7 @@ pub fn help(return_value: i32) {
 
 pub fn version() {
     println!("vangelis v2.0.0");
-    println!("Copyright (c) 2022 Martin Olivier");
+    println!("Copyright (c) 2023 Martin Olivier");
     println!("Repository link: https://github.com/martin-olivier/vangelis");
 
     std::process::exit(0);
