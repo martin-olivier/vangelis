@@ -5,7 +5,9 @@ mod menu;
 mod test;
 mod tools;
 
+use crate::core::Core;
+
 fn main() {
     tools::set_hooks();
-    std::process::exit(core::Core::new().run());
+    std::process::exit(Core::new().run());
 }

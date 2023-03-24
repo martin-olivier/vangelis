@@ -1,9 +1,10 @@
 use crate::tools;
 
 use colored::Colorize;
-use std::io::Read;
-use std::io::Write;
+use std::io::{Read, Write};
 use std::path::PathBuf;
+use std::process::{Child, Command, Stdio};
+use std::time::{Duration, Instant};
 
 #[derive(PartialEq)]
 pub enum Status {
@@ -75,10 +76,10 @@ pub struct Test {
 }
 
 impl Test {
-    fn wait(&self, mut child: std::process::Child) -> ProcessResult {
+    fn wait(&self, mut child: Child) -> ProcessResult {
         let mut process_result = ProcessResult::new();
-        let limit = std::time::Instant::now() + std::time::Duration::from_millis((self.timeout * 1000.0) as u64);
-        let init_time = std::time::Instant::now();
+        let init_time = Instant::now();
+        let limit = init_time + Duration::from_millis((self.timeout * 1000.0) as u64);
         loop {
             match child.try_wait() {
                 Ok(Some(exit_status)) => {
@@ -86,21 +87,19 @@ impl Test {
                     break;
                 }
                 Ok(None) => {
-                    if std::time::Instant::now() < limit {
-                        let date_format = format!("{:.1}s", (std::time::Instant::now() - init_time).as_secs_f32());
+                    if Instant::now() < limit {
+                        let date_format =
+                            format!("{:.1}s", (Instant::now() - init_time).as_secs_f32());
                         let date_padding = format!(
                             "{}{}",
-                            tools::get_padding(
-                                self.name.as_str(),
-                                date_format.as_str()
-                            ),
+                            tools::get_padding(self.name.as_str(), date_format.as_str()),
                             date_format.blue(),
                         );
                         if atty::is(atty::Stream::Stdout) {
                             print!("\r{} {}{}\r", "[>]".blue(), self.name.blue(), date_padding);
                             std::io::stdout().flush().unwrap();
                         }
-                        std::thread::sleep(std::time::Duration::from_millis(10));
+                        std::thread::sleep(Duration::from_millis(10));
                     } else {
                         child.kill().unwrap();
                         process_result.timeout = true;
@@ -113,7 +112,7 @@ impl Test {
                 }
             }
         }
-        process_result.exec_time = (std::time::Instant::now() - init_time).as_secs_f32();
+        process_result.exec_time = (Instant::now() - init_time).as_secs_f32();
 
         let mut outbuf = vec![];
         child.stdout.unwrap().read_to_end(&mut outbuf).unwrap();
@@ -134,17 +133,37 @@ impl Test {
         if !self.runs_on.contains(&std::env::consts::OS.to_string()) {
             return None;
         }
-        let mut child = std::process::Command::new(if cfg!(target_os = "windows") {self.windows_shell.as_str()} else {self.unix_shell.as_str()})
-            .current_dir(&self.working_dir)
-            .args([if cfg!(target_os = "windows") {"/C"} else {"-c"}, self.cmd.as_str()])
-            .stdin(if self.stdin.is_some() {std::process::Stdio::piped()} else {std::process::Stdio::null()})
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn()
-            .expect("failed to execute process");
-    
+        let mut child = Command::new(if cfg!(target_os = "windows") {
+            self.windows_shell.as_str()
+        } else {
+            self.unix_shell.as_str()
+        })
+        .current_dir(&self.working_dir)
+        .args([
+            if cfg!(target_os = "windows") {
+                "/C"
+            } else {
+                "-c"
+            },
+            self.cmd.as_str(),
+        ])
+        .stdin(if self.stdin.is_some() {
+            Stdio::piped()
+        } else {
+            Stdio::null()
+        })
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .expect("failed to execute process");
+
         if let Some(ref stdin) = self.stdin {
-            child.stdin.take().unwrap().write_all(stdin.as_bytes()).unwrap();
+            child
+                .stdin
+                .take()
+                .unwrap()
+                .write_all(stdin.as_bytes())
+                .unwrap();
         }
         Some(self.wait(child))
     }
@@ -197,7 +216,7 @@ impl Test {
     pub fn run(&self) -> TestResult {
         match self.run_command() {
             Some(res) => self.parse_result(res),
-            None      => TestResult::new()
+            None => TestResult::new(),
         }
     }
 }
