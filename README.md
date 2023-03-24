@@ -16,10 +16,10 @@
   </a>
 </p>
 <p align="center">
-  <img src=".github/example.gif">
+  <img src=".github/assets/example.gif">
 </p>
 
-This software takes test files as parameter that contains lists of commands to be run and expected stdout, stderr, exit status, and tell the user if the tests succeed, failed or crashed.
+This software takes test files as parameter that contains lists of commands to be run, expected stdout, stderr, exit status, and tell the user if the tests succeed, failed or crashed.
 
 `⭐ Don't forget to put a star if you like the project!`
 
@@ -27,13 +27,18 @@ This software takes test files as parameter that contains lists of commands to b
 
 This software works on `Linux`, `MacOS`, and `Windows`
 
-To build and install the project, you will need [cargo](https://www.rust-lang.org/tools/install)
-
 ## 💻 Installation
 
+If you are under `Debian` based distributions (Ubuntu, PopOS, Mint, Kali), you can find pre-built releases [here](https://github.com/martin-olivier/vangelis/releases/latest). You will just need to download the debian package and install it with the following command:
+
 ```
-git clone https://github.com/martin-olivier/vangelis
-cargo install --path vangelis
+sudo apt install <path_to_deb_package>
+```
+
+Otherwise, you can install `vangelis` using [cargo](https://www.rust-lang.org/tools/install), with the following command:
+
+```
+cargo install vangelis
 ```
 
 ## 📒 Manual
