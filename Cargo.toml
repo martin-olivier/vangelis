@@ -16,7 +16,7 @@ readme = "README.md"
 
 [dependencies]
 
-serde = { version = "1.0.158", features = ["derive"] }
+serde = { version = "1.0.159", features = ["derive"] }
 indexmap = { version = "1.9.3", features = ["serde-1"] }
 term_size = "0.3.2"
 lazy_static = "1.4.0"
