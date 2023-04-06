@@ -1,7 +1,7 @@
+mod args;
 mod config;
 mod core;
 mod diff;
-mod menu;
 mod test;
 mod tools;
 

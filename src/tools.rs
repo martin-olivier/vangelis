@@ -1,8 +1,6 @@
 use colored::Colorize;
 use std::io::Write;
 
-static mut SHELL_SIZE: Option<usize> = None;
-
 pub fn set_hooks() {
     ctrlc::set_handler(move || {
         show_cursor();
@@ -13,11 +11,11 @@ pub fn set_hooks() {
     std::panic::set_hook(Box::new(|err| {
         show_cursor();
         if let Some(msg) = err.payload().downcast_ref::<&str>() {
-            println!("{}", msg.bold().red());
+            eprintln!("{}", msg.bold().red());
         } else if let Some(msg) = err.payload().downcast_ref::<String>() {
-            println!("{}", msg.bold().red());
+            eprintln!("{}", msg.bold().red());
         } else {
-            println!("{}", err);
+            eprintln!("{}", err);
         }
         std::process::exit(84);
     }));
@@ -26,30 +24,25 @@ pub fn set_hooks() {
 pub fn hide_cursor() {
     if atty::is(atty::Stream::Stdout) {
         print!("\x1b[?25l");
-        std::io::stdout().flush().unwrap();
+        std::io::stdout().flush().ok();
     }
 }
 
 pub fn show_cursor() {
     if atty::is(atty::Stream::Stdout) {
         print!("\x1b[?25h");
-        std::io::stdout().flush().unwrap();
+        std::io::stdout().flush().ok();
     }
 }
 
 pub fn get_shell_size() -> usize {
-    unsafe {
-        if SHELL_SIZE.is_none() {
-            SHELL_SIZE = match atty::is(atty::Stream::Stdout) {
-                true => Some(term_size::dimensions().unwrap_or((100, 20)).0),
-                false => Some(100),
-            };
-        }
-        SHELL_SIZE.unwrap()
+    match atty::is(atty::Stream::Stdout) {
+        true => term_size::dimensions().unwrap_or((100, 20)).0,
+        false => 100,
     }
 }
 
-pub fn center(text: String) -> String {
+pub fn center(text: &str) -> String {
     format!(
         "{}[{}]",
         " ".repeat((get_shell_size() - text.len()) / 2),

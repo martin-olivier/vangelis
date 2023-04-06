@@ -80,6 +80,7 @@ impl Test {
         let mut process_result = ProcessResult::new();
         let init_time = Instant::now();
         let limit = init_time + Duration::from_millis((self.timeout * 1000.0) as u64);
+
         loop {
             match child.try_wait() {
                 Ok(Some(exit_status)) => {
@@ -92,7 +93,7 @@ impl Test {
                             format!("{:.1}s", (Instant::now() - init_time).as_secs_f32());
                         let date_padding = format!(
                             "{}{}",
-                            tools::get_padding(self.name.as_str(), date_format.as_str()),
+                            tools::get_padding(&self.name, &date_format),
                             date_format.blue(),
                         );
                         if atty::is(atty::Stream::Stdout) {
@@ -133,10 +134,11 @@ impl Test {
         if !self.runs_on.contains(&std::env::consts::OS.to_string()) {
             return None;
         }
+
         let mut child = Command::new(if cfg!(target_os = "windows") {
-            self.windows_shell.as_str()
+            &self.windows_shell
         } else {
-            self.unix_shell.as_str()
+            &self.unix_shell
         })
         .current_dir(&self.working_dir)
         .args([
@@ -145,7 +147,7 @@ impl Test {
             } else {
                 "-c"
             },
-            self.cmd.as_str(),
+            &self.cmd,
         ])
         .stdin(if self.stdin.is_some() {
             Stdio::piped()
@@ -187,6 +189,7 @@ impl Test {
             }
             None => test_result.status = Status::Crashed,
         }
+
         if let Some(ref stdout) = self.stdout {
             if *stdout != process_result.stdout {
                 test_result.status = match test_result.status {
@@ -197,6 +200,7 @@ impl Test {
             test_result.got_stdout = process_result.stdout;
             test_result.expected_stdout = Some(stdout.to_owned());
         }
+
         if let Some(ref stderr) = self.stderr {
             if *stderr != process_result.stderr {
                 test_result.status = match test_result.status {
@@ -207,9 +211,11 @@ impl Test {
             test_result.got_stderr = process_result.stderr;
             test_result.expected_stderr = Some(stderr.to_owned());
         }
+
         if process_result.timeout {
             test_result.status = Status::Timeout
         }
+
         test_result
     }
 

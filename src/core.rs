@@ -1,9 +1,10 @@
+use crate::args::Args;
 use crate::config::TestFile;
 use crate::diff;
-use crate::menu;
 use crate::test::{Status, TestResult};
 use crate::tools;
 
+use clap::Parser;
 use colored::Colorize;
 
 #[derive(PartialEq)]
@@ -37,37 +38,20 @@ impl Core {
     }
 
     fn parse(&mut self) -> Vec<TestFile> {
-        let mut files: Vec<TestFile> = vec![];
-        let mut diff = false;
-        let mut ci = false;
+        let args = Args::parse();
+        let mut files = vec![];
 
-        for ref arg in std::env::args().skip(1) {
-            match arg.as_str() {
-                "--help" => menu::help(0),
-                "--version" => menu::version(),
-                "--changelog" => menu::changelog(),
-                "--tears" => menu::tears(),
-                "--diff" => diff = true,
-                "--ci" => ci = true,
-                _ => {
-                    if arg.starts_with('-') {
-                        panic!("Unknown option: {}", arg.as_str())
-                    } else {
-                        files.push(TestFile::new(arg.as_str()));
-                    }
-                }
-            }
+        for arg in args.test_file {
+            files.push(TestFile::new(&arg));
         }
-        if files.is_empty() {
-            menu::help(1);
-        }
-        if ci && diff {
+
+        if args.ci && args.diff {
             panic!("--diff argument is useless when using --ci");
         }
-        if ci {
+        if args.ci {
             self.mode = Mode::CI;
         }
-        if diff {
+        if args.diff {
             self.mode = Mode::Diff;
         }
         files
@@ -82,6 +66,7 @@ impl Core {
         );
 
         self.tests += 1;
+
         match result.status {
             Status::Passed => self.passed += 1,
             Status::Failed => self.failed += 1,
@@ -108,12 +93,9 @@ impl Core {
         tools::hide_cursor();
 
         'main_loop: for test_file in test_files.into_iter() {
-            println!(
-                "\n{}\n",
-                tools::center(test_file.name.to_string()).bold().cyan()
-            );
+            println!("\n{}\n", tools::center(&test_file.name).bold().cyan());
             for test in test_file.tests.into_iter() {
-                self.apply_result(test.name.as_str(), test.run());
+                self.apply_result(&test.name, test.run());
                 if self.mode == Mode::CI && self.tests != self.passed + self.skipped {
                     break 'main_loop;
                 }

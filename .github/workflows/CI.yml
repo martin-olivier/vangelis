@@ -2,38 +2,24 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - src/*
-      - .github/workflows/CI.yml
-      - Cargo.toml
   pull_request:
-    branches:
-      - main
-    paths:
-      - src/*
-      - .github/workflows/CI.yml
-      - Cargo.toml
-
-defaults:
-  run:
-    shell: bash
+  release:
+    types: [published]
 
 jobs:
-  conventional_commits:
-    name: conventional commits
+  commits:
+    name: commits
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: webiny/action-conventional-commits@v1.0.5
+      - uses: actions/checkout@v3
+      - uses: webiny/action-conventional-commits@v1.1.0
 
   linter:
     name: linter
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Clippy
         run: cargo clippy --all --all-features -- -D warnings
@@ -41,24 +27,173 @@ jobs:
       - name: Format
         run: cargo fmt --all -- --check
 
-  build:
+  linux:
+    name: linux (${{ matrix.arch_name }})
+    runs-on: ubuntu-20.04
+    permissions: write-all
     needs: linter
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-
-    name: ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+        arch: [x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu]
+        include:
+          - arch: x86_64-unknown-linux-gnu
+            arch_name: x86_64
+          - arch: aarch64-unknown-linux-gnu
+            arch_name: arm64
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Build project (debug)
-        run: cargo build
+      - name: Install toolchain
+        run: rustup target add ${{ matrix.arch }}
 
-      - name: Install project (release)
-        run: cargo install --path .
+      - name: Install gcc
+        run: sudo apt install gcc-aarch64-linux-gnu
 
-      - name: Check install
-        run: vangelis --help
+      - name: Build binary
+        run: cargo build --release --target=${{ matrix.arch }}
+
+      - name: Save binary artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vangelis-linux-${{ matrix.arch_name }}
+          path: target/${{ matrix.arch }}/release/vangelis
+          if-no-files-found: error
+
+      - name: Set binary name
+        if: github.event_name == 'release'
+        run: cp target/${{ matrix.arch }}/release/vangelis vangelis-linux-${{ matrix.arch_name }}
+
+      - name: Upload binary
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: vangelis-linux-${{ matrix.arch_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install cargo-deb
+        run: cargo install cargo-deb
+
+      - name: Build debian package
+        run: cargo deb --target=${{ matrix.arch }} -o vangelis-debian-${{ matrix.arch_name }}.deb
+
+      - name: Save debian artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vangelis-debian-${{ matrix.arch_name }}.deb
+          path: ./vangelis-debian-${{ matrix.arch_name }}.deb
+          if-no-files-found: error
+      
+      - name: Install alien
+        run: sudo apt install alien
+
+      - name: Build redhat package
+        run: alien ./vangelis-debian-${{ matrix.arch_name }}.deb -k --to-rpm
+
+      - name: Set package name
+        run: mv *.rpm vangelis-redhat-${{ matrix.arch_name }}.rpm
+
+      - name: Save redhat artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vangelis-redhat-${{ matrix.arch_name }}.rpm
+          path: ./vangelis-redhat-${{ matrix.arch_name }}.rpm
+          if-no-files-found: error
+
+      - name: Upload packages
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./vangelis-debian-${{ matrix.arch_name }}.deb
+            ./vangelis-redhat-${{ matrix.arch_name }}.rpm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  mac_os:
+    name: macOS (${{ matrix.arch_name }})
+    runs-on: macos-latest
+    permissions: write-all
+    needs: tests
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64-apple-darwin, aarch64-apple-darwin]
+        include:
+          - arch: x86_64-apple-darwin
+            arch_name: intel
+          - arch: aarch64-apple-darwin
+            arch_name: silicon
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install toolchain
+        run: rustup target add ${{ matrix.arch }}
+
+      - name: Build binary
+        run: cargo build --release --target=${{ matrix.arch }}
+
+      - name: Save artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vangelis-macos-${{ matrix.arch_name }}
+          path: target/${{ matrix.arch }}/release/vangelis
+          if-no-files-found: error
+
+      - name: Set binary name
+        if: github.event_name == 'release'
+        run: cp target/${{ matrix.arch }}/release/vangelis vangelis-macos-${{ matrix.arch_name }}
+
+      - name: Upload binary
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: vangelis-macos-${{ matrix.arch_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  windows:
+    name: windows (${{ matrix.arch_name }})
+    runs-on: windows-latest
+    permissions: write-all
+    needs: tests
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64-pc-windows-msvc, aarch64-pc-windows-msvc]
+        include:
+          - arch: x86_64-pc-windows-msvc
+            arch_name: x86_64
+          - arch: aarch64-pc-windows-msvc
+            arch_name: arm64
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install toolchain
+        run: rustup target add ${{ matrix.arch }}
+
+      - name: Build binary
+        run: cargo build --release --target=${{ matrix.arch }}
+
+      - name: Save artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vangelis-windows-${{ matrix.arch_name }}.exe
+          path: target/${{ matrix.arch }}/release/vangelis.exe
+          if-no-files-found: error
+
+      - name: Set binary name
+        if: github.event_name == 'release'
+        run: cp target/${{ matrix.arch }}/release/vangelis.exe vangelis-windows-${{ matrix.arch_name }}.exe
+
+      - name: Upload binary
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: vangelis-windows-${{ matrix.arch_name }}.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -2,8 +2,8 @@
   Vangelis
 </h1>
 <p align="center">
-  <a href="https://github.com/martin-olivier/vangelis/releases/tag/v2.0.0">
-    <img src="https://img.shields.io/badge/Version-2.0.0-blue.svg" alt="version"/>
+  <a href="https://github.com/martin-olivier/vangelis/releases/tag/v2.0.1">
+    <img src="https://img.shields.io/badge/Version-2.0.1-blue.svg" alt="version"/>
   </a>
   <a href="https://github.com/martin-olivier/vangelis/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-darkgreen.svg" alt="license"/>
@@ -23,52 +23,41 @@ This software takes test files as parameter that contains lists of commands to b
 
 `⭐ Don't forget to put a star if you like the project!`
 
-## ⚠️ Requirements
-
-This software works on `Linux`, `MacOS`, and `Windows`
-
 ## 💻 Installation
 
-If you are under `Debian` based distributions (Ubuntu, PopOS, Mint, Kali), you can find pre-built releases [here](https://github.com/martin-olivier/vangelis/releases/latest). You will just need to download the debian package and install it with the following command:
+You can find pre-built [releases](https://github.com/martin-olivier/vangelis/releases/latest) for `linux`, `macOS` and `Windows`
 
-```
-sudo apt install <path_to_deb_package>
-```
+Otherwise, you can install `vangelis` from source using [cargo](https://www.rust-lang.org/tools/install), with the following command:
 
-Otherwise, you can install `vangelis` using [cargo](https://www.rust-lang.org/tools/install), with the following command:
-
-```
+```sh
 cargo install vangelis
 ```
 
-## 📒 Manual
+`⭐ Don't forget to put a star if you like the project!`
+
+## 📒 Usage
 
 ```
-USAGE:
-        vangelis [TESTFILES] [OPTIONS]
+A functional testing framework
 
-TESTFILES:
-        path to one or multiple test files
+Usage: vangelis [OPTIONS] <TEST_FILE>...
 
-OPTIONS:
-        --help          Display this help menu
-        --version       Display the current version
-        --changelog     Display the changelog
-        --diff          Display the output difference in the shell
-        --ci            Stop the execution if a test didn't succeed
+Arguments:
+  <TEST_FILE>...  Path to one or multiple test file(s) to be executed
 
-RETURN VALUE:
-        0               if all tests succeed
-        1               if one or more tests failed
-        84              if a critical error occured
+Options:
+      --diff     Display the got/expected difference for each failed test in the shell
+      --ci       Stop the execution and display the got/expected difference if a test didn't succeed
+  -h, --help     Print help
+  -V, --version  Print version
 ```
 
 ## 🗂 Test File
 
 Test files must have the following pattern in [toml](https://toml.io/en/)
 
-```
-# Definitions
+```rs
+// Definitions
 
 Default {
     exit_status: Option<Integer>,
@@ -92,7 +81,7 @@ Test {
     windows_shell: Option<String>,
 }
 
-# Test file content
+// Test file content
 
 TestFile {
     default: Option<Default>,
