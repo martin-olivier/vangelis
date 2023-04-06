@@ -116,7 +116,7 @@ jobs:
     name: macOS (${{ matrix.arch_name }})
     runs-on: macos-latest
     permissions: write-all
-    needs: tests
+    needs: linter
     strategy:
       fail-fast: false
       matrix:
@@ -159,7 +159,7 @@ jobs:
     name: windows (${{ matrix.arch_name }})
     runs-on: windows-latest
     permissions: write-all
-    needs: tests
+    needs: linter
     strategy:
       fail-fast: false
       matrix:
