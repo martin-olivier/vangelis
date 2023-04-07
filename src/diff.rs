@@ -5,9 +5,9 @@ use colored::Colorize;
 fn print_diff(got: &str, expected: &str) {
     for diff in diff::lines(got, expected) {
         match diff {
-            diff::Result::Left(l) => println!("{} {}", " + ".black().on_white(), l.green()),
+            diff::Result::Left(l) => println!("{} {}", " + ".white().on_green(), l.green()),
             diff::Result::Both(l, _) => println!("{} {}", "   ".on_white(), l),
-            diff::Result::Right(r) => println!("{} {}", " - ".black().on_white(), r.red()),
+            diff::Result::Right(r) => println!("{} {}", " - ".white().on_red(), r.red()),
         }
     }
 }
