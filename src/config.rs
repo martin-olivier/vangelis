@@ -5,16 +5,6 @@ use std::io::Read;
 use std::path::PathBuf;
 
 #[derive(serde::Deserialize)]
-struct RawDefault {
-    runs_on: Option<Vec<String>>,
-    exit_status: Option<i32>,
-    timeout: Option<f32>,
-    working_dir: Option<String>,
-    unix_shell: Option<String>,
-    windows_shell: Option<String>,
-}
-
-#[derive(serde::Deserialize)]
 struct RawTest {
     runs_on: Option<Vec<String>>,
     unix_shell: Option<String>,
@@ -30,16 +20,21 @@ struct RawTest {
 
 #[derive(serde::Deserialize)]
 struct RawTestFile {
-    default: Option<RawDefault>,
+    default: Option<RawDefaults>,
     test: IndexMap<String, RawTest>,
 }
 
-pub struct TestFile {
-    pub name: String,
-    pub tests: Vec<Test>,
+#[derive(serde::Deserialize)]
+struct RawDefaults {
+    runs_on: Option<Vec<String>>,
+    exit_status: Option<i32>,
+    timeout: Option<f32>,
+    working_dir: Option<String>,
+    unix_shell: Option<String>,
+    windows_shell: Option<String>,
 }
 
-struct Default {
+struct Defaults {
     runs_on: Vec<String>,
     exit_status: i32,
     timeout: f32,
@@ -48,41 +43,37 @@ struct Default {
     windows_shell: String,
 }
 
-impl Default {
-    pub fn new(default: Option<RawDefault>) -> Self {
-        let mut this = Default {
+impl Defaults {
+    pub fn new(default: RawDefaults) -> Self {
+        Self {
+            runs_on: default.runs_on.unwrap_or(Self::default().runs_on),
+            exit_status: default.exit_status.unwrap_or(Self::default().exit_status),
+            timeout: default.timeout.unwrap_or(Self::default().timeout),
+            working_dir: default.working_dir.unwrap_or(Self::default().working_dir),
+            unix_shell: default.unix_shell.unwrap_or(Self::default().unix_shell),
+            windows_shell: default
+                .windows_shell
+                .unwrap_or(Self::default().windows_shell),
+        }
+    }
+}
+
+impl Default for Defaults {
+    fn default() -> Self {
+        Self {
             runs_on: vec!["linux".to_owned(), "macos".to_owned(), "windows".to_owned()],
             exit_status: 0,
             timeout: 60.0,
             working_dir: ".".to_owned(),
             unix_shell: "sh".to_owned(),
             windows_shell: "cmd".to_owned(),
-        };
-        match default {
-            Some(def) => {
-                if let Some(runs_on) = def.runs_on {
-                    this.runs_on = runs_on;
-                }
-                if let Some(exit_status) = def.exit_status {
-                    this.exit_status = exit_status;
-                }
-                if let Some(timeout) = def.timeout {
-                    this.timeout = timeout;
-                }
-                if let Some(working_dir) = def.working_dir {
-                    this.working_dir = working_dir;
-                }
-                if let Some(unix_shell) = def.unix_shell {
-                    this.unix_shell = unix_shell;
-                }
-                if let Some(windows_shell) = def.windows_shell {
-                    this.windows_shell = windows_shell;
-                }
-                this
-            }
-            None => this,
         }
     }
+}
+
+pub struct TestFile {
+    pub name: String,
+    pub tests: Vec<Test>,
 }
 
 impl TestFile {
@@ -91,20 +82,26 @@ impl TestFile {
             name: path.to_owned(),
             tests: vec![],
         };
-        let mut buff = String::new();
         let mut file = match File::open(path) {
             Ok(val) => val,
             Err(err) => panic!("Could not read \"{}\": {}", path, err),
         };
-        match file.read_to_string(&mut buff) {
-            Ok(_) => (),
-            Err(err) => panic!("Could not read \"{}\": {}", path, err),
-        };
+        let mut buff = String::new();
+
+        if let Err(err) = file.read_to_string(&mut buff) {
+            panic!("Could not read \"{}\": {}", path, err);
+        }
+
         let raw_test_file: RawTestFile = match toml::from_str(&buff) {
             Ok(val) => val,
             Err(err) => panic!("Parsing error: {} in test file \"{}\"", err, path),
         };
-        let default = Default::new(raw_test_file.default);
+
+        let default = match raw_test_file.default {
+            Some(raw_defaults) => Defaults::new(raw_defaults),
+            None => Defaults::default(),
+        };
+
         for (test_name, test) in raw_test_file.test.into_iter() {
             let working_directory = PathBuf::from(path).parent().unwrap().join(
                 test.working_dir

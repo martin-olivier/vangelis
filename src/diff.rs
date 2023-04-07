@@ -2,12 +2,12 @@ use crate::test::{Status, TestResult};
 
 use colored::Colorize;
 
-fn print_diff(got: String, expected: String) {
-    for diff in diff::lines(got.as_str(), expected.as_str()) {
+fn print_diff(got: &str, expected: &str) {
+    for diff in diff::lines(got, expected) {
         match diff {
-            diff::Result::Left(l) => println!("{} {}", " + ".bold().green().on_white(), l.green()),
+            diff::Result::Left(l) => println!("{} {}", " + ".white().on_green(), l.green()),
             diff::Result::Both(l, _) => println!("{} {}", "   ".on_white(), l),
-            diff::Result::Right(r) => println!("{} {}", " - ".bold().red().on_white(), r.red()),
+            diff::Result::Right(r) => println!("{} {}", " - ".white().on_red(), r.red()),
         }
     }
 }
@@ -18,6 +18,7 @@ pub fn shell(result: TestResult) {
     }
 
     println!("{}", " ^ ".bold().blue());
+
     println!(
         "{}\n{} {}\n{}",
         "   ".on_blue(),
@@ -25,8 +26,9 @@ pub fn shell(result: TestResult) {
         "[exit status]".blue(),
         "   ".on_blue()
     );
+
     print_diff(
-        format!(
+        &format!(
             "value = {}",
             if let Some(exit_status) = result.got_exit_status {
                 exit_status.to_string()
@@ -34,8 +36,9 @@ pub fn shell(result: TestResult) {
                 "None".to_string()
             }
         ),
-        format!("value = {}", result.expected_exit_status),
+        &format!("value = {}", result.expected_exit_status),
     );
+
     if let Some(expected_stdout) = result.expected_stdout {
         println!(
             "{}\n{} {}\n{}",
@@ -44,8 +47,9 @@ pub fn shell(result: TestResult) {
             "[stdout]".blue(),
             "   ".on_blue()
         );
-        print_diff(result.got_stdout, expected_stdout);
+        print_diff(&result.got_stdout, &expected_stdout);
     }
+
     if let Some(expected_stderr) = result.expected_stderr {
         println!(
             "{}\n{} {}\n{}",
@@ -54,6 +58,6 @@ pub fn shell(result: TestResult) {
             "[stderr]".blue(),
             "   ".on_blue()
         );
-        print_diff(result.got_stderr, expected_stderr);
+        print_diff(&result.got_stderr, &expected_stderr);
     }
 }
