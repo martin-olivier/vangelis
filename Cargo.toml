@@ -14,7 +14,7 @@ exclude = ["/.github", "/examples"]
 readme = "README.md"
 
 [dependencies]
-clap = { version = "4.2.1", features = ["derive"] }
+clap = { version = "4.3.0", features = ["derive"] }
 serde = { version = "1.0.159", features = ["derive"] }
 indexmap = { version = "1.9.3", features = ["serde-1"] }
 term_size = "0.3.2"
