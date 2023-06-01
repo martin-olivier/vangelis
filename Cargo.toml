@@ -22,7 +22,7 @@ colored = "2.0.0"
 toml = "0.7.3"
 diff = "0.1.13"
 atty = "0.2.14"
-ctrlc = "3.2.5"
+ctrlc = "3.4.0"
 
 [package.metadata.deb]
 copyright = "2023, Martin Olivier"
