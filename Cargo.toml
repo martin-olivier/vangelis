@@ -19,7 +19,7 @@ serde = { version = "1.0.159", features = ["derive"] }
 indexmap = { version = "1.9.3", features = ["serde-1"] }
 term_size = "0.3.2"
 colored = "2.0.0"
-toml = "0.7.3"
+toml = "0.7.4"
 diff = "0.1.13"
 atty = "0.2.14"
 ctrlc = "3.2.5"
