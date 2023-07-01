@@ -15,7 +15,7 @@ readme = "README.md"
 
 [dependencies]
 clap = { version = "4.2.1", features = ["derive"] }
-serde = { version = "1.0.159", features = ["derive"] }
+serde = { version = "1.0.164", features = ["derive"] }
 indexmap = { version = "1.9.3", features = ["serde-1"] }
 term_size = "0.3.2"
 colored = "2.0.0"
