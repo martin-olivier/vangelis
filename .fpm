@@ -1,0 +1,14 @@
+-s dir vangelis README.md LICENSE
+--name vangelis
+--license MIT
+--version 2.0.2
+--description "A functional testing framework"
+--url "https://github.com/martin-olivier/vangelis"
+--maintainer "Martin Olivier <martin.olivier@live.fr>"
+
+--provides vangelis
+--conflicts vangelis
+
+vangelis=/usr/bin/vangelis
+README.md=/usr/share/doc/vangelis/README.md
+LICENSE=/usr/share/doc/vangelis/LICENSE

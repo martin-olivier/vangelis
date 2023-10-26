@@ -1,23 +1,9 @@
-<h1 align="center">
-  Vangelis
-</h1>
-<p align="center">
-  <a href="https://github.com/martin-olivier/vangelis/releases/tag/v2.0.1">
-    <img src="https://img.shields.io/badge/Version-2.0.1-blue.svg" alt="version"/>
-  </a>
-  <a href="https://github.com/martin-olivier/vangelis/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-darkgreen.svg" alt="license"/>
-  </a>
-  <a href="https://www.rust-lang.org/">
-    <img src="https://img.shields.io/badge/Language-Rust-orange.svg" alt="cppversion"/>
-  </a>
-  <a href="https://github.com/martin-olivier/vangelis/actions/workflows/CI.yml">
-    <img src="https://github.com/martin-olivier/vangelis/actions/workflows/CI.yml/badge.svg" alt="ci"/>
-  </a>
-</p>
-<p align="center">
-  <img src=".github/assets/example.gif">
-</p>
+# vangelis
+
+[![crates](https://img.shields.io/crates/v/vangelis.svg)](https://crates.io/crates/vangelis)
+[![ci](https://github.com/martin-olivier/vangelis/actions/workflows/CI.yml/badge.svg)](https://github.com/martin-olivier/vangelis/actions/workflows/CI.yml)
+
+![example](.github/assets/example.gif)
 
 This software takes test files as parameter that contains lists of commands to be run, expected stdout, stderr, exit status, and tell the user if the tests succeed, failed or crashed.
 

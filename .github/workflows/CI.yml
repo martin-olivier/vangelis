@@ -29,7 +29,7 @@ jobs:
 
   linux:
     name: linux (${{ matrix.arch_name }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions: write-all
     needs: linter
     strategy:
@@ -39,8 +39,10 @@ jobs:
         include:
           - arch: x86_64-unknown-linux-gnu
             arch_name: x86_64
+            compiler: gcc-aarch64-linux-gnu
           - arch: aarch64-unknown-linux-gnu
-            arch_name: arm64
+            arch_name: aarch64
+            compiler: gcc-aarch64-linux-gnu
 
     steps:
       - uses: actions/checkout@v3
@@ -48,36 +50,27 @@ jobs:
       - name: Install toolchain
         run: rustup target add ${{ matrix.arch }}
 
-      - name: Install gcc
-        run: sudo apt install gcc-aarch64-linux-gnu
+      - name: Install build dependencies
+        run: >
+          sudo apt update && sudo apt install -y
+          ${{ matrix.compiler }}
+          ruby
+          ruby-dev
+          rubygems
+          rpm
+          libarchive-tools
+
+      - name: Install fpm
+        run: sudo gem install fpm
 
       - name: Build binary
         run: cargo build --release --target=${{ matrix.arch }}
 
-      - name: Save binary artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: vangelis-linux-${{ matrix.arch_name }}
-          path: target/${{ matrix.arch }}/release/vangelis
-          if-no-files-found: error
-
-      - name: Set binary name
-        if: github.event_name == 'release'
-        run: cp target/${{ matrix.arch }}/release/vangelis vangelis-linux-${{ matrix.arch_name }}
-
-      - name: Upload binary
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: vangelis-linux-${{ matrix.arch_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install cargo-deb
-        run: cargo install cargo-deb
+      - name: Get binary
+        run: cp target/${{ matrix.arch }}/release/vangelis .
 
       - name: Build debian package
-        run: cargo deb --target=${{ matrix.arch }} -o vangelis-debian-${{ matrix.arch_name }}.deb
+        run: fpm -t deb -p vangelis-debian-${{ matrix.arch_name }}.deb --architecture ${{ matrix.arch }}
 
       - name: Save debian artifact
         uses: actions/upload-artifact@v3
@@ -85,16 +78,10 @@ jobs:
           name: vangelis-debian-${{ matrix.arch_name }}.deb
           path: ./vangelis-debian-${{ matrix.arch_name }}.deb
           if-no-files-found: error
-      
-      - name: Install alien
-        run: sudo apt install alien
 
       - name: Build redhat package
-        run: alien ./vangelis-debian-${{ matrix.arch_name }}.deb -k --to-rpm
-
-      - name: Set package name
-        run: mv *.rpm vangelis-redhat-${{ matrix.arch_name }}.rpm
-
+        run: fpm -t rpm -p vangelis-redhat-${{ matrix.arch_name }}.rpm --architecture ${{ matrix.arch }}
+  
       - name: Save redhat artifact
         uses: actions/upload-artifact@v3
         with:
@@ -102,6 +89,16 @@ jobs:
           path: ./vangelis-redhat-${{ matrix.arch_name }}.rpm
           if-no-files-found: error
 
+      - name: Build archlinux package
+        run: fpm -t pacman -p vangelis-archlinux-${{ matrix.arch_name }}.pkg.tar.zst --architecture ${{ matrix.arch }}
+  
+      - name: Save archlinux artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vangelis-archlinux-${{ matrix.arch_name }}.pkg.tar.zst
+          path: ./vangelis-archlinux-${{ matrix.arch_name }}.pkg.tar.zst
+          if-no-files-found: error
+  
       - name: Upload packages
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
@@ -109,6 +106,7 @@ jobs:
           files: |
             ./vangelis-debian-${{ matrix.arch_name }}.deb
             ./vangelis-redhat-${{ matrix.arch_name }}.rpm
+            ./vangelis-archlinux-${{ matrix.arch_name }}.pkg.tar.zst
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -168,7 +166,7 @@ jobs:
           - arch: x86_64-pc-windows-msvc
             arch_name: x86_64
           - arch: aarch64-pc-windows-msvc
-            arch_name: arm64
+            arch_name: aarch64
 
     steps:
       - uses: actions/checkout@v3

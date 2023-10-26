@@ -1,6 +1,6 @@
 [package]
 name = "vangelis"
-version = "2.0.1"
+version = "2.0.2"
 edition = "2021"
 license = "MIT"
 description = "A functional testing framework"
@@ -14,28 +14,12 @@ exclude = ["/.github", "/examples"]
 readme = "README.md"
 
 [dependencies]
-clap = { version = "4.2.1", features = ["derive"] }
-serde = { version = "1.0.159", features = ["derive"] }
-indexmap = { version = "1.9.3", features = ["serde-1"] }
-term_size = "0.3.2"
-colored = "2.0.0"
-toml = "0.7.3"
-diff = "0.1.13"
-atty = "0.2.14"
-ctrlc = "3.2.5"
-
-[package.metadata.deb]
-copyright = "2023, Martin Olivier"
-maintainer = "Martin Olivier <martin.olivier@live.fr>"
-license-file = ["LICENSE"]
-extended-description = """
-This software takes test files as parameter that contains lists of commands to be run,
-expected stdout, stderr, exit status, and tell the user if the tests succeed,
-failed or crashed.
-"""
-priority = "optional"
-section = "utility"
-assets = [
-    ["target/release/vangelis", "/usr/bin/vangelis", "755"],
-    ["README.md", "/usr/share/doc/vangelis/README", "644"],
-]
+clap = { version = "4.4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+indexmap = { version = "2", features = ["serde"] }
+term_size = "0.3"
+colored = "2"
+toml = "0.8"
+diff = "0.1"
+atty = "0.2"
+ctrlc = "3.4"

@@ -5,7 +5,7 @@ mod diff;
 mod test;
 mod tools;
 
-use crate::core::Core;
+use core::Core;
 
 fn main() {
     tools::set_hooks();
