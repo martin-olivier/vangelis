@@ -19,8 +19,6 @@ Otherwise, you can install `vangelis` from source using [cargo](https://www.rust
 cargo install vangelis
 ```
 
-`⭐ Don't forget to put a star if you like the project!`
-
 ## 📒 Usage
 
 ```
