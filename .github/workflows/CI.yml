@@ -18,6 +18,8 @@ jobs:
     name: linter
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Create builder image
         run: docker build . -t vangelis_builder
 
@@ -142,7 +144,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   windows:
-    name: windows (${{ matrix.arch_name }})
+    name: windows (${{ matrix.arch }})
     runs-on: windows-latest
     permissions: write-all
     needs: linter
