@@ -10,11 +10,11 @@ repository = "https://github.com/martin-olivier/vangelis"
 documentation = "https://github.com/martin-olivier/vangelis"
 keywords = ["testing", "test", "config", "command", "process"]
 categories = ["development-tools", "command-line-utilities"]
-exclude = ["/.github", "/examples"]
+exclude = ["/.github", "/examples", "Dockerfile"]
 readme = "README.md"
 
 [dependencies]
-clap = { version = "4.4", features = ["derive"] }
+clap = { version = "4.5", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 indexmap = { version = "2", features = ["serde"] }
 term_size = "0.3"
